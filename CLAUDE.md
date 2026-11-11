@@ -1,0 +1,98 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## What this is
+
+A Kotlin learning project for a Java developer: runnable lessons, tests, and graded exercises (no solutions),
+aimed at backend web and mobile development. **Code in English, comments and docs in Spanish** (same convention as
+`java-champion-review`): identifiers, packages, directories and test names in English; README, `Exercises.md`, code
+comments and KDoc in Spanish. `README.md` is the source of truth for lesson tables, exercise counts, and the "Ruta
+prioritaria". The repo is meant to be public: never mention specific companies or hiring processes.
+
+## Versions are pinned on purpose
+
+Kotlin 1.9.22 (plugins `jvm`, `serialization`, `jpa`, `allopen`), kotlinx-serialization-json 1.6.2, Kermit 2.0.4,
+JDK 21 toolchain, Gradle 9.2.1 wrapper. Do not upgrade them ad hoc: the move to a monorepo and to Kotlin 2.x is
+planned as a separate step. Language features newer than Kotlin 1.9 are unavailable.
+
+## Commands
+
+```bash
+./gradlew test                                  # all tests
+./gradlew test --tests '*.strings.*'            # one lesson (includes its practice/)
+./gradlew test --tests '*.strings.practice.*'   # only the user's exercise solutions
+./gradlew test --tests '*.StringsTest'          # a single test class
+./gradlew run -Plesson=basics                   # run a lesson's Main.kt (default: basics)
+./gradlew run -Plesson=jdbc.postgres
+./gradlew run -Plesson=jpa --args=postgres      # JPA against Docker Postgres (drop-and-create)
+./gradlew run -Plesson=io --console=plain       # io reads stdin; plain console avoids progress-bar noise
+```
+
+`-Plesson=<subpackage>` sets `mainClass` to `dev.raul.oskar.learning.kotlin.<lesson>.MainKt` (see `build.gradle.kts`).
+`run` forwards stdin and uses the project root as working dir. `jdbc` itself has no `Main` (only `Demo.kt`), so use
+`jdbc.sqlite`/`jdbc.postgres`/`jdbc.mysql`.
+
+Databases (optional):
+
+```bash
+docker compose -f docker/postgres/compose.yaml up -d --wait   # PostgreSQL 17.2 on 127.0.0.1:15432
+docker compose -f docker/mysql/compose.yaml up -d --wait      # MySQL 8.4.3 on 127.0.0.1:13306
+docker compose -f docker/<db>/compose.yaml down -v            # also wipes the volume
+```
+
+DB/user/password are all `learning`; override with `PG_URL`/`PG_USER`/`PG_PASSWORD` and
+`MYSQL_URL`/`MYSQL_USER`/`MYSQL_PASSWORD`. If a container is down its tests are **SKIPPED**, not failed, so
+`./gradlew test` always runs. SQLite (in-memory) and JPA (H2 in-memory) need no Docker.
+
+## Architecture
+
+- Root package `dev.raul.oskar.learning.kotlin`; one subpackage per lesson (`basics`, `control`, `strings`, `oop`,
+  `io`, `collections`, `functional`, `json`, `datetime`, `jdbc.*`, `jpa`, `exceptions`). Each has a `Main.kt`
+  (demo only), logic in separate `.kt` files so it is testable, an `Exercises.md`, and a mirrored
+  `src/test/.../<lesson>/<Lesson>Test.kt` using `kotlin.test` on JUnit 5.
+- `jdbc/` root holds shared code: `ProductRepository`, the `Dialect` interface, `mapRows`/`inTransaction`
+  extensions, and `runDemo`. `jdbc/{sqlite,postgres,mysql}` each supply only a `*Dialect` and `Main`. Tests
+  subclass the abstract `ProductRepositoryContract`, providing `dialect` and `openConnection()`; returning `null`
+  triggers a JUnit `assumeTrue` skip. Engine differences belong in the dialect, not the repository. The three
+  engines share one `jdbc/Exercises.md` with exercises tagged `[todos]`/`[SQLite]`/`[PG]`/`[MySQL]`.
+- `jpa/` is Hibernate 6 without Spring: `EntityManagerFactory` built by hand from `META-INF/persistence.xml`
+  (unit `learning`, H2 by default). `h2Factory(name)` gives each test its own in-memory DB; `postgresFactory()`
+  targets Docker; `inTransaction`, `statementCount()` and `resetStatistics()` (for N+1 demos) are extensions in
+`jpa/Jpa.kt`.
+- Sample data for io/json lessons is on the classpath: `src/main/resources/data/{sales.csv,orders.json}`.
+
+## Exercise conventions
+
+- Solutions go in `src/main/kotlin/.../<lesson>/practice/ExNN<Name>.kt`, tests in the mirrored
+  `src/test/kotlin/.../<lesson>/practice/ExNN<Name>Test.kt`. Follow the signature and minimum cases from the
+  exercise statement.
+- If two exercises in the same lesson define the same function name, wrap each in `object ExNN { … }`.
+- "Explica en un comentario" answers go in the test, next to the case that demonstrates it.
+- Unimplemented stubs use `TODO("ejercicio NN")`. Don't write solutions unless asked; this is the user's practice.
+  Tests against a stub fail with `NotImplementedError` on purpose; that is how pending exercises show up.
+- `practice/` packages don't exist until the user solves the first exercise in that lesson.
+- When adding or removing tests or exercises, update the counts in `README.md` ("Estado actual: N pruebas", the
+  number of exercises per lesson, and the total).
+- Legend: 🟢 easy · 🟡 medium · 🟠 hard · 🔴 very hard · 🎯 priority, the recommended route (★ = do first).
+
+## Adding a lesson
+
+Create `<topic>/Main.kt` with `fun main()`, put logic in other files, add `<Topic>Test.kt`, write `Exercises.md`
+with the same header as the others (20–30 graded exercises with signature and cases), and add the row to the
+README lessons table.
+
+## Known gotchas (already handled — don't "fix" them away)
+
+- Gradle 9 + Kotlin 1.9.22 needs `platform("org.junit:junit-bom:5.10.3")` and
+  `testRuntimeOnly("org.junit.platform:junit-platform-launcher")`, or tests fail with "Failed to load JUnit Platform".
+- Kotlin `split(String)` is literal, not regex (`"03/14/1985".split("\\/")` returns the whole string) — a common bug
+  when porting Java code, demonstrated in `strings/`.
+- `explicitNulls` in kotlinx-serialization 1.6.2 requires `@file:OptIn(ExperimentalSerializationApi::class)`.
+- Hibernate logs via java.util.logging unless `org.jboss.logging.provider=slf4j` is set before Hibernate loads
+  (`jpa/Jpa.kt`); `simplelogger.properties` keeps SLF4J at WARN.
+- JPA entities must not be `data class`; the `jpa` (no-arg) and `allopen` plugins are configured for
+  `@Entity`/`@MappedSuperclass`/`@Embeddable`.
+- MySQL `ON DUPLICATE KEY UPDATE` consumes `AUTO_INCREMENT` values even when it updates.
+- `*.code-workspace` is git-ignored on purpose (personal VS Code settings), as in `java-champion-review`.
+- Don't commit unless the user asks. Commit messages in English.

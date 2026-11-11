@@ -1,0 +1,24 @@
+# MySQL para la lección jdbc.mysql.
+#   docker compose -f docker/mysql/compose.yaml up -d --wait
+#   docker compose -f docker/mysql/compose.yaml down -v        # borra también el volumen
+# Puerto 13306 en el host para no chocar con otro MySQL en 3306.
+name: kotlin-learning-mysql
+services:
+  mysql:
+    image: mysql:8.4.3
+    environment:
+      MYSQL_DATABASE: learning
+      MYSQL_USER: learning
+      MYSQL_PASSWORD: learning
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "127.0.0.1:13306:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-ulearning", "-plearning"]
+      interval: 2s
+      timeout: 3s
+      retries: 60
+volumes:
+  mysqldata:

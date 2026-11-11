@@ -1,0 +1,5 @@
+[
+  {"timestamp": 1767225600000, "customer-email": "ana@example.com", "address": {"city": "Denver", "state": "CO", "zipcode": "80202"}, "payment-method": "card", "order-total": 120, "item-count": 3},
+  {"timestamp": 1767312000000, "customer-email": null, "address": null, "payment-method": "transfer", "order-total": 450, "item-count": 1, "channel": "mobile"},
+  {"timestamp": 1767398400000, "customer-email": "bob@example.com", "address": {"city": "Seattle", "state": "WA", "zipcode": "98101"}, "payment-method": "voucher"}
+]

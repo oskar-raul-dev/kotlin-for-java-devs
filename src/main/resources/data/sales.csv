@@ -1,0 +1,7 @@
+date,city,state,product,quantity,unit_price
+2026-10-01,Miami,FL,laptop,1,1200.00
+2026-10-01,Austin,TX,mouse,3,25.50
+2026-10-02,Miami,FL,monitor,2,310.00
+2026-10-02,Denver,CO,mouse,1,25.50
+2026-10-03,Austin,TX,laptop,2,1150.00
+2026-10-03,Miami,FL,keyboard,4,80.00

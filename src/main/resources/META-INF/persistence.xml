@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Unidad de persistencia sin Spring. La URL se sobrescribe desde código (h2Factory / postgresFactory). -->
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+    <persistence-unit name="learning" transaction-type="RESOURCE_LOCAL">
+        <class>dev.raul.oskar.learning.kotlin.jpa.Customer</class>
+        <class>dev.raul.oskar.learning.kotlin.jpa.PurchaseOrder</class>
+        <class>dev.raul.oskar.learning.kotlin.jpa.OrderLine</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:mem:learning;DB_CLOSE_DELAY=-1"/>
+            <property name="jakarta.persistence.jdbc.user" value="sa"/>
+            <property name="jakarta.persistence.jdbc.password" value=""/>
+            <!-- create-drop: genera el esquema al arrancar y lo borra al cerrar. Solo para aprender/pruebas. -->
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.generate_statistics" value="true"/>
+            <!-- con estadísticas activas, Hibernate imprime métricas en cada sesión: se apagan -->
+            <property name="hibernate.session.events.log" value="false"/>
+            <property name="hibernate.jdbc.batch_size" value="20"/>
+        </properties>
+    </persistence-unit>
+</persistence>

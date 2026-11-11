@@ -1,0 +1,23 @@
+# PostgreSQL para las lecciones jdbc.postgres y jpa (con --args=postgres).
+#   docker compose -f docker/postgres/compose.yaml up -d --wait
+#   docker compose -f docker/postgres/compose.yaml down -v     # borra también el volumen
+# Puerto 15432 en el host para no chocar con otro PostgreSQL en 5432.
+name: kotlin-learning-postgres
+services:
+  postgres:
+    image: postgres:17.2
+    environment:
+      POSTGRES_DB: learning
+      POSTGRES_USER: learning
+      POSTGRES_PASSWORD: learning
+    ports:
+      - "127.0.0.1:15432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U learning -d learning"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+volumes:
+  pgdata:
