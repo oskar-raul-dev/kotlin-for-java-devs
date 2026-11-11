@@ -19,17 +19,18 @@ planned as a separate step. Language features newer than Kotlin 1.9 are unavaila
 ## Commands
 
 ```bash
-./gradlew test                                  # all tests
-./gradlew test --tests '*.strings.*'            # one lesson (includes its practice/)
-./gradlew test --tests '*.strings.practice.*'   # only the user's exercise solutions
-./gradlew test --tests '*.StringsTest'          # a single test class
-./gradlew run -Plesson=basics                   # run a lesson's Main.kt (default: basics)
-./gradlew run -Plesson=jdbc.postgres
-./gradlew run -Plesson=jpa --args=postgres      # JPA against Docker Postgres (drop-and-create)
-./gradlew run -Plesson=io --console=plain       # io reads stdin; plain console avoids progress-bar noise
+./gradlew test                                                # all sections (root composite)
+./gradlew -p 01-language test                                 # one section
+./gradlew -p 01-language test --tests '*.strings.*'           # one lesson (includes its practice/)
+./gradlew -p 01-language test --tests '*.strings.practice.*'  # only the user's exercise solutions
+./gradlew -p 01-language test --tests '*.StringsTest'         # a single test class
+./gradlew -p 01-language run -Plesson=basics                  # run a lesson's Main.kt (default: basics)
+./gradlew -p 01-language run -Plesson=io --console=plain      # io reads stdin; plain console avoids progress-bar noise
+./gradlew -p 04-data run -Plesson=jdbc.postgres               # default in 04-data: jdbc.sqlite
+./gradlew -p 04-data run -Plesson=jpa --args=postgres         # JPA against Docker Postgres (drop-and-create)
 ```
 
-`-Plesson=<subpackage>` sets `mainClass` to `dev.raul.oskar.learning.kotlin.<lesson>.MainKt` (see `build.gradle.kts`).
+`-Plesson=<subpackage>` sets `mainClass` to `dev.raul.oskar.learning.kotlin.<lesson>.MainKt` (see each section's `build.gradle.kts`).
 `run` forwards stdin and uses the project root as working dir. `jdbc` itself has no `Main` (only `Demo.kt`), so use
 `jdbc.sqlite`/`jdbc.postgres`/`jdbc.mysql`.
 
@@ -47,6 +48,14 @@ DB/user/password are all `learning`; override with `PG_URL`/`PG_USER`/`PG_PASSWO
 
 ## Architecture
 
+- **Monorepo of independent projects**, as in `java-champion-review` and `groovy-for-java-devs`. Root
+  `settings.gradle.kts` is a composite build that only `includeBuild`s the sections that have a build (today
+  `01-language` and `04-data`); root `build.gradle.kts` registers aggregate `build`/`test`/`check`/`clean`. Each
+  section has its own `settings.gradle.kts` and `build.gradle.kts`, no shared parent; versions are repeated on
+  purpose, keep them in sync. `--tests` and `-Plesson` only work inside a section (`-p <section>`). Empty
+  sections hold a `.gitkeep`; the full layout and roadmap are in `Plan-Migracion-Monorepo.md`.
+- `01-language`: `basics`, `control`, `strings`, `oop`, `collections`, `functional`, `exceptions`, `io`, `datetime`,
+  `json`. `04-data`: `jdbc.*` and `jpa`. `run` uses the section directory as working dir.
 - Root package `dev.raul.oskar.learning.kotlin`; one subpackage per lesson (`basics`, `control`, `strings`, `oop`,
   `io`, `collections`, `functional`, `json`, `datetime`, `jdbc.*`, `jpa`, `exceptions`). Each has a `Main.kt`
   (demo only), logic in separate `.kt` files so it is testable, an `Exercises.md`, and a mirrored
@@ -60,12 +69,12 @@ DB/user/password are all `learning`; override with `PG_URL`/`PG_USER`/`PG_PASSWO
   (unit `learning`, H2 by default). `h2Factory(name)` gives each test its own in-memory DB; `postgresFactory()`
   targets Docker; `inTransaction`, `statementCount()` and `resetStatistics()` (for N+1 demos) are extensions in
 `jpa/Jpa.kt`.
-- Sample data for io/json lessons is on the classpath: `src/main/resources/data/{sales.csv,orders.json}`.
+- Sample data for io/json lessons is on the classpath: `01-language/src/main/resources/data/{sales.csv,orders.json}`.
 
 ## Exercise conventions
 
-- Solutions go in `src/main/kotlin/.../<lesson>/practice/ExNN<Name>.kt`, tests in the mirrored
-  `src/test/kotlin/.../<lesson>/practice/ExNN<Name>Test.kt`. Follow the signature and minimum cases from the
+- Solutions go in `<section>/src/main/kotlin/.../<lesson>/practice/ExNN<Name>.kt`, tests in the mirrored
+  `<section>/src/test/kotlin/.../<lesson>/practice/ExNN<Name>Test.kt`. Follow the signature and minimum cases from the
   exercise statement.
 - If two exercises in the same lesson define the same function name, wrap each in `object ExNN { … }`.
 - "Explica en un comentario" answers go in the test, next to the case that demonstrates it.
@@ -78,7 +87,7 @@ DB/user/password are all `learning`; override with `PG_URL`/`PG_USER`/`PG_PASSWO
 
 ## Adding a lesson
 
-Create `<topic>/Main.kt` with `fun main()`, put logic in other files, add `<Topic>Test.kt`, write `Exercises.md`
+In the right section, create `<topic>/Main.kt` with `fun main()`, put logic in other files, add `<Topic>Test.kt`, write `Exercises.md`
 with the same header as the others (20–30 graded exercises with signature and cases), and add the row to the
 README lessons table.
 

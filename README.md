@@ -26,45 +26,51 @@ mysql-connector-j 9.1.0, Hibernate ORM 6.6.3.Final, H2 2.3.232, slf4j-simple 2.0
 ## Cómo se usa
 
 ```bash
-./gradlew test                                  # todas las pruebas
-./gradlew test --tests '*.strings.*'            # las de una lección (incluye su práctica)
-./gradlew test --tests '*.strings.practice.*'   # solo tus ejercicios de esa lección
-./gradlew run -Plesson=basics                   # el Main de una lección
-./gradlew run -Plesson=jdbc.postgres
-./gradlew run -Plesson=jpa --args=postgres
-./gradlew run -Plesson=io --console=plain       # la parte de consola lee de la terminal
+./gradlew test                                                  # todas las secciones
+./gradlew -p 01-language test                                   # una sección
+./gradlew -p 01-language test --tests '*.strings.*'             # una lección (incluye su práctica)
+./gradlew -p 01-language test --tests '*.strings.practice.*'    # solo tus ejercicios de esa lección
+./gradlew -p 01-language run -Plesson=basics                    # el Main de una lección
+./gradlew -p 01-language run -Plesson=io --console=plain        # la parte de consola lee de la terminal
+./gradlew -p 04-data run -Plesson=jdbc.postgres
+./gradlew -p 04-data run -Plesson=jpa --args=postgres
 ```
 
+- El repo es un **monorepo**: cada sección (`01-language`, `04-data`…) es un proyecto Gradle autocontenido. La
+  raíz es un *composite build* que solo las agrega; `./gradlew test` en la raíz corre todas, y `-p <sección>` entra
+  a una para filtrar pruebas o correr un `Main`. El plan completo está en
+  [`Plan-Migracion-Monorepo.md`](Plan-Migracion-Monorepo.md).
 - `-Plesson=<subpaquete>` elige qué `Main.kt` corre: el build arma `dev.raul.oskar.learning.kotlin.<lesson>.MainKt`.
-  Sin `-Plesson`, corre `basics`.
+  Sin `-Plesson`, corre `basics` en `01-language` y `jdbc.sqlite` en `04-data`.
 - `--tests` filtra por nombre de clase con comodines.
 - `--args` pasa argumentos al `main(args)`.
 - `--console=plain` quita la barra de progreso de Gradle, que se mezcla con lo que se escribe en la consola.
 
-Estado actual: **123 pruebas**, todas en verde. Las 18 de PostgreSQL y MySQL salen `SKIPPED` si sus
-contenedores no están arriba.
+Estado actual: **123 pruebas** (85 en `01-language` y 38 en `04-data`), todas en verde. Las 18 de PostgreSQL y
+MySQL salen `SKIPPED` si sus contenedores no están arriba.
 
 ## Lecciones
 
 Paquete raíz: `dev.raul.oskar.learning.kotlin`. Cada subpaquete tiene su `Main.kt` y su `Exercises.md` en
-`src/main/kotlin/…/<subpaquete>/`, y sus pruebas en el mismo paquete bajo `src/test/kotlin`.
+`<sección>/src/main/kotlin/…/<subpaquete>/`, y sus pruebas en el mismo paquete bajo `<sección>/src/test/kotlin`.
+Las lecciones 1–9 y 14 están en `01-language`; las de bases de datos (10–13), en `04-data`.
 
 | # | Subpaquete | Qué repasa | Ejercicios | 🎯 |
 |---|---|---|---|---|
-| 1 | `basics` | Tipos numéricos, conversiones explícitas, overflow, `BigDecimal` con operadores, `Char`, `==` frente a `===`, `Any`/`Unit`/`Nothing`, smart casts | [25](src/main/kotlin/dev/raul/oskar/learning/kotlin/basics/Exercises.md) | 5 |
-| 2 | `control` | `if`/`when` como expresiones, rangos (`..`, `until`, `downTo`, `step`), bucles, etiquetas `break@`, algoritmos de pizarra (gcd, primos, búsqueda binaria, two-sum, paréntesis) | [24](src/main/kotlin/dev/raul/oskar/learning/kotlin/control/Exercises.md) | 4 |
-| 3 | `strings` | Plantillas, raw strings, `buildString`, `substringBefore/After`, regex con grupos con nombre, `replace` con lambda. **La trampa de `split("\\/")`** | [24](src/main/kotlin/dev/raul/oskar/learning/kotlin/strings/Exercises.md) | 3 |
-| 4 | `oop` | Constructores, `init`, setters privados, `open`/`abstract`, interfaces con default, `sealed` + `when` exhaustivo, enums con `companion` y `of`, `object`, `data class`, `value class`, operadores, delegación `by`, `lazy` | [24](src/main/kotlin/dev/raul/oskar/learning/kotlin/oop/Exercises.md) | 4 |
-| 5 | `io` | `Path` + `kotlin.io.path`, `useLines`, `use {}`, recursos del classpath, consola testeable, Kermit | [23](src/main/kotlin/dev/raul/oskar/learning/kotlin/io/Exercises.md) | 3 |
-| 6 | `collections` | Solo lectura frente a mutable, listas, sets, mapas (`getOrPut`), `TreeMap`, `ArrayDeque`, `PriorityQueue`, arrays | [24](src/main/kotlin/dev/raul/oskar/learning/kotlin/collections/Exercises.md) | 5 |
-| 7 | `functional` | Tipos función, closures, composición, lambdas con receptor, `reified`, `Result`, scope functions, `fun interface`, pipelines (`groupBy`, `groupingBy`, `partition`), secuencias perezosas | [24](src/main/kotlin/dev/raul/oskar/learning/kotlin/functional/Exercises.md) | 6 |
-| 8 | `json` | kotlinx-serialization: `@SerialName`, `explicitNulls`, `ignoreUnknownKeys`, defaults, sealed polimórfico, serializadores para `BigDecimal`/`LocalDate`, árbol `JsonElement` | [24](src/main/kotlin/dev/raul/oskar/learning/kotlin/json/Exercises.md) | 4 |
-| 9 | `datetime` | `java.time`: parseo estricto `MM/dd/uuuu`, edad con `Period`, `Clock` inyectado, epoch millis y zonas, ventanas de días, horario de verano | [24](src/main/kotlin/dev/raul/oskar/learning/kotlin/datetime/Exercises.md) | 5 |
-| 10 | `jdbc.sqlite` | Repositorio JDBC común + dialecto SQLite (sin servidor) | [25, compartidos](src/main/kotlin/dev/raul/oskar/learning/kotlin/jdbc/Exercises.md) | — |
+| 1 | `basics` | Tipos numéricos, conversiones explícitas, overflow, `BigDecimal` con operadores, `Char`, `==` frente a `===`, `Any`/`Unit`/`Nothing`, smart casts | [25](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/basics/Exercises.md) | 5 |
+| 2 | `control` | `if`/`when` como expresiones, rangos (`..`, `until`, `downTo`, `step`), bucles, etiquetas `break@`, algoritmos de pizarra (gcd, primos, búsqueda binaria, two-sum, paréntesis) | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/control/Exercises.md) | 4 |
+| 3 | `strings` | Plantillas, raw strings, `buildString`, `substringBefore/After`, regex con grupos con nombre, `replace` con lambda. **La trampa de `split("\\/")`** | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/strings/Exercises.md) | 3 |
+| 4 | `oop` | Constructores, `init`, setters privados, `open`/`abstract`, interfaces con default, `sealed` + `when` exhaustivo, enums con `companion` y `of`, `object`, `data class`, `value class`, operadores, delegación `by`, `lazy` | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/oop/Exercises.md) | 4 |
+| 5 | `io` | `Path` + `kotlin.io.path`, `useLines`, `use {}`, recursos del classpath, consola testeable, Kermit | [23](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/io/Exercises.md) | 3 |
+| 6 | `collections` | Solo lectura frente a mutable, listas, sets, mapas (`getOrPut`), `TreeMap`, `ArrayDeque`, `PriorityQueue`, arrays | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/collections/Exercises.md) | 5 |
+| 7 | `functional` | Tipos función, closures, composición, lambdas con receptor, `reified`, `Result`, scope functions, `fun interface`, pipelines (`groupBy`, `groupingBy`, `partition`), secuencias perezosas | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/functional/Exercises.md) | 6 |
+| 8 | `json` | kotlinx-serialization: `@SerialName`, `explicitNulls`, `ignoreUnknownKeys`, defaults, sealed polimórfico, serializadores para `BigDecimal`/`LocalDate`, árbol `JsonElement` | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/json/Exercises.md) | 4 |
+| 9 | `datetime` | `java.time`: parseo estricto `MM/dd/uuuu`, edad con `Period`, `Clock` inyectado, epoch millis y zonas, ventanas de días, horario de verano | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/datetime/Exercises.md) | 5 |
+| 10 | `jdbc.sqlite` | Repositorio JDBC común + dialecto SQLite (sin servidor) | [25, compartidos](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jdbc/Exercises.md) | — |
 | 11 | `jdbc.postgres` | Mismo repositorio en PostgreSQL + `RETURNING`, `= ANY(array)`, `jsonb` | ↑ | — |
 | 12 | `jdbc.mysql` | Mismo repositorio en MySQL + `ON DUPLICATE KEY`, `LAST_INSERT_ID()`, aislamiento por defecto | ↑ | — |
-| 13 | `jpa` | Hibernate 6 sin Spring: entidades en Kotlin, cascade, `orphanRemoval`, N+1 y `join fetch`, dirty checking, `LazyInitializationException`, `@Version`, UPDATE masivo | [24](src/main/kotlin/dev/raul/oskar/learning/kotlin/jpa/Exercises.md) | — |
-| 14 | `exceptions` | Sin checked exceptions, `try`/`throw` como expresiones, `require`/`check`/`error`, sin multi-catch (`when` en el catch), jerarquía sellada con `cause`, `Result`/`runCatching` (y su trampa con `CancellationException`), validación que acumula errores, `use` y suppressed, `@Throws` para Java | [24](src/main/kotlin/dev/raul/oskar/learning/kotlin/exceptions/Exercises.md) | 4 |
+| 13 | `jpa` | Hibernate 6 sin Spring: entidades en Kotlin, cascade, `orphanRemoval`, N+1 y `join fetch`, dirty checking, `LazyInitializationException`, `@Version`, UPDATE masivo | [24](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jpa/Exercises.md) | — |
+| 14 | `exceptions` | Sin checked exceptions, `try`/`throw` como expresiones, `require`/`check`/`error`, sin multi-catch (`when` en el catch), jerarquía sellada con `cause`, `Result`/`runCatching` (y su trampa con `CancellationException`), validación que acumula errores, `use` y suppressed, `@Throws` para Java | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/exceptions/Exercises.md) | 4 |
 
 `jdbc/` (sin subpaquete) tiene lo compartido: `ProductRepository`, la interfaz `Dialect`, las extensiones
 `mapRows` e `inTransaction`, y el recorrido `runDemo`. Las tres bases pasan **la misma batería de pruebas**
@@ -90,8 +96,8 @@ Los tiempos son una estimación, no una medición.
 
 **Convención para resolverlos:**
 
-- Código en el subpaquete `practice` de la lección: `src/main/kotlin/…/<lección>/practice/ExNN<Nombre>.kt`.
-- Prueba en el espejo: `src/test/kotlin/…/<lección>/practice/ExNN<Nombre>Test.kt`, con `kotlin.test`.
+- Código en el subpaquete `practice` de la lección: `<sección>/src/main/kotlin/…/<lección>/practice/ExNN<Nombre>.kt`.
+- Prueba en el espejo: `<sección>/src/test/kotlin/…/<lección>/practice/ExNN<Nombre>Test.kt`, con `kotlin.test`.
 - Cada enunciado trae una **firma sugerida** y los **casos mínimos** que la prueba debe cubrir.
 - Si dos ejercicios de la misma lección usan el mismo nombre de función (`describe`, `parse`…), envuelve cada uno
   en un `object ExNN { … }` para que no choquen dentro del paquete `practice`.
@@ -100,14 +106,14 @@ Los tiempos son una estimación, no una medición.
 Ejemplo, para el ejercicio 02 de `basics`:
 
 ```kotlin
-// src/main/kotlin/dev/raul/oskar/learning/kotlin/basics/practice/Ex02SafeInt.kt
+// 01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/basics/practice/Ex02SafeInt.kt
 package dev.raul.oskar.learning.kotlin.basics.practice
 
 fun safeInt(raw: String?): Int? = TODO("ejercicio 02")
 ```
 
 ```kotlin
-// src/test/kotlin/dev/raul/oskar/learning/kotlin/basics/practice/Ex02SafeIntTest.kt
+// 01-language/src/test/kotlin/dev/raul/oskar/learning/kotlin/basics/practice/Ex02SafeIntTest.kt
 package dev.raul.oskar.learning.kotlin.basics.practice
 
 import kotlin.test.Test
@@ -125,7 +131,7 @@ class Ex02SafeIntTest {
 ```
 
 ```bash
-./gradlew test --tests '*.basics.practice.*'
+./gradlew -p 01-language test --tests '*.basics.practice.*'
 ```
 
 - Mientras la función tenga `TODO(...)`, la prueba falla con `NotImplementedError`: así se sabe qué falta.
@@ -227,32 +233,37 @@ docker compose -f docker/mysql/compose.yaml down -v
 - Para usar otra base están las variables `PG_URL`/`PG_USER`/`PG_PASSWORD` y `MYSQL_URL`/`MYSQL_USER`/`MYSQL_PASSWORD`.
 - **Si un contenedor no está arriba, sus pruebas salen `SKIPPED`**, no fallidas: `./gradlew test` siempre
   se puede correr. SQLite (en memoria) y JPA (H2 en memoria) no necesitan Docker.
-- `./gradlew run -Plesson=jpa --args=postgres` recrea las tablas de JPA en el PostgreSQL del compose
+- `./gradlew -p 04-data run -Plesson=jpa --args=postgres` recrea las tablas de JPA en el PostgreSQL del compose
   (`drop-and-create`). No toca la tabla `product` de JDBC.
 
 ## Estructura
 
 ```text
 kotlin-for-java-devs/
-├── build.gradle.kts            # versiones, -Plesson, JUnit launcher, plugins jpa/allopen
-├── settings.gradle.kts
-├── gradlew, gradle/wrapper/    # Gradle 9.2.1
+├── settings.gradle.kts         # composite build: includeBuild de las secciones con build
+├── build.gradle.kts            # tareas agregadas build/test/check/clean
+├── gradlew, gradle/wrapper/    # Gradle 9.2.1, un solo wrapper para todo el composite
+├── Plan-Migracion-Monorepo.md  # secciones propuestas y pasos de la migración
+├── docs/Temario.md             # temario por lección
 ├── docker/
 │   ├── postgres/compose.yaml   # PostgreSQL 17.2 en 15432
-│   └── mysql/compose.yaml      # MySQL 8.4.3 en 13306
-└── src/
-    ├── main/
-    │   ├── kotlin/dev/raul/oskar/learning/kotlin/
-    │   │   ├── <lección>/Main.kt, *.kt, Exercises.md
-    │   │   ├── <lección>/practice/          # tus soluciones (se crea al resolver)
-    │   │   └── jdbc/{sqlite,postgres,mysql}/
-    │   └── resources/
-    │       ├── data/sales.csv, data/orders.json
-    │       ├── META-INF/persistence.xml     # unidad JPA "learning" (H2 por defecto)
-    │       └── simplelogger.properties      # slf4j-simple solo en WARN
-    └── test/kotlin/dev/raul/oskar/learning/kotlin/
-        ├── <lección>/<Lección>Test.kt
-        └── <lección>/practice/              # pruebas de tus soluciones
+│   ├── mysql/compose.yaml      # MySQL 8.4.3 en 13306
+│   └── legacy-kotlin/          # (vacío) JDKs de los tracks legacy
+├── 01-language/                # basics, control, strings, oop, collections, functional, exceptions, io, datetime, json
+│   ├── settings.gradle.kts, build.gradle.kts   # Kotlin jvm + serialization, Kermit
+│   └── src/
+│       ├── main/kotlin/dev/raul/oskar/learning/kotlin/<lección>/Main.kt, *.kt, Exercises.md
+│       ├── main/kotlin/…/<lección>/practice/   # tus soluciones (se crea al resolver)
+│       ├── main/resources/data/sales.csv, orders.json
+│       └── test/kotlin/…/<lección>/<Lección>Test.kt y practice/
+├── 04-data/                    # jdbc (sqlite, postgres, mysql) y jpa
+│   ├── settings.gradle.kts, build.gradle.kts   # Kotlin jvm + jpa + allopen, drivers, Hibernate, H2
+│   └── src/
+│       ├── main/kotlin/…/jdbc/{sqlite,postgres,mysql}/, jpa/
+│       ├── main/resources/META-INF/persistence.xml   # unidad JPA "learning" (H2 por defecto)
+│       ├── main/resources/simplelogger.properties    # slf4j-simple solo en WARN
+│       └── test/kotlin/…/jdbc/, jpa/
+└── tutorials/, 02-coroutines/ … 26-kotlin-next/, scripts/   # (vacíos) secciones por desarrollar
 ```
 
 ## Trampas encontradas al armarlo
@@ -260,7 +271,7 @@ kotlin-for-java-devs/
 - **Gradle 9 + Kotlin 1.9.22 no corre pruebas tal cual.** `kotlin("test")` trae JUnit 5.6.3 y Gradle 9 ya
   no inyecta el launcher, así que falla con `Failed to load JUnit Platform`. Se arregla con
   `platform("org.junit:junit-bom:5.10.3")` y `testRuntimeOnly("org.junit.platform:junit-platform-launcher")`
-  (ver `build.gradle.kts`). Cualquier proyecto con este build sin `src/test` no lo nota hasta que agrega
+  (ver el `build.gradle.kts` de cada sección). Cualquier proyecto con este build sin `src/test` no lo nota hasta que agrega
   su primera prueba.
 - **`split(String)` en Kotlin es literal.** `"03/14/1985".split("\\/")` devuelve la cadena entera; en Java,
   `split` siempre usa regex. Es un error fácil al portar código de Java. Ver `strings/Strings.kt` y su prueba.
@@ -275,10 +286,10 @@ kotlin-for-java-devs/
 
 ## Agregar una lección
 
-1. Crear `src/main/kotlin/dev/raul/oskar/learning/kotlin/<tema>/Main.kt` con `package …<tema>` y `fun main()`.
+1. En la sección que corresponda, crear `src/main/kotlin/dev/raul/oskar/learning/kotlin/<tema>/Main.kt` con `package …<tema>` y `fun main()`.
 2. Poner la lógica en funciones o clases aparte (no en `main`) para poder probarla.
 3. Crear `src/test/kotlin/dev/raul/oskar/learning/kotlin/<tema>/<Tema>Test.kt` con `kotlin.test`.
 4. Escribir `<tema>/Exercises.md` con el mismo encabezado que los demás: 20–30 ejercicios con semáforo, firma
    sugerida y casos mínimos, y 🎯 en los que tocan lo que se está preparando.
-5. Correr con `./gradlew run -Plesson=<tema>` y `./gradlew test --tests '*.<tema>.*'`.
+5. Correr con `./gradlew -p <sección> run -Plesson=<tema>` y `./gradlew -p <sección> test --tests '*.<tema>.*'`.
 6. Agregar la fila a la tabla de lecciones.
