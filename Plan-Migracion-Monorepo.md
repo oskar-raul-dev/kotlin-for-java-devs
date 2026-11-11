@@ -25,8 +25,8 @@ Redactado el **10 de noviembre de 2026**. Lo marcado con ⚠️ se verifica al e
 | 3 | Ejercicios con la escala de `java-champion-review`: 🟢 🟡 🟠 🔴 ⚡ 🐉 🎤 🎯, de 25 a 40 por lección más su ⚡ | ✅ acordado |
 | 4 | Proyecto base en la **última Kotlin estable** y tracks legacy aparte, cada uno con su compilador real | ✅ acordado |
 | 5 | Los tracks legacy corren en **contenedores** (idea de `groovy-for-java-devs/docs/LegacyJdks.md`) y también en nativo | ✅ acordado; falta probarlo |
-| 6 | El repo se sigue llamando `kotlin-for-java-devs`, igual que `groovy-for-java-devs` | Propuesta |
-| 7 | Primero se **mueve sin cambiar comportamiento** (Kotlin 1.9.22), después se actualiza a 2.x en un paso aparte | Propuesta |
+| 6 | El repo se sigue llamando `kotlin-for-java-devs`, igual que `groovy-for-java-devs` | ✅ acordado |
+| 7 | Primero se **mueve sin cambiar comportamiento** (Kotlin 1.9.22) y se prueba, corrigiendo solo lo necesario; la migración a 2.x va en otra sesión | ✅ acordado |
 | 8 | **Código en inglés, comentarios y documentos en español**, como en `java-champion-review` | ✅ revisado en el curso v1 |
 | 9 | Git con `user.name` y `user.email` locales del repo; mensajes de commit en inglés | ✅ hecho |
 | 10 | `kotlin-for-java-devs.code-workspace` copiado de `java-champion-review` e ignorado por git (ajustes personales de VS Code) | ✅ hecho |
