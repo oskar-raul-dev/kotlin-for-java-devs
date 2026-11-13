@@ -1,12 +1,107 @@
 # Kotlin para quien viene de Java
 
-Ejemplos que corren, con pruebas, y ejercicios graduados para aprender Kotlin desde Java. Varios ejercicios
-siguen un caso de punta a punta con pedidos de una tienda: leer JSON, limpiar nulos y fechas, agrupar, contar por
-día, ventanas de tiempo y un poco de estadística.
+Curso de Kotlin para un dev Java senior, con miras a **backend web** (Spring, WebFlux, Ktor) y **móvil** (Android,
+Kotlin Multiplatform). La base es **Kotlin 2.4**; aparte hay **tracks legacy** que corren el compilador real de
+1.4, 1.6 y 1.9, porque mucho código en producción sigue ahí. Cada lección tiene ejemplos que corren, pruebas y
+ejercicios graduados **sin soluciones**. Varios ejercicios siguen un caso de punta a punta con pedidos de una tienda
+(provisional: lo va a reemplazar un caso de finanzas).
 
-**Salto rápido:** [Versiones](#versiones) · [Cómo se usa](#cómo-se-usa) · [Lecciones](#lecciones) ·
-[Ejercicios](#ejercicios) · [Ruta prioritaria](#ruta-prioritaria) · [Bases de datos con Docker](#bases-de-datos-con-docker) ·
-[Estructura](#estructura) · [Trampas encontradas](#trampas-encontradas-al-armarlo) · [Agregar una lección](#agregar-una-lección)
+> **Estado:** fase A cerrada (monorepo, Kotlin 2.4.21, track 1.9 con su contenedor). Hay 14 lecciones en
+> `01-language` y `04-data`; el resto de las secciones se escribe en la fase B. El avance está en
+> [`CHECKLIST.md`](CHECKLIST.md) y la hoja de ruta en [`Plan-Migracion-Monorepo.md`](Plan-Migracion-Monorepo.md).
+
+**Salto rápido:** [Documentos](#documentos) · [Requisitos](#requisitos) · [Cómo se usa](#cómo-se-usa) ·
+[Índice de secciones](#índice-de-secciones) · [Versiones](#versiones) · [Lecciones](#lecciones) ·
+[Ejercicios](#ejercicios) · [Ruta prioritaria](#ruta-prioritaria) · [Bases de datos](#bases-de-datos-con-docker) ·
+[Tracks legacy](#tracks-legacy) · [Estructura](#estructura) · [Trampas](#trampas-encontradas-al-armarlo) ·
+[Convenciones](#convenciones) · [Agregar una lección](#agregar-una-lección)
+
+## Documentos
+
+| Documento | Para qué |
+|---|---|
+| [`CHECKLIST.md`](CHECKLIST.md) | Avance por sección y por lección, y la bitácora con fechas |
+| [`Plan-Migracion-Monorepo.md`](Plan-Migracion-Monorepo.md) | Hoja de ruta: decisiones, secciones, fases A y B, preguntas abiertas |
+| [`docs/Versions.md`](docs/Versions.md) | Todas las versiones fijadas (base, secciones, tracks, imágenes) y cómo actualizarlas |
+| [`docs/LegacyKotlin.md`](docs/LegacyKotlin.md) | Qué trajo cada versión de 1.0 a 2.x, los tres tracks legacy y cómo correrlos |
+| [`docs/Temario.md`](docs/Temario.md) | Temario por lección: mapeo Java → Kotlin y trampas (se reescribe en la fase B0) |
+| [`22-legacy-kotlin19/docs/k2-notes.md`](22-legacy-kotlin19/docs/k2-notes.md) | Qué cambió de verdad al pasar este repo de Kotlin 1.9.22 (K1) a 2.4.21 (K2) |
+
+## Requisitos
+
+- **JDK 21.** Con SDKMAN, `sdk env install` en la raíz lee [`.sdkmanrc`](.sdkmanrc). Kotlin no se instala: Gradle
+  baja el compilador de cada proyecto.
+- No hace falta instalar Gradle: la raíz trae Gradle Wrapper 9.9.1 y cada track legacy, el suyo.
+- Opcional: **Docker**, para PostgreSQL y MySQL (sin ellos esas pruebas salen `SKIPPED`) y para correr los tracks
+  legacy sin instalar JDK viejos.
+
+## Cómo se usa
+
+**En el IDE:**
+
+- **IntelliJ IDEA**: abrir la carpeta raíz. Importa el *composite build* (las secciones de la base). Los tracks
+  legacy se abren aparte, cada uno como su propio proyecto.
+- **VS Code**: un `kotlin-for-java-devs.code-workspace` propio (no se versiona; es configuración personal).
+- Cada lección se corre dando play a su `Main.kt`, pero lo que vale está en sus pruebas.
+
+**En la terminal** (desde la raíz):
+
+```bash
+sdk env                                                         # JDK 21
+./gradlew test                                                  # todas las secciones de la base
+./gradlew -p 01-language test                                   # una sección
+./gradlew -p 01-language test --tests '*.strings.*'             # una lección (incluye su práctica)
+./gradlew -p 01-language test --tests '*.strings.practice.*'    # solo tus ejercicios de esa lección
+./gradlew -p 01-language run -Plesson=basics                    # el Main de una lección
+./gradlew -p 01-language run -Plesson=io --console=plain        # la parte de consola lee de la terminal
+./gradlew -p 04-data run -Plesson=jdbc.postgres
+./gradlew -p 04-data run -Plesson=jpa --args=postgres
+cd 22-legacy-kotlin19 && ./gradlew test                         # track legacy Kotlin 1.9, en nativo
+./scripts/legacy.sh 19                                          # el mismo track, en su contenedor con JDK 21
+```
+
+- El repo es un **monorepo**: cada sección (`01-language`, `04-data`…) es un proyecto Gradle autocontenido. La
+  raíz es un *composite build* que solo las agrega; `./gradlew test` en la raíz corre todas, y `-p <sección>` entra
+  a una para filtrar pruebas o correr un `Main`.
+- `-Plesson=<subpaquete>` elige qué `Main.kt` corre: el build arma `dev.raul.oskar.learning.kotlin.<lesson>.MainKt`.
+  Sin `-Plesson`, corre `basics` en `01-language` y `jdbc.sqlite` en `04-data`.
+- `--tests` filtra por nombre de clase con comodines.
+- `--args` pasa argumentos al `main(args)`.
+- `--console=plain` quita la barra de progreso de Gradle, que se mezcla con lo que se escribe en la consola.
+
+Estado actual: **123 pruebas** en la base (85 en `01-language` y 38 en `04-data`), todas en verde, más **4 de humo**
+en `22-legacy-kotlin19`. Las 18 de PostgreSQL y MySQL salen `SKIPPED` si sus contenedores no están arriba.
+
+## Índice de secciones
+
+El número del directorio es el orden de estudio. El nivel indica qué tan complejo es el build: 0 sin build ·
+1 Gradle simple · 2 Gradle con librerías (y Docker) · 3 framework · 4 multiplataforma · 5 herramientas de build ·
+6 legacy en contenedor. El detalle de cada lección está en la sección 5 del
+[plan](Plan-Migracion-Monorepo.md#5-secciones-y-lecciones).
+
+| Sección | Tema | Kotlin | Build | Lecciones | Estado |
+|---|---|---|---|---|---|
+| [`tutorials/`](tutorials/) | Guías de la terminal | 2.4 | 0 | `install`, `cli`, `repl`, `decompile`, `debug` | Fase B1 |
+| [`01-language/`](01-language/) | El lenguaje y su stdlib desde Java | 2.4 | 1 | `basics`, `control`, `strings`, `oop`, `io`, `collections`, `functional`, `json`, `datetime`, `exceptions` · luego `generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2` | 🟡 10 lecciones |
+| [`02-coroutines/`](02-coroutines/) | Corrutinas, `Flow` y concurrencia | 2.4 | 1 | `fundamentals`, `cancellation`, `dispatchers`, `channels`, `flow`, `hotflows`, `sync`, `internals`, `testing`, `loom` | Fase B3 |
+| [`03-reactive/`](03-reactive/) | Reactor, RxJava y puentes con corrutinas | 2.4 | 2 | `reactor`, `rxjava`, `bridges`, `backpressure` | Fase B3 |
+| [`04-data/`](04-data/) | Bases de datos relacionales | 2.4 | 2 | `jdbc` (SQLite, PostgreSQL, MySQL), `jpa` · luego `exposed`, `jooq`, `r2dbc`, `sqldelight` | 🟡 4 lecciones |
+| [`05-testing/`](05-testing/) | Pruebas | 2.4 | 2 | `kotest`, `mockk`, `assertions`, `testcontainers` | Fase B8 |
+| [`06-compiler/`](06-compiler/) | Bytecode, reflexión, KSP y plugins del compilador | 2.4 | 2 | `bytecode`, `reflection`, `ksp`, `compilerplugins` | Fase B8 |
+| [`07-design/`](07-design/) | Idioms, patrones, FP y arquitectura | 2.4 | 1 | `idioms`, `gof`, `fp`, `architecture` | Fase B9 |
+| [`08-build/`](08-build/) | Gradle, calidad, docs y empaquetado | 2.4 | 5 | `gradle`, `quality`, `docs`, `packaging` | Fase B9 |
+| [`09-spring/`](09-spring/) | Spring Boot y WebFlux | 2.4 | 3 | `boot`, `springdata`, `webflux`, `springtesting` | Fase B6 |
+| [`10-ktor/`](10-ktor/) | Ktor | 2.4 | 3 | `server`, `client`, `ktortesting` | Fase B6 |
+| [`11-multiplatform/`](11-multiplatform/) | Kotlin Multiplatform y Compose | 2.4 | 4 | `kmp`, `composemp`, `shared`, `web` | Fase B7 |
+| [`12-android/`](12-android/) | Android | 2.4 | 4 (fuera del composite) | `android`, `compose`, `architecture`, `androiddata`, `di`, `background`, `androidtesting` | Fase B7 |
+| [`20-legacy-kotlin14/`](20-legacy-kotlin14/) | Legacy: Android clásico y Boot 2.3–2.4 | 1.4.32 | 6 | `language14`, `coroutines14`, `android14`, `migration14` | Fase B5 |
+| [`21-legacy-kotlin16/`](21-legacy-kotlin16/) | Legacy: Spring Boot 2.7 con `javax` | 1.6.21 | 6 | `language16`, `boot27`, `migration16` | Fase B5 |
+| [`22-legacy-kotlin19/`](22-legacy-kotlin19/) | Legacy: el último K1 y la migración a K2 | 1.9.22 | 6 | `language19`, `k2migration`, `compat` | 🟡 build, humo y notas |
+| [`25-interview/`](25-interview/) | Simulacros y revisión de PRs | 2.4 | 1 | `livecoding`, `prreview` | Fase B9 |
+| [`26-kotlin-next/`](26-kotlin-next/) | Radar de la siguiente versión | 2.5 | 1 (fuera del composite) | `kotlin25` | Fase B10 |
+
+Las secciones sin build tienen solo un `.gitkeep`. La numeración y los cortes legacy siguen abiertos a revisión
+(sección 10 del plan).
 
 ## Versiones
 
@@ -22,35 +117,6 @@ Fijadas a propósito; el detalle, los tracks legacy y cómo actualizarlas están
 
 Agregado para las lecciones de bases de datos y pruebas: sqlite-jdbc 3.54.1.0, PostgreSQL JDBC 42.7.14,
 mysql-connector-j 26.10.0, Hibernate ORM 7.4.15.Final, H2 2.5.252, slf4j-simple 2.0.20 y el BOM de JUnit 5.14.4.
-
-## Cómo se usa
-
-```bash
-./gradlew test                                                  # todas las secciones
-./gradlew -p 01-language test                                   # una sección
-./gradlew -p 01-language test --tests '*.strings.*'             # una lección (incluye su práctica)
-./gradlew -p 01-language test --tests '*.strings.practice.*'    # solo tus ejercicios de esa lección
-./gradlew -p 01-language run -Plesson=basics                    # el Main de una lección
-./gradlew -p 01-language run -Plesson=io --console=plain        # la parte de consola lee de la terminal
-./gradlew -p 04-data run -Plesson=jdbc.postgres
-./gradlew -p 04-data run -Plesson=jpa --args=postgres
-cd 22-legacy-kotlin19 && ./gradlew test                         # track legacy Kotlin 1.9 (fuera del composite)
-```
-
-- El repo es un **monorepo**: cada sección (`01-language`, `04-data`…) es un proyecto Gradle autocontenido. La
-  raíz es un *composite build* que solo las agrega; `./gradlew test` en la raíz corre todas, y `-p <sección>` entra
-  a una para filtrar pruebas o correr un `Main`. El plan completo está en
-  [`Plan-Migracion-Monorepo.md`](Plan-Migracion-Monorepo.md) y el avance en [`CHECKLIST.md`](CHECKLIST.md).
-- `-Plesson=<subpaquete>` elige qué `Main.kt` corre: el build arma `dev.raul.oskar.learning.kotlin.<lesson>.MainKt`.
-  Sin `-Plesson`, corre `basics` en `01-language` y `jdbc.sqlite` en `04-data`.
-- `--tests` filtra por nombre de clase con comodines.
-- `--args` pasa argumentos al `main(args)`.
-- `--console=plain` quita la barra de progreso de Gradle, que se mezcla con lo que se escribe en la consola.
-- Los **tracks legacy** (`22-legacy-kotlin19`, y luego 20 y 21) están fuera del composite: cada uno trae su wrapper,
-  su versión de Kotlin y su `.sdkmanrc`, y se corre desde su carpeta. `./gradlew test` en la raíz no los incluye.
-
-Estado actual: **123 pruebas** en la base (85 en `01-language` y 38 en `04-data`), todas en verde, más **4 de humo**
-en `22-legacy-kotlin19`. Las 18 de PostgreSQL y MySQL salen `SKIPPED` si sus contenedores no están arriba.
 
 ## Lecciones
 
@@ -95,7 +161,9 @@ los tres motores comparten un solo `jdbc/Exercises.md`, con cada ejercicio etiqu
 | 🔴 | Muy difícil | Mini-proyecto o experimento con medición. Una sesión o más |
 | 🎯 | Prioritario | Ruta recomendada (ver [Ruta prioritaria](#ruta-prioritaria)). El resto queda para después |
 
-Los tiempos son una estimación, no una medición.
+Los tiempos son una estimación, no una medición. En la fase B llegan las marcas de `java-champion-review`:
+⚡ **Saiyajin** (miniproyecto que cierra la lección), 🐉 **jefe final** (cruza secciones), 🎤 pregunta típica de
+entrevista y etiquetas de versión (`[2.0]`, `[exp N]`, `[dep N]`, `[rm N]`), con 25 a 40 ejercicios por lección.
 
 **Convención para resolverlos:**
 
@@ -239,21 +307,40 @@ docker compose -f docker/mysql/compose.yaml down -v
 - `./gradlew -p 04-data run -Plesson=jpa --args=postgres` recrea las tablas de JPA en el PostgreSQL del compose
   (`drop-and-create`). No toca la tabla `product` de JDBC.
 
+## Tracks legacy
+
+Proyectos aparte, **fuera del composite**, cada uno con su wrapper de Gradle, su versión de Kotlin y su `.sdkmanrc`.
+`./gradlew test` en la raíz no los incluye. Hoy existe `22-legacy-kotlin19` (Kotlin 1.9.22, el último K1); los de
+1.4 y 1.6 llegan en la fase B5. Guía completa en [`docs/LegacyKotlin.md`](docs/LegacyKotlin.md).
+
+```bash
+cd 22-legacy-kotlin19 && sdk env && ./gradlew test   # en nativo, con el wrapper del track (Gradle 9.2.1)
+./scripts/legacy.sh 19                               # en contenedor: eclipse-temurin:21-jdk (arm64 nativo)
+./scripts/legacy.sh 19 run --console=plain           # su Main
+./scripts/legacy.sh 19 shell                         # bash dentro del contenedor
+```
+
+Las imágenes van fijadas por digest y comparten la caché de Gradle en un volumen: la primera corrida tarda ~1 minuto,
+las siguientes ~4 segundos ([`docker/legacy-kotlin/README.md`](docker/legacy-kotlin/README.md)).
+
 ## Estructura
 
 ```text
 kotlin-for-java-devs/
-├── settings.gradle.kts         # composite build: includeBuild de las secciones con build
+├── README.md, CHECKLIST.md, CLAUDE.md, Plan-Migracion-Monorepo.md
+├── settings.gradle.kts         # composite build: includeBuild de las secciones de la base
 ├── build.gradle.kts            # tareas agregadas build/test/check/clean
-├── gradlew, gradle/wrapper/    # Gradle 9.9.1, un solo wrapper para todo el composite
+├── gradlew, gradle/wrapper/    # Gradle 9.9.1 para todo el composite
 ├── .sdkmanrc                   # JDK 21 (Zulu) para `sdk env`
-├── Plan-Migracion-Monorepo.md  # secciones propuestas y pasos de la migración
-├── docs/Temario.md             # temario por lección
-├── docs/Versions.md            # versiones fijadas y cómo actualizarlas
+├── docs/
+│   ├── Temario.md              # temario por lección
+│   ├── Versions.md             # versiones fijadas y cómo actualizarlas
+│   └── LegacyKotlin.md         # Kotlin 1.0 → 2.x y los tracks legacy
 ├── docker/
 │   ├── postgres/compose.yaml   # PostgreSQL 17.2 en 15432
 │   ├── mysql/compose.yaml      # MySQL 8.4.3 en 13306
-│   └── legacy-kotlin/          # (vacío) JDKs de los tracks legacy
+│   └── legacy-kotlin/          # compose.yaml (k14, k16, k19) y README: el JDK de cada track legacy
+├── scripts/legacy.sh           # ./scripts/legacy.sh <14|16|19> [tareas de Gradle | shell]
 ├── 01-language/                # basics, control, strings, oop, collections, functional, exceptions, io, datetime, json
 │   ├── settings.gradle.kts, build.gradle.kts   # Kotlin jvm + serialization, Kermit
 │   └── src/
@@ -268,8 +355,8 @@ kotlin-for-java-devs/
 │       ├── main/resources/META-INF/persistence.xml   # unidad JPA "learning" (H2 por defecto)
 │       ├── main/resources/simplelogger.properties    # slf4j-simple solo en WARN
 │       └── test/kotlin/…/jdbc/, jpa/
-├── 22-legacy-kotlin19/         # track Kotlin 1.9.22: wrapper propio (Gradle 9.2.1), fuera del composite
-└── tutorials/, 02-coroutines/ … 26-kotlin-next/, scripts/   # (vacíos) secciones por desarrollar
+├── 22-legacy-kotlin19/         # Kotlin 1.9.22: wrapper propio (Gradle 9.2.1), .sdkmanrc, prueba de humo, docs/k2-notes.md
+└── tutorials/, 02-coroutines/ … 21-legacy-kotlin16/, 25-interview/, 26-kotlin-next/   # (vacías) fase B
 ```
 
 ## Trampas encontradas al armarlo
@@ -293,6 +380,17 @@ kotlin-for-java-devs/
 - **MySQL gasta ids en los upserts:** cada `ON DUPLICATE KEY UPDATE` que termina en UPDATE consume un valor de
   `AUTO_INCREMENT` (`jdbc/mysql/Main.kt`).
 
+## Convenciones
+
+- **Código en inglés, comentarios en español.** Identificadores, paquetes, directorios y nombres de prueba en inglés;
+  comentarios, KDoc, `Exercises.md` y documentos en español.
+- Paquete raíz `dev.raul.oskar.learning.kotlin`; cada lección es un subpaquete (`…kotlin.strings`, `…kotlin.jdbc.mysql`).
+- Cada sección es autocontenida (sin parent común): las versiones se repiten a propósito en cada `build.gradle.kts`
+  y se mantienen en sincronía con [`docs/Versions.md`](docs/Versions.md).
+- Cada lección tiene un `Main.kt` (recorrido corto) y la lógica en archivos aparte, probada en `<Lección>Test.kt`.
+- Al terminar algo se actualizan juntos: los conteos de este README, [`CHECKLIST.md`](CHECKLIST.md) (estado y
+  bitácora) y, si cambia una versión, `docs/Versions.md`.
+
 ## Agregar una lección
 
 1. En la sección que corresponda, crear `src/main/kotlin/dev/raul/oskar/learning/kotlin/<tema>/Main.kt` con `package …<tema>` y `fun main()`.
@@ -301,4 +399,4 @@ kotlin-for-java-devs/
 4. Escribir `<tema>/Exercises.md` con el mismo encabezado que los demás: 20–30 ejercicios con semáforo, firma
    sugerida y casos mínimos, y 🎯 en los que tocan lo que se está preparando.
 5. Correr con `./gradlew -p <sección> run -Plesson=<tema>` y `./gradlew -p <sección> test --tests '*.<tema>.*'`.
-6. Agregar la fila a la tabla de lecciones.
+6. Agregar la fila a la tabla de lecciones y actualizar el índice de secciones y `CHECKLIST.md`.

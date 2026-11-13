@@ -21,18 +21,18 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | `.sdkmanrc` | 🟡 | `EN CREACIÓN` | Raíz y `22-legacy-kotlin19` (Zulu 21.0.8) listos; faltan los tracks 20 y 21 |
 | Proyecto de IntelliJ (`.idea/`) | ✅ | `LISTO` | Ignorado por git; composite importado con `01-language` y `04-data` como builds incluidos |
 | Workspace de VS Code | ✅ | `LISTO` | `kotlin-for-java-devs.code-workspace` (ignorado por git) |
-| `README.md` (índice general) | 🟡 | `EN CREACIÓN` | Comandos y rutas del monorepo al día; falta el índice de secciones (A9) |
+| `README.md` (índice general) | ✅ | `LISTO` | Documentos, requisitos, IDE y terminal, índice de secciones, tracks legacy, convenciones (A9) |
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
 | `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, ideas del caso de finanzas |
 | `docs/Temario.md` | 🟡 | `EN CREACIÓN` | El de las 14 lecciones actuales; se reescribe completo en B0 |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
 | `docs/LegacyKotlin.md` | ✅ | `LISTO` | Versiones 1.0 → 2.x, los tres tracks, cómo correrlos y trampas |
 | `docs/JavaToKotlin.md`, `docs/EffectiveKotlin.md` | ⬜️ | `PENDIENTE` | Fase B |
-| `CLAUDE.md` | ✅ | `LISTO` | Al día con el monorepo; se revisa en A9 |
+| `CLAUDE.md` | ✅ | `LISTO` | Reescrito en A9: documentos y reglas de sincronía, versiones, arquitectura, niveles, leyenda, git |
 | Compose de PostgreSQL 17.2 y MySQL 8.4.3 | ✅ | `LISTO` | `docker/postgres`, `docker/mysql` |
 | Contenedores de los tracks legacy (`docker/legacy-kotlin/`, `scripts/legacy.sh`) | ✅ | `LISTO` | `k14`/`k16`/`k19` con Temurin 11/17/21 por digest; `k19` probado en Apple Silicon |
 
-## Migración (fase A)
+## Migración (fase A) ✅ cerrada el 13 de noviembre de 2026
 
 | Paso | Listo | Notas |
 |---|---|---|
@@ -45,8 +45,8 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | A7 · Base a Kotlin 2.x | ✅ | 4 subpasos, 123 pruebas en verde; notas en `22-legacy-kotlin19/docs/k2-notes.md` |
 | A6 · Track `22-legacy-kotlin19` | ✅ | Wrapper propio 9.2.1, Kotlin 1.9.22, 4 pruebas de humo; fuera del composite |
 | A8 · Contenedores legacy | ✅ | `./scripts/legacy.sh 19` = nativo (4 pruebas); `arm64` nativo |
-| A9 · Documentación | ⬜️ | **Siguiente**: README con índice de secciones, CLAUDE.md reescrito |
-| B0′ · Caso de finanzas | ⬜️ | Elegir de la sección 11 del plan y reemplazar el dominio de pedidos |
+| A9 · Documentación | ✅ | README con índice de secciones, CLAUDE.md reescrito; tag `phase-a` |
+| B0′ · Caso de finanzas | ⬜️ | **Siguiente** (fase B): elegir de la sección 11 del plan y reemplazar el dominio de pedidos |
 
 ## Secciones
 
@@ -285,3 +285,7 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
 - **2026-11-13** · A8: `docker/legacy-kotlin/compose.yaml` con `k14`, `k16` y `k19` (Temurin 11.0.33, 17.0.21 y 21.0.13,
   fijadas por digest, `arm64` nativo), `scripts/legacy.sh` y `docs/LegacyKotlin.md`. `./scripts/legacy.sh 19` pasa las
   4 pruebas igual que en nativo; caché en el volumen `gradle-home`. Siguiente: A9.
+- **2026-11-13** · A9 y **cierre de la fase A**: README con documentos, requisitos, uso en IDE y terminal, índice de
+  las 18 secciones con nivel de build y estado, tracks legacy y convenciones; CLAUDE.md reescrito (qué documento
+  manda en qué, reglas de sincronía, versiones, niveles de build, leyenda completa, reglas de git). Tag `phase-a`.
+  Siguiente: B0′, elegir el caso de finanzas.

@@ -18,10 +18,10 @@ Redactado el **10 de noviembre de 2026**. Lo marcado con ⚠️ se verifica al e
 
 ## Estado y próximos pasos
 
-Actualizado el **13 de noviembre de 2026**, al cerrar A8. El avance detallado por sección y lección está en
+Actualizado el **13 de noviembre de 2026**, al cerrar A9: **la fase A está cerrada**. El avance detallado por sección y lección está en
 [`CHECKLIST.md`](CHECKLIST.md).
 
-**Hecho (fase A, pasos A0–A7):**
+**Hecho (fase A completa, pasos A0–A9):**
 
 | Commit | Qué |
 |---|---|
@@ -33,7 +33,8 @@ Actualizado el **13 de noviembre de 2026**, al cerrar A8. El avance detallado po
 | `cb023d3` Close monorepo move (A0-A5) and add progress checklist | `CHECKLIST.md`; importación en IntelliJ comprobada. Tag `monorepo-1.9.22` |
 | `d2f6b35` Migrate base to Kotlin 2.4.21 | A7. Tag `monorepo-2.4.21` |
 | `98a5125` Add Kotlin 1.9 legacy track | A6: `22-legacy-kotlin19` con wrapper propio (Gradle 9.2.1), Kotlin 1.9.22 y 4 pruebas de humo. Tag `legacy-kotlin19` |
-| Add containers for the legacy Kotlin tracks | A8: `docker/legacy-kotlin/`, `scripts/legacy.sh`, `docs/LegacyKotlin.md`. Tag `legacy-containers` |
+| `afa4379` Add containers for the legacy Kotlin tracks | A8: `docker/legacy-kotlin/`, `scripts/legacy.sh`, `docs/LegacyKotlin.md`. Tag `legacy-containers` |
+| Close phase A: README index and CLAUDE.md rewrite | A9: README con documentos, requisitos, índice de secciones, tracks legacy y convenciones; CLAUDE.md reescrito. Tag `phase-a` |
 
 **A7 (13 de noviembre de 2026):** la base pasó a **Kotlin 2.4.21**, Gradle 9.9.1, Hibernate 7.4.15 y librerías al
 día, por subpasos y sin romper nada: mismas 123 pruebas en verde y misma salida en los `Main` salvo mensajes de
@@ -50,17 +51,16 @@ digest, `arm64` nativo en Apple Silicon) con las mismas 4 pruebas que en nativo.
 (Temurin 11) y 16 (Temurin 17) también están fijadas y corren en `arm64`; sus tracks se crean en B5.
 
 Tags anotados: `baseline-1.9.22` (curso v1 de proyecto único), `monorepo-1.9.22` (fin de A5), `monorepo-2.4.21`
-(fin de A7), `legacy-kotlin19` (fin de A6) y `legacy-containers` (fin de A8).
+(fin de A7), `legacy-kotlin19` (fin de A6), `legacy-containers` (fin de A8) y `phase-a` (fin de A9 y de la fase A).
 
 **Remoto:** `origin` en GitHub desde el 13 de noviembre de 2026. Antes de cada push se repite el escaneo de
 referencias externas sobre `git log -p --all`, y se suben los tags con `git push origin main --follow-tags`.
 
 **Pendiente, en el orden en que se va a hacer:**
 
-1. **A9 · Documentación**: README con índice de secciones y CLAUDE.md reescrito. (`CHECKLIST.md` y `docs/Versions.md` ya existen.)
-2. **B0′ · Caso de finanzas**: elegir de la [sección 11](#11-caso-de-punta-a-punta-ideas-de-reemplazo) y reemplazar el
+1. **B0′ · Caso de finanzas**: elegir de la [sección 11](#11-caso-de-punta-a-punta-ideas-de-reemplazo) y reemplazar el
    dominio provisional de pedidos.
-3. **Fase B (B0–B10)**: temario completo, tutoriales, ejercicios con la escala de `java-champion-review`, corrutinas y
+2. **Fase B (B0–B10)**: temario completo, tutoriales, ejercicios con la escala de `java-champion-review`, corrutinas y
    reactivo, tracks legacy, web, móvil y el resto de secciones.
 
 **Preguntas abiertas** ([sección 10](#10-para-decidir-en-la-revisión)): cortes legacy, numeración de secciones, dónde
@@ -76,7 +76,7 @@ van `io`/`datetime`/`json`, Android SDK y Xcode, y qué caso de finanzas se usa.
 | 2 | **Repo público**: sin referencias a empresas ni procesos de selección; 🎯 pasa a significar "prioritario" | ✅ hecho en el curso v1 |
 | 3 | Ejercicios con la escala de `java-champion-review`: 🟢 🟡 🟠 🔴 ⚡ 🐉 🎤 🎯, de 25 a 40 por lección más su ⚡ | ✅ acordado |
 | 4 | Proyecto base en la **última Kotlin estable** y tracks legacy aparte, cada uno con su compilador real | ✅ acordado |
-| 5 | Los tracks legacy corren en **contenedores** (idea de `groovy-for-java-devs/docs/LegacyJdks.md`) y también en nativo | ✅ acordado; falta probarlo |
+| 5 | Los tracks legacy corren en **contenedores** (idea de `groovy-for-java-devs/docs/LegacyJdks.md`) y también en nativo | ✅ probado con el track 19 (A8), en contenedor y en nativo |
 | 6 | El repo se sigue llamando `kotlin-for-java-devs`, igual que `groovy-for-java-devs` | ✅ acordado |
 | 7 | Primero se **mueve sin cambiar comportamiento** (Kotlin 1.9.22) y se prueba, corrigiendo solo lo necesario; la migración a 2.x va en otra sesión | ✅ acordado |
 | 8 | **Código en inglés, comentarios y documentos en español**, como en `java-champion-review` | ✅ revisado en el curso v1 |
@@ -196,7 +196,8 @@ kotlin-for-java-devs/
 **Reglas** (las mismas de los repos de Java y Groovy):
 
 - Cada sección tiene su `settings.gradle.kts` y su `build.gradle.kts`, **sin padre común**. Las versiones se
-  repiten a propósito; una prueba o tarea del root revisa que coincidan.
+  repiten a propósito; una prueba o tarea del root revisa que coincidan (⚠️ todavía no existe: va con `08-build`,
+  fase B9; mientras tanto, `docs/Versions.md` y CLAUDE.md piden cambiarlas juntas).
 - Correr una sección sola: `./gradlew -p 01-language test`. Una lección: `./gradlew -p 01-language run -Plesson=strings`.
 - Todo: `./gradlew test` en la raíz (solo el composite). Los tracks legacy y Android se corren aparte.
 - Paquete raíz `dev.raul.oskar.learning.kotlin`; cada lección es un subpaquete, igual que hoy.
@@ -299,7 +300,7 @@ escribir contenido nuevo. Cada paso termina en un commit.
 | **A6 · Track 1.9** ✅ tag `legacy-kotlin19` | `22-legacy-kotlin19/` con wrapper propio (9.2.1), build en 1.9.22, `.sdkmanrc` y una prueba de humo. Primer track porque su build ya se sabe que funciona | `cd 22-legacy-kotlin19 && ./gradlew test` en nativo: 4 pruebas. (`./gradlew -p 22-legacy-kotlin19 test` desde la raíz también pasa, pero con el Gradle 9.9.1 de la raíz y sus avisos) |
 | **A7 · Base a 2.x** ✅ | `01` y `04` a Kotlin 2.4.21, Gradle 9.9.1 y librerías al día (Hibernate 7.4.15), en 4 subpasos. Cada cosa que se rompe o cambia de comportamiento se anota en `22-legacy-kotlin19/docs/k2-notes.md` | 123 pruebas en verde en 2.4 |
 | **A8 · Contenedores** ✅ tag `legacy-containers` | `docker/legacy-kotlin/` (compose + README), `scripts/legacy.sh`, `docs/LegacyKotlin.md`. Probar con el track 19 en Apple Silicon | `./scripts/legacy.sh 19 test` igual que en nativo |
-| **A9 · Documentación** ⬜️ | README nuevo (índice de secciones como el de Groovy), CLAUDE.md reescrito (versiones, arquitectura, niveles, leyenda, reglas de sincronía). `docs/Versions.md` (A7) y `CHECKLIST.md` ya existen | Revisión juntos |
+| **A9 · Documentación** ✅ tag `phase-a` | README nuevo (índice de secciones como el de Groovy), CLAUDE.md reescrito (versiones, arquitectura, niveles, leyenda, reglas de sincronía). `docs/Versions.md` (A7) y `CHECKLIST.md` ya existen | Revisión juntos |
 
 **Lo que se limpió en el curso v1 (A1)**, porque el repo va a ser público:
 
