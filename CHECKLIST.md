@@ -24,7 +24,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | `README.md` (índice general) | ✅ | `LISTO` | Documentos, requisitos, IDE y terminal, índice de secciones, tracks legacy, convenciones (A9) |
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
 | `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, ideas del caso de finanzas |
-| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); las tandas 1 a 10 lo completan. El anterior, en `docs/archive/Temario-v1.md` |
+| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tanda 1 escrita (10 entradas); faltan las tandas 2 a 10. El anterior, en `docs/archive/Temario-v1.md` |
 | `docs/Temario-Plan.md` y `docs/prompts/temario-tanda.md` | ✅ | `LISTO` | Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
 | `docs/LegacyKotlin.md` | ✅ | `LISTO` | Versiones 1.0 → 2.x, los tres tracks, cómo correrlos y trampas |
@@ -314,3 +314,11 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   construcciones; p. ej. guardas en `when` y `$$` `[2.2]`, `Instant`/`Clock` `[2.3]`, *context parameters* `[2.4]`,
   *context receivers* `[rm 2.4]`). `docs/Temario.md` nuevo: leyenda, mapa general, 88 entradas pendientes por tanda,
   chuleta, idioms y trampas consolidadas al día; el anterior pasó a `docs/archive/Temario-v1.md`.
+- **2026-11-13** · B0, tanda 1: `docs/Temario.md` con los 5 tutoriales (versión corta) y `basics`, `control`,
+  `strings`, `oop` e `io` en la plantilla nueva, descritas con Banco y Mercado y una nota "Hoy → B0′" de lo que
+  cambia frente al código de pedidos. `kotlinc` 1.4.31, 1.5.31, 1.6.21, 1.7.21, 1.8.20 y 2.0.21 instalados con
+  SDKMAN (sin cambiar el default; los 1.4 corren con JDK 11); `scripts/version-probes.sh` acepta opciones por probe,
+  distingue deprecación con aviso y con error, y mide 47 construcciones con once compiladores (p. ej. `sealed
+  interface` y `value class` `[1.5]`, `readln` `[1.6]`, `when` no exhaustivo como error `[1.7]`, `path.walk` `[2.1]`,
+  `toLowerCase()` error desde 2.1). Medido aparte: `MutableList.removeFirst()` contra JDK 21 llama a
+  `java.util.List.removeFirst` sin aviso. ⚡ nuevos: matcher por búsqueda binaria, códec estilo FIX, conciliador.

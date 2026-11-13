@@ -89,36 +89,67 @@ Total: 88 entradas en 9 tandas de contenido, más la base y el cierre. Las tanda
 
 ## Referencia de versiones (medida)
 
-Medida el 13 de noviembre de 2026 compilando un ejemplo mínimo de cada construcción, sin opciones, con los `kotlinc`
-instalados con SDKMAN: 1.9.22, 2.1.21, 2.2.21, 2.3.21 y 2.4.21. **ok** = compila sin avisos · **exp** = pide
-habilitarla (`-X…`) u opt-in · **no** = no existe o no compila. Como se midieron las versiones `x.y.21`, `[2.2]` quiere
-decir "estable a más tardar en 2.2.21 y experimental en 2.1.21".
+Medida el 13 de noviembre de 2026 compilando un ejemplo mínimo de cada construcción, sin opciones (salvo donde se
+indica), con los `kotlinc` instalados con SDKMAN: 1.4.31, 1.5.31, 1.6.21, 1.7.21, 1.8.20, 1.9.22, 2.0.21, 2.1.21,
+2.2.21, 2.3.21 y 2.4.21 (SDKMAN no tiene 1.4.32 ni 1.8.22; los 1.4 no arrancan en JDK 21 y se corren con JDK 11).
+**ok** = compila sin avisos · **exp** = pide habilitarla (`-X…`) u opt-in · **dep** = compila con aviso de
+deprecación · **dep!** = deprecación con error · **no** = no existe o no compila; **aviso**/**error** cuando el
+resultado es un diagnóstico propio de la construcción. `[2.2]` quiere decir "estable a más tardar en 2.2.21 y no
+estable en la versión anterior medida"; `[≤ 1.4]` = ya estable en la versión más vieja medida.
 
-| Construcción | 1.9 | 2.1 | 2.2 | 2.3 | 2.4 | Etiqueta |
-|---|---|---|---|---|---|---|
-| `data object` | ok | ok | ok | ok | ok | `[1.9]` |
-| `Enum.entries` | ok | ok | ok | ok | ok | `[1.9]` |
-| `..<` (rango abierto) | ok | ok | ok | ok | ok | `[1.9]` |
-| `T & Any` | ok | ok | ok | ok | ok | `[1.7]` ⚠️ (no se midió 1.7) |
-| `@SubclassOptInRequired` | ok | ok | ok | ok | ok | `[≤ 1.9]` ⚠️ |
-| `enumEntries<T>()` | exp | ok | ok | ok | ok | `[2.0]` ⚠️ (no se midió 2.0) |
-| `kotlin.io.path.walk` | exp | ok | ok | ok | ok | `[2.0]` ⚠️ (no se midió 2.0) |
-| `break`/`continue` en lambdas inline | exp | exp | ok | ok | ok | `[2.2]` |
-| `when` con guardas (`is Int if x > 0 ->`) | no | exp | ok | ok | ok | `[2.2]` |
-| `$$"…"` (plantillas con varios `$`) | no | exp | ok | ok | ok | `[2.2]` |
-| `kotlin.io.encoding.Base64` | exp | exp | ok | ok | ok | `[2.2]` |
-| `HexFormat` (`toHexString()`) | exp | exp | ok | ok | ok | `[2.2]` |
-| Alias de tipo anidados | no | no | exp | ok | ok | `[2.3]` |
-| `kotlin.time.Instant` y `Clock` | no | exp | exp | ok | ok | `[2.3]` |
-| *Context parameters* (`context(log: …) fun`) | no | exp | exp | exp | ok | `[2.4]` |
-| *Explicit backing fields* (`val x: List<T> field = …`) | no | exp | exp | exp | ok | `[2.4]` |
-| `kotlin.uuid.Uuid` | no | exp | exp | exp | ok | `[2.4]` |
-| *Context receivers* (`context(Log) fun`, sin nombre) | exp | exp | exp | exp | no | `[rm 2.4]` ("context parameters must be named") |
-| Atómicos de la stdlib (`kotlin.concurrent.atomics`) | no | exp | exp | exp | exp | `[exp 2.4]` |
-| `@JvmExposeBoxed` | no | no | exp | exp | exp | `[exp 2.4]` |
-| Lambdas con `invokedynamic` | clase | — | — | — | indy | `[2.0]` (tutorial `decompile`, `k2-notes`) |
-| `-language-version 1.9` en un `kotlinc` 2.4 | — | — | — | — | rechazado | (tutorial `cli`) |
-| REPL de `kotlinc` | ok | deprecado, lenguaje 1.9 | — | — | no arranca | (tutorial `repl`) |
+| Construcción | 1.4 | 1.5 | 1.6 | 1.7 | 1.8 | 1.9 | 2.0 | 2.1 | 2.2 | 2.3 | 2.4 | Etiqueta |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `fun interface` | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[≤ 1.4]` |
+| `ArrayDeque` de `kotlin.collections` | ok | dep | dep | dep | dep | ok | ok | ok | ok | ok | ok | `[≤ 1.4]` (el `dep` de 1.5 a 1.8 es el choque con `addLast` de `SequencedCollection` en JDK 21) |
+| `sumOf { }` | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[≤ 1.4]` |
+| `runningFold` | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[≤ 1.4]` |
+| Contratos propios (`contract { returns() implies … }`) | exp | exp | exp | exp | exp | exp | exp | exp | exp | exp | exp | `[exp 2.4]` (experimental desde 1.3) |
+| `UInt`, `ULong` (`1u + 2u`) | exp | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[1.5]` |
+| `Int.mod` | no | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[1.5]` |
+| `Char.code` | exp | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[1.5]` |
+| `lowercase()`, `replaceFirstChar` | exp | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[1.5]` |
+| `capitalize()` | ok | dep | dep | dep | dep | dep | dep | dep | dep | dep | dep | `[dep 1.5]` (en 2.4 sigue siendo aviso) |
+| `toLowerCase()` | ok | dep | dep | dep | dep | dep | dep | dep! | dep! | dep! | dep! | `[dep 1.5]`, error desde 2.1 |
+| `sealed interface` | no | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[1.5]` |
+| `@JvmInline value class` | no | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[1.5]` |
+| `inline class` | exp | dep | dep | dep | dep | dep | dep | dep | dep | dep | dep | `[dep 1.5]` |
+| `@JvmRecord` (con `-jvm-target 16`) | no | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[1.5]` |
+| `Result<T>` como tipo de retorno | no | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[1.5]` |
+| `kotlin.io.path` (`readText`) | exp | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[1.5]` (hasta 1.7 en `kotlin-stdlib-jdk7`, que `kotlinc` no agrega solo; se midió con ese jar) |
+| `readln()` | no | no | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[1.6]` |
+| `buildList { }` | exp | exp | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[1.6]` |
+| `kotlin.time.Duration` (`5.minutes`) | no | no | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[1.6]` |
+| `T & Any` | no | no | exp | ok | ok | ok | ok | ok | ok | ok | ok | `[1.7]` |
+| `min()`/`max()` no nulos | no | no | no | ok | ok | ok | ok | ok | ok | ok | ok | `[1.7]` (deprecados en 1.4, ocultos en 1.5 y 1.6) |
+| `when` no exhaustivo sobre `sealed` como sentencia | ok | ok | aviso | error | error | error | error | error | error | error | error | `[1.7]` (desde 1.7 es error) |
+| `Regex.matchAt` | no | exp | exp | ok | ok | ok | ok | ok | ok | ok | ok | `[1.7]` |
+| `data object` | no | no | no | exp | exp | ok | ok | ok | ok | ok | ok | `[1.9]` |
+| `Enum.entries` | no | no | no | no | exp | ok | ok | ok | ok | ok | ok | `[1.9]` |
+| `..<` (rango abierto) | no | no | no | exp | exp | ok | ok | ok | ok | ok | ok | `[1.9]` |
+| `a..<b` sobre un `Comparable` (`LocalDate`) | no | no | no | exp | exp | ok | ok | ok | ok | ok | ok | `[1.9]` |
+| `measureTime { }` | exp | exp | exp | exp | exp | ok | ok | ok | ok | ok | ok | `[1.9]` |
+| `enumEntries<T>()` | no | no | no | no | no | exp | ok | ok | ok | ok | ok | `[2.0]` |
+| `copy()` de una `data class` con constructor `private` | ok | ok | ok | ok | ok | ok | aviso | aviso | aviso | aviso | aviso | `[2.0]` avisa que `copy()` expone el constructor; `@ConsistentCopyVisibility` lo alinea |
+| `@SubclassOptInRequired` | no | no | no | no | ok | ok | exp | ok | ok | ok | ok | `[2.1]` (1.8 y 1.9 la aceptaban sin opt-in; 2.0 pidió `@ExperimentalSubclassOptIn`) |
+| `kotlin.io.path.walk` | no | no | no | no | exp | exp | exp | ok | ok | ok | ok | `[2.1]` |
+| `break`/`continue` en lambdas inline | no | no | no | no | exp | exp | exp | exp | ok | ok | ok | `[2.2]` |
+| `when` con guardas (`is Int if x > 0 ->`) | no | no | no | no | no | no | exp | exp | ok | ok | ok | `[2.2]` |
+| `$$"…"` (plantillas con varios `$`) | no | no | no | no | no | no | exp | exp | ok | ok | ok | `[2.2]` |
+| `kotlin.io.encoding.Base64` | no | no | no | no | exp | exp | exp | exp | ok | ok | ok | `[2.2]` |
+| `HexFormat` (`toHexString()`) | no | no | no | no | no | exp | exp | exp | ok | ok | ok | `[2.2]` |
+| Alias de tipo anidados | no | no | no | no | no | no | no | no | exp | ok | ok | `[2.3]` |
+| `kotlin.time.Instant` y `Clock` | no | no | no | no | no | no | no | exp | exp | ok | ok | `[2.3]` |
+| *Context parameters* (`context(log: …) fun`) | no | no | no | no | no | no | no | exp | exp | exp | ok | `[2.4]` |
+| *Explicit backing fields* (`val x: List<T> field = …`) | no | no | no | no | no | no | exp | exp | exp | exp | ok | `[2.4]` |
+| `kotlin.uuid.Uuid` | no | no | no | no | no | no | exp | exp | exp | exp | ok | `[2.4]` |
+| *Context receivers* (`context(Log) fun`, sin nombre) | no | no | exp | exp | exp | exp | exp | exp | exp | exp | no | `[rm 2.4]` ("context parameters must be named") |
+| Atómicos de la stdlib (`kotlin.concurrent.atomics`) | no | no | no | no | no | no | no | exp | exp | exp | exp | `[exp 2.4]` |
+| `kotlin.io.path.deleteRecursively` | no | no | no | no | exp | exp | exp | exp | exp | exp | exp | `[exp 2.4]` (pide `@OptIn(ExperimentalPathApi::class)`) |
+| `@JvmExposeBoxed` | no | no | no | no | no | no | no | no | exp | exp | exp | `[exp 2.4]` |
+| Lambdas con `invokedynamic` | — | — | — | — | — | clase | — | — | — | — | indy | `[2.0]` (tutorial `decompile`, `k2-notes`) |
+| `-language-version 1.9` en un `kotlinc` 2.4 | — | — | — | — | — | — | — | — | — | — | rechazado | (tutorial `cli`) |
+| REPL de `kotlinc` | — | — | — | — | — | ok | — | deprecado, lenguaje 1.9 | — | — | no arranca | (tutorial `repl`) |
+| `MutableList.removeFirst()` compilado contra JDK 21 | — | — | — | — | — | `List.removeFirst` | — | — | — | — | `List.removeFirst` | Sin aviso: llama al método de Java 21 (`javap`; lección `collections`) |
 
 Lo medido en los tutoriales y en `k2-notes.md` (smart casts de K2, `typeSwitch` con target 21, avisos nuevos de K2)
 también vale como referencia. La tabla sale de [`scripts/version-probes.sh`](../scripts/version-probes.sh): un ejemplo de
@@ -130,7 +161,7 @@ línea al script y se corre `scripts/version-probes.sh <nombre>`.
 | Tanda | Estado | Fecha | Notas |
 |---|---|---|---|
 | 0 | ✅ | 2026-11-13 | Referencia medida con cinco `kotlinc` (1.9 a 2.4); esqueleto de 88 entradas pendientes; temario anterior en `archive/Temario-v1.md`; chuleta, idioms y trampas migradas y puestas al día |
-| 1 | ⬜️ | | |
+| 1 | ✅ | 2026-11-13 | 5 tutoriales (versión corta) y `basics`, `control`, `strings`, `oop`, `io`. Referencia ampliada a once `kotlinc` (1.4.31 a 2.4.21) con 27 construcciones nuevas; `path.walk` pasa a `[2.1]` y `T & Any`, `enumEntries` y `@SubclassOptInRequired` quedan sin ⚠️. ⚡ nuevos (no están en la sección 5 del plan): `control` matcher por búsqueda binaria, `strings` códec estilo FIX, `io` conciliador de extracto |
 | 2 | ⬜️ | | |
 | 3 | ⬜️ | | |
 | 4 | ⬜️ | | |
