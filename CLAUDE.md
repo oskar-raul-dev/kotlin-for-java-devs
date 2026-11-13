@@ -104,4 +104,4 @@ README lessons table.
   `@Entity`/`@MappedSuperclass`/`@Embeddable`.
 - MySQL `ON DUPLICATE KEY UPDATE` consumes `AUTO_INCREMENT` values even when it updates.
 - `*.code-workspace` is git-ignored on purpose (personal VS Code settings), as in `java-champion-review`.
-- Don't commit unless the user asks. Commit messages in English.
+- Don't commit unless the user asks. Commit messages in English, with no `Co-Authored-By` trailer.

@@ -7,12 +7,50 @@ curso general de Kotlin para quien viene de Java, con miras a **backend web** (S
 
 Redactado el **10 de noviembre de 2026**. Lo marcado con ⚠️ se verifica al ejecutar el paso correspondiente.
 
-**Salto rápido:** [Decisiones](#1-decisiones) · [Versiones](#2-versiones-base-y-tracks-legacy) ·
+**Salto rápido:** [Estado](#estado-y-próximos-pasos) · [Decisiones](#1-decisiones) · [Versiones](#2-versiones-base-y-tracks-legacy) ·
 [Contenedores](#3-estrategia-de-contenedores) · [Arquitectura](#4-arquitectura-del-monorepo) ·
 [Secciones](#5-secciones-y-lecciones) · [Ejercicios](#6-ejercicios-niveles-de-java-champion) ·
 [Fase A: migrar](#7-fase-a-migrar-lo-que-hay) · [Fase B: contenido](#8-fase-b-generar-el-resto) ·
 [Riesgos](#9-riesgos-y-pendientes) · [Para decidir](#10-para-decidir-en-la-revisión) ·
 [Caso de punta a punta](#11-caso-de-punta-a-punta-ideas-de-reemplazo)
+
+---
+
+## Estado y próximos pasos
+
+Actualizado el **12 de noviembre de 2026**, al cerrar A0 y A5. El avance detallado por sección y lección está en
+[`CHECKLIST.md`](CHECKLIST.md).
+
+**Hecho (fase A, pasos A0–A5):**
+
+| Commit | Qué |
+|---|---|
+| `a45fc23` Initial commit | Solo `.gitignore` |
+| `c33e8d1` Add Kotlin course v1 | El curso en un solo proyecto (Kotlin 1.9.22), sin referencias externas y con el dominio provisional de pedidos |
+| `003ce5d` Add monorepo migration plan | Este documento |
+| `b5b5214` Create monorepo directory structure | Las 17 secciones, `docs/`, `scripts/` y `docker/legacy-kotlin/` con `.gitkeep` |
+| `0d734cd` Move current lessons into 01-language and 04-data | Composite build en la raíz; 123 pruebas en verde (85 + 38) con PostgreSQL y MySQL |
+
+Tags: `baseline-1.9.22` (sobre `c33e8d1`, el curso v1 de proyecto único) y `monorepo-1.9.22` (sobre el commit
+que cierra A5: monorepo completo, todavía en Kotlin 1.9.22).
+
+Sin remoto todavía. Antes del primer push: repetir el escaneo de referencias externas sobre `git log -p --all`.
+
+**Pendiente, en el orden en que se va a hacer:**
+
+1. **A7 · Migrar la base a Kotlin 2.x** (próxima sesión). Verificar la última estable al empezar (2.4.21 vista; 2.5.0
+   esperada para diciembre de 2026), Gradle 9.9.0 y librerías. Anotar cada cosa que se rompa para el track 1.9.
+2. **A6 · Track `22-legacy-kotlin19`** con wrapper propio en 1.9.22. Se hace después de A7 para reutilizar las notas
+   de lo que cambió.
+3. **A8 · Contenedores**: `docker/legacy-kotlin/`, `scripts/legacy.sh`, `docs/LegacyKotlin.md`, probados en Apple Silicon.
+4. **A9 · Documentación**: README con índice de secciones, CLAUDE.md, `docs/Versions.md`. (`CHECKLIST.md` ya existe.)
+5. **B0′ · Caso de finanzas**: elegir de la [sección 11](#11-caso-de-punta-a-punta-ideas-de-reemplazo) y reemplazar el
+   dominio provisional de pedidos.
+6. **Fase B (B0–B10)**: temario completo, tutoriales, ejercicios con la escala de `java-champion-review`, corrutinas y
+   reactivo, tracks legacy, web, móvil y el resto de secciones.
+
+**Preguntas abiertas** ([sección 10](#10-para-decidir-en-la-revisión)): cortes legacy, numeración de secciones, dónde
+van `io`/`datetime`/`json`, Android SDK y Xcode, y qué caso de finanzas se usa.
 
 ---
 
@@ -236,16 +274,16 @@ escribir contenido nuevo. Cada paso termina en un commit.
 
 | Paso | Qué | Verificación |
 |---|---|---|
-| **A0 · Línea base** ✅ | `git init` con usuario local; commit 1 solo con `.gitignore` (el del ecosistema JVM de `java-champion-review`); commit 2 con el curso v1; commit 3 con este plan. Pendiente: tag `baseline-1.9.22` sobre el commit 2 | `./gradlew test` → 123 pruebas |
+| **A0 · Línea base** ✅ | `git init` con usuario local; commit 1 solo con `.gitignore` (el del ecosistema JVM de `java-champion-review`); commit 2 con el curso v1; commit 3 con este plan. Tag `baseline-1.9.22` sobre el commit 2 | `./gradlew test` → 123 pruebas |
 | **A1 · Repo público** ✅ | Ver la lista de abajo. Se hizo **antes** de mover, para que los diffs del movimiento sean solo renombres | Pruebas en verde; `grep` de referencias externas vacío |
-| **A2 · Esqueleto** ✅ (sin `CHECKLIST.md`, que pasa a A9) | `docs/`, `CHECKLIST.md`, `settings.gradle.kts` del root como composite, `build.gradle.kts` del root con tareas agregadas, carpetas vacías de las secciones nuevas. `Temario.md` → `docs/Temario.md` | `./gradlew help` en la raíz |
+| **A2 · Esqueleto** ✅ (`CHECKLIST.md` creado al cierre de la sesión) | `docs/`, `CHECKLIST.md`, `settings.gradle.kts` del root como composite, `build.gradle.kts` del root con tareas agregadas, carpetas vacías de las secciones nuevas. `Temario.md` → `docs/Temario.md` | `./gradlew help` en la raíz |
 | **A3 · `01-language`** ✅ 85 pruebas | `git mv` de `basics`, `control`, `strings`, `oop`, `collections`, `functional`, `exceptions`, `io`, `datetime`, `json` (main y test) y de `resources/data/`. Build propio: `jvm` + `serialization` + Kermit, `run -Plesson`, `standardInput` | `./gradlew -p 01-language test` |
 | **A4 · `04-data`** ✅ 38 pruebas | `git mv` de `jdbc/**` y `jpa`, más `META-INF/persistence.xml` y `simplelogger.properties`. Build propio: `jvm` + `jpa` + `allopen`, drivers, Hibernate, H2, slf4j, JUnit BOM | `./gradlew -p 04-data test`, con y sin Docker |
-| **A5 · Cierre del movimiento** ✅ (falta probar la importación en IntelliJ) | Borrar `src/` y el build del root viejo. Corregir comandos y rutas en README, CLAUDE.md, `docs/Temario.md` y los `Exercises.md`. Importar en IntelliJ | `./gradlew test` en la raíz: 123 pruebas, mismos nombres que la línea base |
-| **A6 · Track 1.9** | `22-legacy-kotlin19/` con wrapper propio (9.2.1), build en 1.9.22, `.sdkmanrc` y una prueba de humo. Primer track porque su build ya se sabe que funciona | `./gradlew -p 22-legacy-kotlin19 test` en nativo |
-| **A7 · Base a 2.4** | `01` y `04` a Kotlin 2.4.21 ⚠️, Gradle 9.9.0 ⚠️ y librerías al día. Cada cosa que se rompe o cambia de comportamiento se anota en `22-legacy-kotlin19/docs/k2-notes.md` | 123 pruebas en verde en 2.4 |
-| **A8 · Contenedores** | `docker/legacy-kotlin/` (compose + README), `scripts/legacy.sh`, `docs/LegacyKotlin.md`. Probar con el track 19 en Apple Silicon | `./scripts/legacy.sh 19 test` igual que en nativo |
-| **A9 · Documentación** | README nuevo (índice de secciones como el de Groovy), CLAUDE.md reescrito (versiones, arquitectura, niveles, leyenda, reglas de sincronía), `docs/Versions.md`, `CHECKLIST.md` con bitácora | Revisión juntos |
+| **A5 · Cierre del movimiento** ✅ tag `monorepo-1.9.22` | Borrar `src/` y el build del root viejo. Corregir comandos y rutas en README, CLAUDE.md, `docs/Temario.md` y los `Exercises.md`. Importar en IntelliJ | `./gradlew test` en la raíz: 123 pruebas, mismos nombres que la línea base |
+| **A6 · Track 1.9** ⬜️ (después de A7) | `22-legacy-kotlin19/` con wrapper propio (9.2.1), build en 1.9.22, `.sdkmanrc` y una prueba de humo. Primer track porque su build ya se sabe que funciona | `./gradlew -p 22-legacy-kotlin19 test` en nativo |
+| **A7 · Base a 2.x** ⬜️ siguiente | `01` y `04` a Kotlin 2.4.21 ⚠️, Gradle 9.9.0 ⚠️ y librerías al día. Cada cosa que se rompe o cambia de comportamiento se anota en `22-legacy-kotlin19/docs/k2-notes.md` | 123 pruebas en verde en 2.4 |
+| **A8 · Contenedores** ⬜️ | `docker/legacy-kotlin/` (compose + README), `scripts/legacy.sh`, `docs/LegacyKotlin.md`. Probar con el track 19 en Apple Silicon | `./scripts/legacy.sh 19 test` igual que en nativo |
+| **A9 · Documentación** ⬜️ | README nuevo (índice de secciones como el de Groovy), CLAUDE.md reescrito (versiones, arquitectura, niveles, leyenda, reglas de sincronía), `docs/Versions.md`, `CHECKLIST.md` con bitácora | Revisión juntos |
 
 **Lo que se limpió en el curso v1 (A1)**, porque el repo va a ser público:
 
@@ -315,7 +353,7 @@ lección. Es parecido a `java-champion-review` (79 lecciones). Por eso va por fa
    `02-stdlib` aparte?
 4. ¿Tienes Android SDK y Xcode instalados? Define el alcance de B7.
 5. ¿Qué caso de la [sección 11](#11-caso-de-punta-a-punta-ideas-de-reemplazo) (o qué combinación) reemplaza al dominio provisional?
-6. ¿Arranco con A2–A5 (mover sin actualizar) en cuanto apruebes? A0 y A1 ya están hechos.
+6. ~~¿Arranco con A2–A5?~~ Hecho el 10 de noviembre de 2026.
 
 ---
 

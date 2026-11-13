@@ -39,7 +39,7 @@ mysql-connector-j 9.1.0, Hibernate ORM 6.6.3.Final, H2 2.3.232, slf4j-simple 2.0
 - El repo es un **monorepo**: cada sección (`01-language`, `04-data`…) es un proyecto Gradle autocontenido. La
   raíz es un *composite build* que solo las agrega; `./gradlew test` en la raíz corre todas, y `-p <sección>` entra
   a una para filtrar pruebas o correr un `Main`. El plan completo está en
-  [`Plan-Migracion-Monorepo.md`](Plan-Migracion-Monorepo.md).
+  [`Plan-Migracion-Monorepo.md`](Plan-Migracion-Monorepo.md) y el avance en [`CHECKLIST.md`](CHECKLIST.md).
 - `-Plesson=<subpaquete>` elige qué `Main.kt` corre: el build arma `dev.raul.oskar.learning.kotlin.<lesson>.MainKt`.
   Sin `-Plesson`, corre `basics` en `01-language` y `jdbc.sqlite` en `04-data`.
 - `--tests` filtra por nombre de clase con comodines.
