@@ -30,6 +30,7 @@ upgrade ad hoc; versions are repeated in each section's `build.gradle.kts`, keep
 ./gradlew -p 01-language run -Plesson=io --console=plain      # io reads stdin; plain console avoids progress-bar noise
 ./gradlew -p 04-data run -Plesson=jdbc.postgres               # default in 04-data: jdbc.sqlite
 ./gradlew -p 04-data run -Plesson=jpa --args=postgres         # JPA against Docker Postgres (drop-and-create)
+cd 22-legacy-kotlin19 && ./gradlew test                       # Kotlin 1.9 legacy track (own wrapper, not in composite)
 ```
 
 `-Plesson=<subpackage>` sets `mainClass` to `dev.raul.oskar.learning.kotlin.<lesson>.MainKt` (see each section's `build.gradle.kts`).
@@ -52,7 +53,10 @@ DB/user/password are all `learning`; override with `PG_URL`/`PG_USER`/`PG_PASSWO
 
 - **Monorepo of independent projects**, as in `java-champion-review` and `groovy-for-java-devs`. Root
   `settings.gradle.kts` is a composite build that only `includeBuild`s the sections that have a build (today
-  `01-language` and `04-data`); root `build.gradle.kts` registers aggregate `build`/`test`/`check`/`clean`. Each
+  `01-language` and `04-data`); root `build.gradle.kts` registers aggregate `build`/`test`/`check`/`clean`.
+  Legacy tracks (`22-legacy-kotlin19` today) stay **outside** the composite with their own wrapper, Kotlin version and
+  `.sdkmanrc`; run them from their folder and never bump them. `Legacy19SmokeTest` fails on purpose if that track stops
+  running Kotlin 1.9.22 / K1. Each
   section has its own `settings.gradle.kts` and `build.gradle.kts`, no shared parent; versions are repeated on
   purpose, keep them in sync. `--tests` and `-Plesson` only work inside a section (`-p <section>`). Empty
   sections hold a `.gitkeep`; the full layout and roadmap are in `Plan-Migracion-Monorepo.md`.

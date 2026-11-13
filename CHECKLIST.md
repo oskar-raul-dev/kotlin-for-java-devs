@@ -14,11 +14,11 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 
 | Pieza | Listo | Estado | Notas |
 |---|---|---|---|
-| Repositorio git | ✅ | `LISTO` | Rama `main`, usuario local; tags `baseline-1.9.22` y `monorepo-1.9.22`; sin remoto todavía |
+| Repositorio git | ✅ | `LISTO` | Rama `main`, usuario local; remoto `origin` en GitHub; tags `baseline-1.9.22`, `monorepo-1.9.22`, `monorepo-2.4.21` y `legacy-kotlin19` |
 | `.gitignore` del ecosistema Java/JVM | ✅ | `LISTO` | El de `java-champion-review`, con `.idea/` completo ignorado |
 | Gradle Wrapper 9.9.1 + composite build | ✅ | `LISTO` | `01-language` y `04-data`; `./gradlew test` en verde (123 pruebas) |
 | Kotlin 2.x en la base | ✅ | `LISTO` | Kotlin 2.4.21, Gradle 9.9.1 (A7) |
-| `.sdkmanrc` | 🟡 | `EN CREACIÓN` | El de la raíz (Zulu 21.0.8) listo; falta el de cada track legacy |
+| `.sdkmanrc` | 🟡 | `EN CREACIÓN` | Raíz y `22-legacy-kotlin19` (Zulu 21.0.8) listos; faltan los tracks 20 y 21 |
 | Proyecto de IntelliJ (`.idea/`) | ✅ | `LISTO` | Ignorado por git; composite importado con `01-language` y `04-data` como builds incluidos |
 | Workspace de VS Code | ✅ | `LISTO` | `kotlin-for-java-devs.code-workspace` (ignorado por git) |
 | `README.md` (índice general) | 🟡 | `EN CREACIÓN` | Comandos y rutas del monorepo al día; falta el índice de secciones (A9) |
@@ -43,8 +43,8 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | A4 · `04-data` | ✅ | `0d734cd`, 38 pruebas (18 de PostgreSQL y MySQL) |
 | A5 · Cierre del movimiento | ✅ | Composite importado en IntelliJ; 123 pruebas en verde sin SKIPPED; tag `monorepo-1.9.22` |
 | A7 · Base a Kotlin 2.x | ✅ | 4 subpasos, 123 pruebas en verde; notas en `22-legacy-kotlin19/docs/k2-notes.md` |
-| A6 · Track `22-legacy-kotlin19` | ⬜️ | **Siguiente**; Gradle 9.x (el plugin 1.9.22 no llega a Gradle 10) |
-| A8 · Contenedores legacy | ⬜️ | |
+| A6 · Track `22-legacy-kotlin19` | ✅ | Wrapper propio 9.2.1, Kotlin 1.9.22, 4 pruebas de humo; fuera del composite |
+| A8 · Contenedores legacy | ⬜️ | **Siguiente** |
 | A9 · Documentación | ⬜️ | README con índice de secciones, CLAUDE.md reescrito |
 | B0′ · Caso de finanzas | ⬜️ | Elegir de la sección 11 del plan y reemplazar el dominio de pedidos |
 
@@ -67,7 +67,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | [`12-android`](#12-android) | ✅ | ⬜️ AGP | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
 | [`20-legacy-kotlin14`](#20-legacy-kotlin14) | ✅ | ⬜️ Gradle 6.8 | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
 | [`21-legacy-kotlin16`](#21-legacy-kotlin16) | ✅ | ⬜️ Gradle 7.6 | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
-| [`22-legacy-kotlin19`](#22-legacy-kotlin19) | ✅ | ⬜️ Gradle 9.x | ⬜️ | ⬜️ | ⬜️ | 🟡 `k2-notes.md` | `PENDIENTE` |
+| [`22-legacy-kotlin19`](#22-legacy-kotlin19) | ✅ | ✅ Gradle 9.2.1 (1.9.22) | 🟡 humo | 🟡 4 | ⬜️ | 🟡 `k2-notes.md` | `EN CREACIÓN` |
 | [`25-interview`](#25-interview) | ✅ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
 | [`26-kotlin-next`](#26-kotlin-next) | ✅ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
 
@@ -279,3 +279,6 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   Hibernate 7.4.15. Salida de los 14 `Main` comparada con `monorepo-1.9.22`: solo cambian mensajes de Hibernate y de
   serialization. 3 avisos nuevos de K2 corregidos; `explicitNulls` ya no pide opt-in. Nuevos: `.sdkmanrc`,
   `docs/Versions.md`, `22-legacy-kotlin19/docs/k2-notes.md`. Siguiente: A6.
+- **2026-11-13** · A6: `22-legacy-kotlin19` con wrapper propio (Gradle 9.2.1), Kotlin 1.9.22, `.sdkmanrc` y 4 pruebas de
+  humo (`data object`, `entries`, `..<`, y el `toString()` de una lambda, que delata si corre K1 o K2). Fuera del
+  composite: `cd 22-legacy-kotlin19 && ./gradlew test`. Remoto `origin` en GitHub. Siguiente: A8.

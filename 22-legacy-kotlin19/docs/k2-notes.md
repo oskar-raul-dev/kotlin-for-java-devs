@@ -51,12 +51,24 @@ Consecuencia para este track: **Kotlin 1.9.22 queda en Gradle 9.x**.
 - **JUnit:** `kotlin-test-junit5` 1.9.22 traía JUnit 5.6.3 y, sin el BOM ni el launcher explícito, Gradle 9 fallaba
   con `Failed to load JUnit Platform`. 2.4.21 trae 5.10.1 y declara el launcher.
 
+## Lambdas: `invokedynamic` desde 2.0 (medido en A6)
+
+El código del curso no imprimía lambdas, así que la comparación de salidas de A7 no lo mostró. La prueba de humo del
+track (`Legacy19SmokeTest`) lo fija:
+
+| | `val inc: (Int) -> Int = { x -> x + 1 }; inc.toString()` |
+|---|---|
+| Kotlin 1.9.22 (K1, sin `kotlin-reflect`) | `Function1<java.lang.Integer, java.lang.Integer>`: la lambda es una clase que hereda de `kotlin.jvm.internal.Lambda` |
+| Kotlin 2.4.21 (K2) | `…MainKt$$Lambda/0x0000007001000400@27c170f0`: la genera `LambdaMetafactory`, como en Java |
+
+Cualquier log, prueba o mensaje que dependa de ese texto cambia al migrar.
+
 ## Lo que no se vio aquí y hay que cubrir en la lección
 
 El código del curso v1 era sencillo y no tocó los cambios de comportamiento más conocidos de K2. Pendiente de
 ejemplos propios ⚠️:
 
-- Lambdas compiladas con `invokedynamic` (2.0): cambia `toString()` de una lambda y la serialización de lambdas.
+- Lambdas con `invokedynamic`: la serialización de lambdas (`@JvmSerializableLambda`) y la opción `-Xlambdas=class`.
 - Smart casts nuevos de K2 (variables locales capturadas, `||` con tipos comunes, `inline` con contratos).
 - Diferencias en la resolución de sobrecargas y en la inferencia de builders.
 - Las opciones `-language-version 1.9` / `-api-version` en un compilador 2.x y su límite de versiones hacia atrás.

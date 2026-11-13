@@ -34,6 +34,7 @@ mysql-connector-j 26.10.0, Hibernate ORM 7.4.15.Final, H2 2.5.252, slf4j-simple 
 ./gradlew -p 01-language run -Plesson=io --console=plain        # la parte de consola lee de la terminal
 ./gradlew -p 04-data run -Plesson=jdbc.postgres
 ./gradlew -p 04-data run -Plesson=jpa --args=postgres
+cd 22-legacy-kotlin19 && ./gradlew test                         # track legacy Kotlin 1.9 (fuera del composite)
 ```
 
 - El repo es un **monorepo**: cada sección (`01-language`, `04-data`…) es un proyecto Gradle autocontenido. La
@@ -45,9 +46,11 @@ mysql-connector-j 26.10.0, Hibernate ORM 7.4.15.Final, H2 2.5.252, slf4j-simple 
 - `--tests` filtra por nombre de clase con comodines.
 - `--args` pasa argumentos al `main(args)`.
 - `--console=plain` quita la barra de progreso de Gradle, que se mezcla con lo que se escribe en la consola.
+- Los **tracks legacy** (`22-legacy-kotlin19`, y luego 20 y 21) están fuera del composite: cada uno trae su wrapper,
+  su versión de Kotlin y su `.sdkmanrc`, y se corre desde su carpeta. `./gradlew test` en la raíz no los incluye.
 
-Estado actual: **123 pruebas** (85 en `01-language` y 38 en `04-data`), todas en verde. Las 18 de PostgreSQL y
-MySQL salen `SKIPPED` si sus contenedores no están arriba.
+Estado actual: **123 pruebas** en la base (85 en `01-language` y 38 en `04-data`), todas en verde, más **4 de humo**
+en `22-legacy-kotlin19`. Las 18 de PostgreSQL y MySQL salen `SKIPPED` si sus contenedores no están arriba.
 
 ## Lecciones
 
@@ -265,6 +268,7 @@ kotlin-for-java-devs/
 │       ├── main/resources/META-INF/persistence.xml   # unidad JPA "learning" (H2 por defecto)
 │       ├── main/resources/simplelogger.properties    # slf4j-simple solo en WARN
 │       └── test/kotlin/…/jdbc/, jpa/
+├── 22-legacy-kotlin19/         # track Kotlin 1.9.22: wrapper propio (Gradle 9.2.1), fuera del composite
 └── tutorials/, 02-coroutines/ … 26-kotlin-next/, scripts/   # (vacíos) secciones por desarrollar
 ```
 

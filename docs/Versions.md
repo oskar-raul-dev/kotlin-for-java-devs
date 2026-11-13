@@ -41,10 +41,12 @@ Bases de datos en Docker: PostgreSQL 17.2 y MySQL 8.4.3 (sin cambios en A7).
 |---|---|---|---|---|
 | `20-legacy-kotlin14` | 1.4.32 | 6.8.x ⚠️ | 8 y 11 | Fase B5 |
 | `21-legacy-kotlin16` | 1.6.21 | 7.6.x ⚠️ | 11 y 17 | Fase B5 |
-| `22-legacy-kotlin19` | 1.9.22 | 9.x (no 10) | 21 | Paso A6; notas en [`22-legacy-kotlin19/docs/k2-notes.md`](../22-legacy-kotlin19/docs/k2-notes.md) |
+| `22-legacy-kotlin19` | 1.9.22 | **9.2.1** (wrapper propio; no llega a 10) | 21 | Build y prueba de humo listos (A6); notas en [`22-legacy-kotlin19/docs/k2-notes.md`](../22-legacy-kotlin19/docs/k2-notes.md) |
 
-El plugin de Gradle de Kotlin 1.9.22 corre en Gradle 9.9.1 con avisos de deprecación que serán errores en Gradle 10,
-así que el track 1.9 queda en Gradle 9.x.
+Los tracks legacy están **fuera del composite** y traen su propio wrapper y `.sdkmanrc`: se corren desde su carpeta
+(`cd 22-legacy-kotlin19 && ./gradlew test`). El plugin de Gradle de Kotlin 1.9.22 corre en Gradle 9.9.1 con avisos de
+deprecación que serán errores en Gradle 10, así que el track 1.9 se queda en Gradle 9.2.1 (el que usaba la base antes
+de A7). Su BOM de JUnit también queda en 5.10.3.
 
 ## Cómo actualizar
 
