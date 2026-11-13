@@ -25,6 +25,7 @@ next; its order is in `Plan-Migracion-Monorepo.md`.
 | `Plan-Migracion-Monorepo.md` | Roadmap, decisions, phase A/B steps, open questions |
 | `docs/Versions.md` | Every pinned version (base, per section, legacy tracks, container images) and how to bump them |
 | `docs/LegacyKotlin.md` | What changed from Kotlin 1.0 to 2.x, the three legacy tracks, how to run them |
+| `docs/Casos.md` | The two case studies (Bank: ledger/transfers/reconciliation; Market: ticks/candles/order book/P&L) and which lesson uses which |
 | `docs/Temario.md` | Per-lesson syllabus (Java → Kotlin mapping, traps); rewritten in phase B0 |
 | `22-legacy-kotlin19/docs/k2-notes.md` | What actually changed when the base moved from 1.9.22 (K1) to 2.4.21 (K2) |
 
@@ -115,8 +116,8 @@ all tests with both databases up** (no SKIPPED).
   targets Docker; `inTransaction`, `statementCount()` and `resetStatistics()` (for N+1 demos) are extensions in
   `jpa/Jpa.kt`.
 - Sample data for io/json lessons is on the classpath: `01-language/src/main/resources/data/{sales.csv,orders.json}`.
-  The end-to-end example domain (store orders) is **provisional**; it will be replaced by a finance case (plan,
-  section 11, step B0′).
+  The end-to-end example domain (store orders) is **provisional**; it is being replaced by the Bank and Market
+  cases designed in `docs/Casos.md` (step B0′). New examples and exercises must use those cases, all data fictional.
 
 ## Exercise conventions
 

@@ -58,13 +58,14 @@ referencias externas sobre `git log -p --all`, y se suben los tags con `git push
 
 **Pendiente, en el orden en que se va a hacer:**
 
-1. **B0′ · Caso de finanzas**: elegir de la [sección 11](#11-caso-de-punta-a-punta-ideas-de-reemplazo) y reemplazar el
-   dominio provisional de pedidos.
+1. **B0′ · Casos Banco y Mercado** (en curso): diseño acordado en [`docs/Casos.md`](docs/Casos.md); falta
+   reemplazar el dominio provisional de pedidos en 6 tandas (datos, `json`/`io`, `basics`/`oop`/`exceptions`, el resto
+   de `01-language`, `04-data`, ejercicios y ruta 🎯).
 2. **Fase B (B0–B10)**: temario completo, tutoriales, ejercicios con la escala de `java-champion-review`, corrutinas y
    reactivo, tracks legacy, web, móvil y el resto de secciones.
 
 **Preguntas abiertas** ([sección 10](#10-para-decidir-en-la-revisión)): cortes legacy, numeración de secciones, dónde
-van `io`/`datetime`/`json`, Android SDK y Xcode, y qué caso de finanzas se usa.
+van `io`/`datetime`/`json`, y Android SDK y Xcode.
 
 ---
 
@@ -82,7 +83,7 @@ van `io`/`datetime`/`json`, Android SDK y Xcode, y qué caso de finanzas se usa.
 | 8 | **Código en inglés, comentarios y documentos en español**, como en `java-champion-review` | ✅ revisado en el curso v1 |
 | 9 | Git con `user.name` y `user.email` locales del repo; mensajes de commit en inglés | ✅ hecho |
 | 10 | `kotlin-for-java-devs.code-workspace` copiado de `java-champion-review` e ignorado por git (ajustes personales de VS Code) | ✅ hecho |
-| 11 | El caso de punta a punta pasa a un dominio de **finanzas** propio (trading, ledger…); mientras tanto, pedidos de tienda | Elegir en la [sección 11](#11-caso-de-punta-a-punta-ideas-de-reemplazo) |
+| 11 | El caso de punta a punta pasa a **dos casos de finanzas con un puente**: Banco (ledger de doble partida, transferencias, conciliación) y Mercado (feed de precios, velas, libro de órdenes, P&L); cada ejecución se liquida en el ledger. USD como base, sin derivados ni cortos | ✅ acordado el 13 nov 2026; diseño en [`docs/Casos.md`](docs/Casos.md) |
 
 El punto 7 importa: si mover y actualizar van juntos, cuando algo falle no se sabe si fue el movimiento o la
 versión. Además, la lista de lo que se rompe al pasar de 1.9.22 a 2.x sirve de contenido para el track de 1.9.
@@ -368,7 +369,7 @@ lección. Es parecido a `java-champion-review` (79 lecciones). Por eso va por fa
 3. ¿`io`, `datetime` y `json` se quedan en `01-language`, como `02-language` del repo de Java, o van a una sección
    `02-stdlib` aparte?
 4. ¿Tienes Android SDK y Xcode instalados? Define el alcance de B7.
-5. ¿Qué caso de la [sección 11](#11-caso-de-punta-a-punta-ideas-de-reemplazo) (o qué combinación) reemplaza al dominio provisional?
+5. ~~¿Qué caso de la sección 11 reemplaza al dominio provisional?~~ Dos casos, Banco y Mercado, con puente: [`docs/Casos.md`](docs/Casos.md).
 6. ~~¿Arranco con A2–A5?~~ Hecho el 10 de noviembre de 2026.
 
 ---
@@ -392,7 +393,7 @@ concurrencia y consistencia. Cada idea indica qué lecciones ejercita; se puede 
 | 9 | **Presupuesto personal**: categorías, presupuesto mensual, avisos al acercarse al límite, mes calendario y cambio de horario | Ventanas de calendario, `YearMonth`, reglas configurables, DSL | `datetime`, `oop`, `dsl`, `11-multiplatform`/`12-android` (app) |
 | 10 | **Alertas de precio por suscripción**: cada usuario define umbrales sobre un ticker y recibe avisos en vivo en la app | `StateFlow`/`SharedFlow`, WebSocket, notificaciones | `02-coroutines`, `10-ktor`, `11-multiplatform`, `12-android` |
 
-**Recomendación:** combinar **1 (ráfaga de precios)** y **2 (ledger)**. La ráfaga cubre lo asíncrono y reactivo
+**Decidido (13 nov 2026):** dos casos, **Banco** (ideas 2, 5, 7 y parte de 6) y **Mercado** (1, 3, 4, 8 y 10), con un puente de liquidación; el diseño está en [`docs/Casos.md`](docs/Casos.md). La recomendación original era combinar **1 (ráfaga de precios)** y **2 (ledger)**. La ráfaga cubre lo asíncrono y reactivo
 (corrutinas, `Flow`, WebFlux, Ktor, móvil), y el ledger cubre lo transaccional y de dominio (`BigDecimal`, JDBC/JPA,
 DDD). Juntas forman el 🐉 full-stack: un backend que recibe precios y registra operaciones, y un cliente KMP que las
 muestra. Las ideas 3 y 6 quedan como ⚡ de `collections` y `control`.

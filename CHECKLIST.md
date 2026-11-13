@@ -27,12 +27,15 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | `docs/Temario.md` | 🟡 | `EN CREACIÓN` | El de las 14 lecciones actuales; se reescribe completo en B0 |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
 | `docs/LegacyKotlin.md` | ✅ | `LISTO` | Versiones 1.0 → 2.x, los tres tracks, cómo correrlos y trampas |
+| `docs/Casos.md` | ✅ | `LISTO` | Diseño de los casos Banco y Mercado y su puente; se revisa al implementar |
 | `docs/JavaToKotlin.md`, `docs/EffectiveKotlin.md` | ⬜️ | `PENDIENTE` | Fase B |
 | `CLAUDE.md` | ✅ | `LISTO` | Reescrito en A9: documentos y reglas de sincronía, versiones, arquitectura, niveles, leyenda, git |
 | Compose de PostgreSQL 17.2 y MySQL 8.4.3 | ✅ | `LISTO` | `docker/postgres`, `docker/mysql` |
 | Contenedores de los tracks legacy (`docker/legacy-kotlin/`, `scripts/legacy.sh`) | ✅ | `LISTO` | `k14`/`k16`/`k19` con Temurin 11/17/21 por digest; `k19` probado en Apple Silicon |
 
-## Migración (fase A) ✅ cerrada el 13 de noviembre de 2026
+## Migración (fase A)
+
+✅ **Cerrada el 13 de noviembre de 2026** (tag `phase-a`).
 
 | Paso | Listo | Notas |
 |---|---|---|
@@ -46,7 +49,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | A6 · Track `22-legacy-kotlin19` | ✅ | Wrapper propio 9.2.1, Kotlin 1.9.22, 4 pruebas de humo; fuera del composite |
 | A8 · Contenedores legacy | ✅ | `./scripts/legacy.sh 19` = nativo (4 pruebas); `arm64` nativo |
 | A9 · Documentación | ✅ | README con índice de secciones, CLAUDE.md reescrito; tag `phase-a` |
-| B0′ · Caso de finanzas | ⬜️ | **Siguiente** (fase B): elegir de la sección 11 del plan y reemplazar el dominio de pedidos |
+| B0′ · Casos Banco y Mercado | 🟡 | Diseño en `docs/Casos.md` ✅; reemplazo del dominio de pedidos en 6 tandas ⬜️ |
 
 ## Secciones
 
@@ -289,3 +292,6 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   las 18 secciones con nivel de build y estado, tracks legacy y convenciones; CLAUDE.md reescrito (qué documento
   manda en qué, reglas de sincronía, versiones, niveles de build, leyenda completa, reglas de git). Tag `phase-a`.
   Siguiente: B0′, elegir el caso de finanzas.
+- **2026-11-13** · B0′, diseño: dos casos con puente, Banco (ledger de doble partida, transferencias idempotentes,
+  conciliación) y Mercado (feed de ticks, velas OHLC, libro de órdenes, P&L), escritos en `docs/Casos.md` con
+  entidades, invariantes, datos sintéticos, uso por lección, nueva ruta 🎯 y plan de reemplazo en 6 tandas.

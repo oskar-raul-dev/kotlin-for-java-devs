@@ -24,6 +24,7 @@ ejercicios graduados **sin soluciones**. Varios ejercicios siguen un caso de pun
 | [`Plan-Migracion-Monorepo.md`](Plan-Migracion-Monorepo.md) | Hoja de ruta: decisiones, secciones, fases A y B, preguntas abiertas |
 | [`docs/Versions.md`](docs/Versions.md) | Todas las versiones fijadas (base, secciones, tracks, imágenes) y cómo actualizarlas |
 | [`docs/LegacyKotlin.md`](docs/LegacyKotlin.md) | Qué trajo cada versión de 1.0 a 2.x, los tres tracks legacy y cómo correrlos |
+| [`docs/Casos.md`](docs/Casos.md) | Los dos casos de estudio, Banco y Mercado: entidades, datos y qué lección usa cada uno |
 | [`docs/Temario.md`](docs/Temario.md) | Temario por lección: mapeo Java → Kotlin y trampas (se reescribe en la fase B0) |
 | [`22-legacy-kotlin19/docs/k2-notes.md`](22-legacy-kotlin19/docs/k2-notes.md) | Qué cambió de verdad al pasar este repo de Kotlin 1.9.22 (K1) a 2.4.21 (K2) |
 
