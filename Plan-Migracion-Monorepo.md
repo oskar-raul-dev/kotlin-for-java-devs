@@ -61,7 +61,8 @@ referencias externas sobre `git log -p --all`, y se suben los tags con `git push
 1. **B0′ · Casos Banco y Mercado** (en curso): diseño acordado en [`docs/Casos.md`](docs/Casos.md); falta
    reemplazar el dominio provisional de pedidos en 6 tandas (datos, `json`/`io`, `basics`/`oop`/`exceptions`, el resto
    de `01-language`, `04-data`, ejercicios y ruta 🎯).
-2. **Fase B (B0–B10)**: temario completo, el resto de tutoriales, ejercicios con la escala de `java-champion-review`, corrutinas y
+2. **B0 · Temario** (en curso): plan y tandas en [`docs/Temario-Plan.md`](docs/Temario-Plan.md); tanda 0 lista, siguen las tandas 1 a 10.
+3. **Fase B (B0–B10)**: temario completo, el resto de tutoriales, ejercicios con la escala de `java-champion-review`, corrutinas y
    reactivo, tracks legacy, web, móvil y el resto de secciones.
 
 **Preguntas abiertas** ([sección 10](#10-para-decidir-en-la-revisión)): cortes legacy, numeración de secciones, dónde
@@ -330,7 +331,7 @@ transversal.
 | Fase | Contenido | Entregable |
 |---|---|---|
 | **B0′** | Elegir el caso de finanzas (sección 11) y reemplazar el dominio provisional de pedidos en datos, lecciones y ejercicios 🎯 | Ruta prioritaria del README rehecha |
-| **B0** | `docs/Temario.md` completo: cada lección con mapeo Java → Kotlin, trampas, etiquetas de versión y su ⚡ | Revisión juntos antes de escribir código |
+| **B0** 🟡 | `docs/Temario.md` completo: cada lección con mapeo Java → Kotlin, trampas, etiquetas de versión y su ⚡. Se hace por tandas según [`docs/Temario-Plan.md`](docs/Temario-Plan.md) | Revisión juntos antes de escribir código |
 | **B1** ✅ | `tutorials/`: `install`, `cli`, `repl`, `decompile`, `debug` | 5 tutoriales con sus scripts y un `check.sh` cada uno (136 comprobaciones, 72 ejercicios) |
 | **B2** | Ejercicios de las 12 lecciones actuales llevados a la nueva escala: mínimo 25, 🎤, ⚡ | ~300 → ~330 ejercicios + 12 ⚡ |
 | **B3** | `02-coroutines` (10 lecciones) y `03-reactive` (4) | Código, pruebas, `Exercises.md` |

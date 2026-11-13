@@ -25,7 +25,8 @@ ejercicios graduados **sin soluciones**. Varios ejercicios siguen un caso de pun
 | [`docs/Versions.md`](docs/Versions.md) | Todas las versiones fijadas (base, secciones, tracks, imágenes) y cómo actualizarlas |
 | [`docs/LegacyKotlin.md`](docs/LegacyKotlin.md) | Qué trajo cada versión de 1.0 a 2.x, los tres tracks legacy y cómo correrlos |
 | [`docs/Casos.md`](docs/Casos.md) | Los dos casos de estudio, Banco y Mercado: entidades, datos y qué lección usa cada uno |
-| [`docs/Temario.md`](docs/Temario.md) | Temario por lección: mapeo Java → Kotlin y trampas (se reescribe en la fase B0) |
+| [`docs/Temario.md`](docs/Temario.md) | Temario por lección: mapeo Java → Kotlin, trampas, versión, caso y ⚡ (en construcción por tandas; el anterior, en [`docs/archive/`](docs/archive/Temario-v1.md)) |
+| [`docs/Temario-Plan.md`](docs/Temario-Plan.md) | Plan de B0: plantilla de lección, tandas, versiones medidas y estado; el prompt de cada tanda está en [`docs/prompts/`](docs/prompts/temario-tanda.md) |
 | [`22-legacy-kotlin19/docs/k2-notes.md`](22-legacy-kotlin19/docs/k2-notes.md) | Qué cambió de verdad al pasar este repo de Kotlin 1.9.22 (K1) a 2.4.21 (K2) |
 
 ## Requisitos
@@ -342,6 +343,7 @@ kotlin-for-java-devs/
 │   ├── mysql/compose.yaml      # MySQL 8.4.3 en 13306
 │   └── legacy-kotlin/          # compose.yaml (k14, k16, k19) y README: el JDK de cada track legacy
 ├── scripts/legacy.sh           # ./scripts/legacy.sh <14|16|19> [tareas de Gradle | shell]
+├── scripts/version-probes.sh   # en qué versión de Kotlin es estable cada construcción (1.9 a 2.4)
 ├── 01-language/                # basics, control, strings, oop, collections, functional, exceptions, io, datetime, json
 │   ├── settings.gradle.kts, build.gradle.kts   # Kotlin jvm + serialization, Kermit
 │   └── src/

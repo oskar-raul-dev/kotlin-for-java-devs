@@ -27,6 +27,7 @@ next; its order is in `Plan-Migracion-Monorepo.md`.
 | `docs/LegacyKotlin.md` | What changed from Kotlin 1.0 to 2.x, the three legacy tracks, how to run them |
 | `docs/Casos.md` | The two case studies (Bank: ledger/transfers/reconciliation; Market: ticks/candles/order book/P&L) and which lesson uses which |
 | `docs/Temario.md` | Per-lesson syllabus (Java → Kotlin mapping, traps); rewritten in phase B0 |
+| `docs/Temario-Plan.md` | How B0 is written: lesson template, batches (tandas), measured version tags (from `scripts/version-probes.sh`), status. Each batch runs the master prompt in `docs/prompts/temario-tanda.md`; the old syllabus is in `docs/archive/Temario-v1.md` |
 | `22-legacy-kotlin19/docs/k2-notes.md` | What actually changed when the base moved from 1.9.22 (K1) to 2.4.21 (K2) |
 
 **Sync rules** — update in the same change:
@@ -70,6 +71,7 @@ of study (`Legacy19SmokeTest` fails on purpose if track 19 stops running Kotlin 
 cd 22-legacy-kotlin19 && ./gradlew test                       # legacy track 19, natively (own wrapper)
 ./scripts/legacy.sh 19 [gradle args | shell]                  # same, inside its JDK container (default: test)
 for t in install cli repl decompile debug; do tutorials/$t/check.sh || break; done   # re-run every tutorial command (after `sdk env`)
+scripts/version-probes.sh [name…]                             # in which Kotlin version each construct is stable (all SDKMAN kotlinc)
 ```
 
 `-Plesson=<subpackage>` sets `mainClass` to `dev.raul.oskar.learning.kotlin.<lesson>.MainKt` (see each section's

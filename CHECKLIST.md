@@ -24,7 +24,8 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | `README.md` (índice general) | ✅ | `LISTO` | Documentos, requisitos, IDE y terminal, índice de secciones, tracks legacy, convenciones (A9) |
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
 | `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, ideas del caso de finanzas |
-| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | El de las 14 lecciones actuales; se reescribe completo en B0 |
+| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); las tandas 1 a 10 lo completan. El anterior, en `docs/archive/Temario-v1.md` |
+| `docs/Temario-Plan.md` y `docs/prompts/temario-tanda.md` | ✅ | `LISTO` | Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
 | `docs/LegacyKotlin.md` | ✅ | `LISTO` | Versiones 1.0 → 2.x, los tres tracks, cómo correrlos y trampas |
 | `docs/Casos.md` | ✅ | `LISTO` | Diseño de los casos Banco y Mercado y su puente; se revisa al implementar |
@@ -305,3 +306,11 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   21; con target 21 el `when` sobre `sealed` es `typeSwitch` y la `sealed` lleva `PermittedSubclasses`; el campo de un
   `lateinit` es público; `filter { }` no crea lambda; `jdb` no entiende operadores de Kotlin; `DebugProbes` solo
   funcionó como `-javaagent`. 5 tutoriales, 72 ejercicios, 136 comprobaciones.
+- **2026-11-13** · B0, plan de trabajo: `docs/Temario-Plan.md` (plantilla de lección, 88 entradas en 9 tandas de
+  contenido más la base y el cierre, reglas, referencia de versiones medida con `kotlinc` 1.9.22, 2.1.21 y 2.4.21) y el
+  prompt maestro parametrizable `docs/prompts/temario-tanda.md`.
+- **2026-11-13** · B0, tanda 0: `kotlinc` 2.2.21 y 2.3.21 instalados con SDKMAN (sin cambiar el default); referencia de
+  versiones con cinco compiladores en `docs/Temario-Plan.md`, reproducible con `scripts/version-probes.sh` (20
+  construcciones; p. ej. guardas en `when` y `$$` `[2.2]`, `Instant`/`Clock` `[2.3]`, *context parameters* `[2.4]`,
+  *context receivers* `[rm 2.4]`). `docs/Temario.md` nuevo: leyenda, mapa general, 88 entradas pendientes por tanda,
+  chuleta, idioms y trampas consolidadas al día; el anterior pasó a `docs/archive/Temario-v1.md`.
