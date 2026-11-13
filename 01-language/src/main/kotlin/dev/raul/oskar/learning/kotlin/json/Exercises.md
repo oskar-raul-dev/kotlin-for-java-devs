@@ -25,7 +25,7 @@ Pruébalo, luego con `explicitNulls = false`, luego con `= null` como default. D
 
 **05 🟢 Listas y mapas.** `List<Customer>` y `Map<String, Int>` directo a JSON y de vuelta.
 
-**06 🟢 Pretty print.** Un `Json` con `prettyPrint = true` y `prettyPrintIndent = "  "` (experimental: requiere `@OptIn`).
+**06 🟢 Pretty print.** Un `Json` con `prettyPrint = true` y `prettyPrintIndent = "  "` (era experimental en 1.6.x y pedía `@OptIn`; en 1.13 ya no).
 
 **07 🟢 Enums.** Un `enum class Status` serializado con `@SerialName` en minúsculas por constante.
 

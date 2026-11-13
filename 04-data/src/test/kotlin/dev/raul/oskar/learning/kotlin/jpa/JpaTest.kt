@@ -112,7 +112,9 @@ class JpaTest {
         assertFailsWith<PersistenceException> {
             emf.inTransaction { em -> em.persist(Customer("Otra Ana", "ana@example.com")) }
         }
-        emf.inTransaction { em -> assertEquals(3, em.createQuery("select count(c) from Customer c", java.lang.Long::class.java).singleResult.toInt()) }
+        // count() devuelve java.lang.Long. Long::class.java sería el primitivo long; javaObjectType da la clase en caja.
+        // Antes se escribía java.lang.Long::class.java, que en K2 avisa "not recommended for use in Kotlin".
+        emf.inTransaction { em -> assertEquals(3, em.createQuery("select count(c) from Customer c", Long::class.javaObjectType).singleResult.toInt()) }
     }
 
     @Test

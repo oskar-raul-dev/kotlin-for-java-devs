@@ -1,9 +1,7 @@
-// explicitNulls es experimental en 1.6.2: pide @file:OptIn(ExperimentalSerializationApi::class).
-@file:OptIn(ExperimentalSerializationApi::class)
-
+// explicitNulls era experimental en kotlinx-serialization 1.6.x y pedía
+// @file:OptIn(ExperimentalSerializationApi::class); en 1.13 ya es estable y no hace falta.
 package dev.raul.oskar.learning.kotlin.json
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

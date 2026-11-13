@@ -27,7 +27,7 @@ de caracteres; si el recurso no existe, `requireNotNull` con un mensaje claro.
 
 **05 🟢 Listar archivos.** Los `.kt` de un directorio, recursivo, ordenados.
 - Firma: `fun kotlinFiles(root: Path): List<Path>`
-- Pista: `Files.walk` dentro de `use`, o `root.walk()` (experimental en 1.9).
+- Pista: `Files.walk` dentro de `use`, o `root.walk()` (estable desde Kotlin 2.x; en 1.9 pedía `@OptIn(ExperimentalPathApi::class)`).
 
 **06 🟢 Menú de consola.** Leer opciones de un `BufferedReader` hasta `"salir"` y escribir respuestas en un `Appendable`.
 - Firma: `fun menu(input: BufferedReader, out: Appendable)`

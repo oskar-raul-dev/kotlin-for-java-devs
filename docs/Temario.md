@@ -236,7 +236,7 @@ Archivos: `json/Model.kt`, `json/Codec.kt`, `json/Serializers.kt`.
 | `ObjectMapper` (reflexión) | `Json` + plugin del compilador | Sin reflexión; se construye una vez |
 | `@JsonProperty("order-total")` | `@SerialName("order-total")` | |
 | `FAIL_ON_UNKNOWN_PROPERTIES = false` | `ignoreUnknownKeys = true` | Por defecto es estricto |
-| Campo ausente → `null` | `explicitNulls = false` (experimental en 1.6.2) | Si no, un `T?` sin default es **obligatorio** |
+| Campo ausente → `null` | `explicitNulls = false` (estable desde 1.13; en 1.6.2 pedía `@OptIn`) | Si no, un `T?` sin default es **obligatorio** |
 | `@JsonInclude(NON_DEFAULT)` | Comportamiento por defecto; `encodeDefaults = true` para escribirlos | |
 | `null` en campo con default | `coerceInputValues = true` | |
 | `@JsonTypeInfo` + `@JsonSubTypes` | `@Serializable sealed class` + `@SerialName` por subclase | Discriminador `"type"` |
@@ -245,7 +245,7 @@ Archivos: `json/Model.kt`, `json/Codec.kt`, `json/Serializers.kt`.
 | `ObjectNode.put` | `buildJsonObject { put(…); putJsonArray(…) { } }` | DSL |
 | — | `Json(from = base) { prettyPrint = true }` | Derivar configuraciones |
 
-**Trampas:** `@file:OptIn(ExperimentalSerializationApi::class)` para `explicitNulls`; nullable ≠ opcional.
+**Trampas:** nullable ≠ opcional. En versiones viejas (1.6.x), `explicitNulls` pedía `@file:OptIn(ExperimentalSerializationApi::class)`.
 
 ---
 
@@ -285,7 +285,7 @@ Archivos: `jdbc/Jdbc.kt`, `jdbc/ProductRepository.kt`, `jdbc/Dialect.kt`, `jdbc/
 
 ---
 
-## 13. `jpa` — Hibernate 6 sin Spring
+## 13. `jpa` — Hibernate 7 sin Spring
 
 Archivos: `jpa/Entities.kt`, `jpa/Jpa.kt`, `jpa/OrderRepository.kt`.
 
@@ -393,7 +393,7 @@ Lo transversal, en una sola tabla.
 | UPDATE masivo no refresca entidades cargadas | `jpa` |
 | `runCatching` se traga `CancellationException` | `exceptions` |
 | MySQL gasta `AUTO_INCREMENT` en upserts | `jdbc.mysql` |
-| Gradle 9 + Kotlin 1.9.22 sin JUnit launcher | `build.gradle.kts` |
+| Gradle 9 + Kotlin 1.9.22 sin JUnit launcher | `build.gradle.kts`, track `22-legacy-kotlin19` |
 
 ---
 
@@ -480,9 +480,10 @@ lista para discutir; el orden dentro de cada bloque es una propuesta de priorida
 
 ### G. Versiones del lenguaje
 
-El proyecto está fijado en **Kotlin 1.9.22** a propósito. Un senior debería conocer, aunque no pueda usar aquí,
-lo que trae **Kotlin 2.x**: compilador K2, *guard conditions* en `when`, *non-local break/continue*,
-*context parameters*, `@SubclassOptInRequired`, smart casts mejorados, y el cambio de `invokedynamic` para lambdas.
+La base está en **Kotlin 2.4.21** desde el paso A7 (antes, 1.9.22; lo que cambió está en
+`22-legacy-kotlin19/docs/k2-notes.md`). Las lecciones actuales todavía no usan lo nuevo de **Kotlin 2.x**:
+compilador K2, *guard conditions* en `when`, *non-local break/continue*, *context parameters*,
+`@SubclassOptInRequired`, smart casts mejorados, y el cambio de `invokedynamic` para lambdas.
 
 ---
 

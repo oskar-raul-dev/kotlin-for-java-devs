@@ -12,9 +12,11 @@ prioritaria". The repo is meant to be public: never mention specific companies o
 
 ## Versions are pinned on purpose
 
-Kotlin 1.9.22 (plugins `jvm`, `serialization`, `jpa`, `allopen`), kotlinx-serialization-json 1.6.2, Kermit 2.0.4,
-JDK 21 toolchain, Gradle 9.2.1 wrapper. Do not upgrade them ad hoc: the move to a monorepo and to Kotlin 2.x is
-planned as a separate step. Language features newer than Kotlin 1.9 are unavailable.
+Kotlin 2.4.21 (plugins `jvm`, `serialization`, `jpa`, `allopen`), kotlinx-serialization-json 1.13.0, Kermit 2.2.0,
+JDK 21 toolchain (`.sdkmanrc`), Gradle 9.9.1 wrapper; `04-data` adds Hibernate 7.4.15, H2 2.5.252 and the JDBC
+drivers, JUnit BOM 5.14.4. `docs/Versions.md` is the source of truth for versions and how to bump them. Do not
+upgrade ad hoc; versions are repeated in each section's `build.gradle.kts`, keep them in sync. The legacy tracks
+(`20`–`22`) pin their own Kotlin on purpose (1.4.32, 1.6.21, 1.9.22).
 
 ## Commands
 
@@ -65,7 +67,7 @@ DB/user/password are all `learning`; override with `PG_URL`/`PG_USER`/`PG_PASSWO
   subclass the abstract `ProductRepositoryContract`, providing `dialect` and `openConnection()`; returning `null`
   triggers a JUnit `assumeTrue` skip. Engine differences belong in the dialect, not the repository. The three
   engines share one `jdbc/Exercises.md` with exercises tagged `[todos]`/`[SQLite]`/`[PG]`/`[MySQL]`.
-- `jpa/` is Hibernate 6 without Spring: `EntityManagerFactory` built by hand from `META-INF/persistence.xml`
+- `jpa/` is Hibernate 7 without Spring: `EntityManagerFactory` built by hand from `META-INF/persistence.xml`
   (unit `learning`, H2 by default). `h2Factory(name)` gives each test its own in-memory DB; `postgresFactory()`
   targets Docker; `inTransaction`, `statementCount()` and `resetStatistics()` (for N+1 demos) are extensions in
 `jpa/Jpa.kt`.
@@ -93,11 +95,13 @@ README lessons table.
 
 ## Known gotchas (already handled — don't "fix" them away)
 
-- Gradle 9 + Kotlin 1.9.22 needs `platform("org.junit:junit-bom:5.10.3")` and
-  `testRuntimeOnly("org.junit.platform:junit-platform-launcher")`, or tests fail with "Failed to load JUnit Platform".
+- Keep `platform("org.junit:junit-bom:…")` and `testRuntimeOnly("org.junit.platform:junit-platform-launcher")`: with
+  Kotlin 1.9.22 (the `22-legacy-kotlin19` track) tests fail without them ("Failed to load JUnit Platform").
 - Kotlin `split(String)` is literal, not regex (`"03/14/1985".split("\\/")` returns the whole string) — a common bug
   when porting Java code, demonstrated in `strings/`.
-- `explicitNulls` in kotlinx-serialization 1.6.2 requires `@file:OptIn(ExperimentalSerializationApi::class)`.
+- `explicitNulls` needed `@file:OptIn(ExperimentalSerializationApi::class)` in kotlinx-serialization 1.6.2; it is
+  stable in 1.13. `kotlin.io.path.deleteRecursively` still needs `@OptIn(ExperimentalPathApi::class)` in 2.4.
+- `CollectionsTest` compares arrays with `==` on purpose (with `@Suppress`) to demonstrate the trap; K2 warns about it.
 - Hibernate logs via java.util.logging unless `org.jboss.logging.provider=slf4j` is set before Hibernate loads
   (`jpa/Jpa.kt`); `simplelogger.properties` keeps SLF4J at WARN.
 - JPA entities must not be `data class`; the `jpa` (no-arg) and `allopen` plugins are configured for

@@ -18,7 +18,7 @@ Redactado el **10 de noviembre de 2026**. Lo marcado con ⚠️ se verifica al e
 
 ## Estado y próximos pasos
 
-Actualizado el **12 de noviembre de 2026**, al cerrar A0 y A5. El avance detallado por sección y lección está en
+Actualizado el **13 de noviembre de 2026**, al cerrar A7. El avance detallado por sección y lección está en
 [`CHECKLIST.md`](CHECKLIST.md).
 
 **Hecho (fase A, pasos A0–A5):**
@@ -31,6 +31,11 @@ Actualizado el **12 de noviembre de 2026**, al cerrar A0 y A5. El avance detalla
 | `b5b5214` Create monorepo directory structure | Las 17 secciones, `docs/`, `scripts/` y `docker/legacy-kotlin/` con `.gitkeep` |
 | `0d734cd` Move current lessons into 01-language and 04-data | Composite build en la raíz; 123 pruebas en verde (85 + 38) con PostgreSQL y MySQL |
 
+**Hecho (A7, 13 de noviembre de 2026):** la base pasó a **Kotlin 2.4.21**, Gradle 9.9.1, Hibernate 7.4.15 y librerías al
+día, por subpasos y sin romper nada: mismas 123 pruebas en verde y misma salida en los `Main` salvo mensajes de
+librerías. K2 dio 3 avisos nuevos, ya corregidos. Versiones en [`docs/Versions.md`](docs/Versions.md); lo que cambió, en
+[`22-legacy-kotlin19/docs/k2-notes.md`](22-legacy-kotlin19/docs/k2-notes.md).
+
 Tags: `baseline-1.9.22` (sobre `c33e8d1`, el curso v1 de proyecto único) y `monorepo-1.9.22` (sobre el commit
 que cierra A5: monorepo completo, todavía en Kotlin 1.9.22).
 
@@ -38,15 +43,13 @@ Sin remoto todavía. Antes del primer push: repetir el escaneo de referencias ex
 
 **Pendiente, en el orden en que se va a hacer:**
 
-1. **A7 · Migrar la base a Kotlin 2.x** (próxima sesión). Verificar la última estable al empezar (2.4.21 vista; 2.5.0
-   esperada para diciembre de 2026), Gradle 9.9.0 y librerías. Anotar cada cosa que se rompa para el track 1.9.
-2. **A6 · Track `22-legacy-kotlin19`** con wrapper propio en 1.9.22. Se hace después de A7 para reutilizar las notas
-   de lo que cambió.
-3. **A8 · Contenedores**: `docker/legacy-kotlin/`, `scripts/legacy.sh`, `docs/LegacyKotlin.md`, probados en Apple Silicon.
-4. **A9 · Documentación**: README con índice de secciones, CLAUDE.md, `docs/Versions.md`. (`CHECKLIST.md` ya existe.)
-5. **B0′ · Caso de finanzas**: elegir de la [sección 11](#11-caso-de-punta-a-punta-ideas-de-reemplazo) y reemplazar el
+1. **A6 · Track `22-legacy-kotlin19`** con wrapper propio en 1.9.22 (Gradle 9.x: el plugin 1.9.22 no llega a
+   Gradle 10). Las notas de A7 ya están en `22-legacy-kotlin19/docs/k2-notes.md`.
+2. **A8 · Contenedores**: `docker/legacy-kotlin/`, `scripts/legacy.sh`, `docs/LegacyKotlin.md`, probados en Apple Silicon.
+3. **A9 · Documentación**: README con índice de secciones y CLAUDE.md reescrito. (`CHECKLIST.md` y `docs/Versions.md` ya existen.)
+4. **B0′ · Caso de finanzas**: elegir de la [sección 11](#11-caso-de-punta-a-punta-ideas-de-reemplazo) y reemplazar el
    dominio provisional de pedidos.
-6. **Fase B (B0–B10)**: temario completo, tutoriales, ejercicios con la escala de `java-champion-review`, corrutinas y
+5. **Fase B (B0–B10)**: temario completo, tutoriales, ejercicios con la escala de `java-champion-review`, corrutinas y
    reactivo, tracks legacy, web, móvil y el resto de secciones.
 
 **Preguntas abiertas** ([sección 10](#10-para-decidir-en-la-revisión)): cortes legacy, numeración de secciones, dónde
@@ -81,10 +84,10 @@ versión. Además, la lista de lo que se rompe al pasar de 1.9.22 a 2.x sirve de
 
 | Pieza | Versión | Nota |
 |---|---|---|
-| Kotlin | **2.4.21** ⚠️ | Última estable encontrada (8 oct 2026). 2.5.0 está en beta y se espera para diciembre de 2026 |
+| Kotlin | **2.4.21** ✅ | Última estable, confirmada en Maven Central el 13 nov 2026. 2.5.0 está en RC y se espera para diciembre de 2026 |
 | JDK | 21 (toolchain) | Igual que los repos de Java y Groovy. Gradle 9 exige JDK 17+ para correr |
-| Gradle | 9.9.0 ⚠️ | El mismo wrapper que `java-champion-review` y `groovy-for-java-devs`; verificar compatibilidad con KGP 2.4 |
-| kotlinx-serialization, Kermit, Hibernate, drivers, JUnit | Las últimas compatibles ⚠️ | Se fijan en el paso A7 y quedan en `docs/Versions.md` |
+| Gradle | **9.9.1** ✅ | Última estable al hacer A7 (los repos hermanos están en 9.9.0); KGP 2.4.21 corre sin avisos |
+| kotlinx-serialization, Kermit, Hibernate, drivers, JUnit | Fijadas en A7 ✅ | serialization 1.13.0, Kermit 2.2.0, Hibernate 7.4.15, JUnit 5.14.4…; detalle en `docs/Versions.md` |
 
 ### Qué grupos de versiones vale la pena ver en legacy
 
@@ -281,9 +284,9 @@ escribir contenido nuevo. Cada paso termina en un commit.
 | **A4 · `04-data`** ✅ 38 pruebas | `git mv` de `jdbc/**` y `jpa`, más `META-INF/persistence.xml` y `simplelogger.properties`. Build propio: `jvm` + `jpa` + `allopen`, drivers, Hibernate, H2, slf4j, JUnit BOM | `./gradlew -p 04-data test`, con y sin Docker |
 | **A5 · Cierre del movimiento** ✅ tag `monorepo-1.9.22` | Borrar `src/` y el build del root viejo. Corregir comandos y rutas en README, CLAUDE.md, `docs/Temario.md` y los `Exercises.md`. Importar en IntelliJ | `./gradlew test` en la raíz: 123 pruebas, mismos nombres que la línea base |
 | **A6 · Track 1.9** ⬜️ (después de A7) | `22-legacy-kotlin19/` con wrapper propio (9.2.1), build en 1.9.22, `.sdkmanrc` y una prueba de humo. Primer track porque su build ya se sabe que funciona | `./gradlew -p 22-legacy-kotlin19 test` en nativo |
-| **A7 · Base a 2.x** ⬜️ siguiente | `01` y `04` a Kotlin 2.4.21 ⚠️, Gradle 9.9.0 ⚠️ y librerías al día. Cada cosa que se rompe o cambia de comportamiento se anota en `22-legacy-kotlin19/docs/k2-notes.md` | 123 pruebas en verde en 2.4 |
+| **A7 · Base a 2.x** ✅ | `01` y `04` a Kotlin 2.4.21, Gradle 9.9.1 y librerías al día (Hibernate 7.4.15), en 4 subpasos. Cada cosa que se rompe o cambia de comportamiento se anota en `22-legacy-kotlin19/docs/k2-notes.md` | 123 pruebas en verde en 2.4 |
 | **A8 · Contenedores** ⬜️ | `docker/legacy-kotlin/` (compose + README), `scripts/legacy.sh`, `docs/LegacyKotlin.md`. Probar con el track 19 en Apple Silicon | `./scripts/legacy.sh 19 test` igual que en nativo |
-| **A9 · Documentación** ⬜️ | README nuevo (índice de secciones como el de Groovy), CLAUDE.md reescrito (versiones, arquitectura, niveles, leyenda, reglas de sincronía), `docs/Versions.md`, `CHECKLIST.md` con bitácora | Revisión juntos |
+| **A9 · Documentación** ⬜️ | README nuevo (índice de secciones como el de Groovy), CLAUDE.md reescrito (versiones, arquitectura, niveles, leyenda, reglas de sincronía). `docs/Versions.md` (A7) y `CHECKLIST.md` ya existen | Revisión juntos |
 
 **Lo que se limpió en el curso v1 (A1)**, porque el repo va a ser público:
 
@@ -333,13 +336,12 @@ lección. Es parecido a `java-champion-review` (79 lecciones). Por eso va por fa
 
 ## 9. Riesgos y pendientes
 
-- ⚠️ **Versiones sin confirmar**: Kotlin 2.4.21 como última estable, compatibilidad de KGP 2.4 con Gradle 9.9.0,
-  Gradle exacto para KGP 1.4.32 y 1.6.21, y si `kotlin-test-junit5` existe para 1.4 (si no, JUnit 4 en ese track).
+- ⚠️ **Versiones sin confirmar**: Gradle exacto para KGP 1.4.32 y 1.6.21, y si `kotlin-test-junit5` existe para 1.4 (si no, JUnit 4 en ese track).
 - **IntelliJ y Gradle viejo**: puede que un IntelliJ actual no importe bien un proyecto con Gradle 6.8. Alternativa:
   abrir el track como proyecto aparte o trabajarlo solo por CLI y contenedor.
 - **Android** necesita Android SDK y emulador, y su AGP fija la versión de Gradle (AGP 9.0 exige Gradle 9.1+).
   **iOS** necesita Xcode; sin él, KMP se hace con targets desktop y wasm.
-- **Hibernate 6 → 7** en A7 puede romper la lección `jpa`. Si pasa, se separa en un paso propio.
+- ~~**Hibernate 6 → 7** en A7 puede romper la lección `jpa`.~~ Se hizo como subpaso A7.4 y no rompió nada.
 - **El composite usa el Gradle de la raíz** para todas las secciones incluidas. Si una sección necesita otro Gradle,
   sale del composite (como `12-android`).
 

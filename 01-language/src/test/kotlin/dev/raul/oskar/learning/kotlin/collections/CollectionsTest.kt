@@ -70,7 +70,9 @@ class CollectionsTest {
         assertContentEquals(intArrayOf(0, 1, 4, 9, 16), ints)
         assertContentEquals(arrayOf("a", "b", "c"), names)
         assertEquals(9, grid[1][1])
-        // == en arrays compara referencias, como en Java
+        // == en arrays compara referencias, como en Java. Desde K2 (Kotlin 2.0) el compilador avisa de esta trampa;
+        // aquí se suprime porque la línea existe justo para demostrarla.
+        @Suppress("ARRAY_EQUALITY_OPERATOR_CAN_BE_REPLACED_WITH_CONTENT_EQUALS")
         assertEquals(false, intArrayOf(1) == intArrayOf(1))
         assertEquals(true, intArrayOf(1) contentEquals intArrayOf(1))
     }

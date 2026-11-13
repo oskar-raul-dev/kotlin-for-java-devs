@@ -47,7 +47,9 @@ abstract class ProductRepositoryContract {
         val first = repo.insert(sample()[0])
         val second = repo.insert(sample()[1])
         assertNotNull(first.id)
-        assertTrue(second.id!! > first.id!!)
+        // K2 usa el contrato de assertNotNull: después de esa línea first.id ya es Long (smart cast).
+        // Con K1 (Kotlin 1.9) hacía falta first.id!!; en K2 ese !! da el aviso "Unnecessary non-null assertion".
+        assertTrue(second.id!! > first.id)
         assertEquals(first, repo.findBySku("A-1"))
     }
 

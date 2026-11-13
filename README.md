@@ -10,18 +10,18 @@ día, ventanas de tiempo y un poco de estadística.
 
 ## Versiones
 
-Fijadas a propósito (la migración a Kotlin 2.x va en un paso aparte):
+Fijadas a propósito; el detalle, los tracks legacy y cómo actualizarlas están en [`docs/Versions.md`](docs/Versions.md):
 
 | Pieza | Versión |
 |---|---|
-| Kotlin (plugins `jvm`, `serialization`, `jpa`, `allopen`) | 1.9.22 |
-| kotlinx-serialization-json | 1.6.2 |
-| Kermit (logging) | 2.0.4 |
+| Kotlin (plugins `jvm`, `serialization`, `jpa`, `allopen`) | 2.4.21 |
+| kotlinx-serialization-json | 1.13.0 |
+| Kermit (logging) | 2.2.0 |
 | JDK (toolchain) | 21 |
-| Gradle (wrapper) | 9.2.1 |
+| Gradle (wrapper) | 9.9.1 |
 
-Agregado para las lecciones de bases de datos y pruebas: sqlite-jdbc 3.46.1.3, PostgreSQL JDBC 42.7.4,
-mysql-connector-j 9.1.0, Hibernate ORM 6.6.3.Final, H2 2.3.232, slf4j-simple 2.0.16 y el BOM de JUnit 5.10.3.
+Agregado para las lecciones de bases de datos y pruebas: sqlite-jdbc 3.54.1.0, PostgreSQL JDBC 42.7.14,
+mysql-connector-j 26.10.0, Hibernate ORM 7.4.15.Final, H2 2.5.252, slf4j-simple 2.0.20 y el BOM de JUnit 5.14.4.
 
 ## Cómo se usa
 
@@ -69,7 +69,7 @@ Las lecciones 1–9 y 14 están en `01-language`; las de bases de datos (10–13
 | 10 | `jdbc.sqlite` | Repositorio JDBC común + dialecto SQLite (sin servidor) | [25, compartidos](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jdbc/Exercises.md) | — |
 | 11 | `jdbc.postgres` | Mismo repositorio en PostgreSQL + `RETURNING`, `= ANY(array)`, `jsonb` | ↑ | — |
 | 12 | `jdbc.mysql` | Mismo repositorio en MySQL + `ON DUPLICATE KEY`, `LAST_INSERT_ID()`, aislamiento por defecto | ↑ | — |
-| 13 | `jpa` | Hibernate 6 sin Spring: entidades en Kotlin, cascade, `orphanRemoval`, N+1 y `join fetch`, dirty checking, `LazyInitializationException`, `@Version`, UPDATE masivo | [24](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jpa/Exercises.md) | — |
+| 13 | `jpa` | Hibernate 7 sin Spring: entidades en Kotlin, cascade, `orphanRemoval`, N+1 y `join fetch`, dirty checking, `LazyInitializationException`, `@Version`, UPDATE masivo | [24](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jpa/Exercises.md) | — |
 | 14 | `exceptions` | Sin checked exceptions, `try`/`throw` como expresiones, `require`/`check`/`error`, sin multi-catch (`when` en el catch), jerarquía sellada con `cause`, `Result`/`runCatching` (y su trampa con `CancellationException`), validación que acumula errores, `use` y suppressed, `@Throws` para Java | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/exceptions/Exercises.md) | 4 |
 
 `jdbc/` (sin subpaquete) tiene lo compartido: `ProductRepository`, la interfaz `Dialect`, las extensiones
@@ -242,9 +242,11 @@ docker compose -f docker/mysql/compose.yaml down -v
 kotlin-for-java-devs/
 ├── settings.gradle.kts         # composite build: includeBuild de las secciones con build
 ├── build.gradle.kts            # tareas agregadas build/test/check/clean
-├── gradlew, gradle/wrapper/    # Gradle 9.2.1, un solo wrapper para todo el composite
+├── gradlew, gradle/wrapper/    # Gradle 9.9.1, un solo wrapper para todo el composite
+├── .sdkmanrc                   # JDK 21 (Zulu) para `sdk env`
 ├── Plan-Migracion-Monorepo.md  # secciones propuestas y pasos de la migración
 ├── docs/Temario.md             # temario por lección
+├── docs/Versions.md            # versiones fijadas y cómo actualizarlas
 ├── docker/
 │   ├── postgres/compose.yaml   # PostgreSQL 17.2 en 15432
 │   ├── mysql/compose.yaml      # MySQL 8.4.3 en 13306
@@ -268,15 +270,18 @@ kotlin-for-java-devs/
 
 ## Trampas encontradas al armarlo
 
-- **Gradle 9 + Kotlin 1.9.22 no corre pruebas tal cual.** `kotlin("test")` trae JUnit 5.6.3 y Gradle 9 ya
-  no inyecta el launcher, así que falla con `Failed to load JUnit Platform`. Se arregla con
-  `platform("org.junit:junit-bom:5.10.3")` y `testRuntimeOnly("org.junit.platform:junit-platform-launcher")`
-  (ver el `build.gradle.kts` de cada sección). Cualquier proyecto con este build sin `src/test` no lo nota hasta que agrega
-  su primera prueba.
+- **Gradle 9 + Kotlin 1.9.22 no corre pruebas tal cual.** `kotlin("test")` 1.9.22 trae JUnit 5.6.3 y Gradle 9 ya
+  no inyecta el launcher, así que falla con `Failed to load JUnit Platform`. Se arreglaba con
+  `platform("org.junit:junit-bom:…")` y `testRuntimeOnly("org.junit.platform:junit-platform-launcher")`. Con Kotlin
+  2.4 ya no hace falta, pero las dos líneas se quedan: el BOM fija la versión de JUnit y Gradle recomienda declarar el
+  launcher. Importa para el track `22-legacy-kotlin19`.
 - **`split(String)` en Kotlin es literal.** `"03/14/1985".split("\\/")` devuelve la cadena entera; en Java,
   `split` siempre usa regex. Es un error fácil al portar código de Java. Ver `strings/Strings.kt` y su prueba.
-- **`explicitNulls` es experimental en kotlinx-serialization 1.6.2:** pide `@file:OptIn(ExperimentalSerializationApi::class)`
-  (`json/Codec.kt`).
+- **`explicitNulls` era experimental en kotlinx-serialization 1.6.2** y pedía
+  `@file:OptIn(ExperimentalSerializationApi::class)`; en 1.13 ya es estable (`json/Codec.kt`).
+- **K2 (Kotlin 2.x) avisa de lo que K1 dejaba pasar:** `!!` innecesario después de `assertNotNull`,
+  `java.lang.Long::class.java` (mejor `Long::class.javaObjectType`) y `==` entre arrays. Detalle en
+  [`22-legacy-kotlin19/docs/k2-notes.md`](22-legacy-kotlin19/docs/k2-notes.md).
 - **Hibernate registra por `java.util.logging`** aunque haya SLF4J: se fuerza con la propiedad de sistema
   `org.jboss.logging.provider=slf4j` (`jpa/Jpa.kt`).
 - **Entidades JPA en Kotlin:** nada de `data class`; hacen falta los plugins `jpa` (constructor vacío) y
