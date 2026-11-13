@@ -49,8 +49,9 @@ data class Money(val amount: BigDecimal, val currency: Currency) : Comparable<Mo
 
 ### Identificadores
 
-- **Cuentas:** `ACC-` + 8 dígitos + 2 dígitos de control (mod 97, como el IBAN): `ACC-00001234-56`. Validarlos es
-  ejercicio de `strings`.
+- **Cuentas:** `ACC-` + 8 dígitos + 2 dígitos de control calculados como en el IBAN:
+  `control = 98 − (número × 100 mod 97)`. Ejemplos: `ACC-00001234-82`, `ACC-00005678-39`. Validarlos es ejercicio de
+  `strings`.
 - **Tickers inventados:** `ACME`, `ORBX`, `LUMA`, `KAPA`, `NUBE`. Si alguno coincide con uno real, es casualidad.
 - **Órdenes, ejecuciones y transferencias:** `ORD-…`, `EXE-…`, `TRF-…` con número creciente; las transferencias
   llevan además una **clave de idempotencia** (UUID) que manda el cliente.

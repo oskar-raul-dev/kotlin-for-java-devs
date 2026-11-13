@@ -14,7 +14,8 @@ Mucho código Kotlin en producción no está en la última versión: apps Androi
 que nadie migró, librerías internas compiladas con K1. Leerlo y migrarlo exige saber qué no existía todavía y qué se
 comportaba distinto.
 
-Un compilador moderno con `-language-version` no sirve para eso: K2 acepta pocas versiones hacia atrás ⚠️, y no
+Un compilador moderno con `-language-version` no sirve para eso. Medido con `kotlinc` 2.4.21: el mínimo es `2.0` (y
+ya deprecado); `-language-version 1.9` y `-api-version 1.9` dan `… 1.9 is no longer supported`. Y aunque se aceptara, no
 reproduce el bytecode, el backend JVM viejo ni el plugin de Gradle de la época. Por eso cada track es un proyecto
 aparte, **fuera del composite**, con su propio wrapper de Gradle, su versión de Kotlin y su JDK.
 
@@ -74,6 +75,8 @@ del 9.2.1 del track, con avisos de deprecación del plugin 1.9.22.
 
 ## Trampas de los builds viejos
 
+- **El REPL de `kotlinc` solo funciona de verdad en 1.9.** En 2.1.21 está deprecado y corre con `-language-version 1.9`;
+  en 2.4.21 no arranca ni con `-Xrepl` (detalle en [`tutorials/repl`](../tutorials/repl/README.md)).
 - **Gradle 10 y el plugin 1.9.22.** Corre en Gradle 9.9 con deprecaciones que serán errores en Gradle 10: el track 19
   se queda en Gradle 9.x.
 - **JUnit 5 con Kotlin 1.9.22 en Gradle 9.** `kotlin-test-junit5` 1.9.22 trae JUnit 5.6.3 y Gradle 9 ya no inyecta el

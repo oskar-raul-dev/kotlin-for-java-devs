@@ -12,6 +12,7 @@ services.gradle.org; lo marcado con ⚠️ está por verificar al desarrollar.
 |---|---|---|
 | Kotlin (plugins `jvm`, `serialization`, `jpa`, `allopen`) | **2.4.21** | Última estable. 2.5.0 está en RC; se espera para diciembre de 2026 |
 | JDK (toolchain) | 21 | Zulu 21.0.8 en la máquina (`.sdkmanrc`) |
+| Kotlin de línea de comandos | 2.4.21 | Para los tutoriales (`kotlinc`, `kotlin`, scripts); `.sdkmanrc` de la raíz. Gradle no lo usa |
 | Gradle (wrapper) | **9.9.1** | Un solo wrapper en la raíz para todo el composite |
 | kotlinx-serialization-json | 1.13.0 | `explicitNulls` y `prettyPrintIndent` ya son estables (en 1.6.2 pedían `@OptIn`) |
 | Kermit (logging) | 2.2.0 | Compilado con Kotlin 2.3 |

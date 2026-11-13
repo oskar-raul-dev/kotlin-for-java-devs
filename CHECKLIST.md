@@ -55,7 +55,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 
 | Sección | Estructura | Build base | Código | Pruebas | Ejercicios | Tutorial / docs | Estado |
 |---|---|---|---|---|---|---|---|
-| [`tutorials`](#tutorials) | ✅ | ➖ | ➖ | ➖ | ⬜️ | ⬜️ | `PENDIENTE` |
+| [`tutorials`](#tutorials) | ✅ | ➖ | ➖ | ➖ | 🟡 30 | 🟡 2 de 5 | `EN CREACIÓN` |
 | [`01-language`](#01-language) | ✅ | ✅ Gradle (2.4.21) | 🟡 | 🟡 | 🟡 | ➖ | `EN CREACIÓN` |
 | [`02-coroutines`](#02-coroutines) | ✅ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
 | [`03-reactive`](#03-reactive) | ✅ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
@@ -85,8 +85,8 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
 | # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
 |---|---|---|---|---|---|---|
 | — | `install` | ➖ | ➖ | ⬜️ | ➖ | `PENDIENTE` |
-| — | `cli` | ➖ | ➖ | ⬜️ | ➖ | `PENDIENTE` |
-| — | `repl` | ➖ | ➖ | ⬜️ | ➖ | `PENDIENTE` |
+| — | `cli` | ✅ ejemplos | ✅ `check.sh` (30) | ✅ 15 | ➖ | `LISTO` |
+| — | `repl` | ✅ ejemplos | ✅ `check.sh` (17) | ✅ 15 | ➖ | `LISTO` |
 | — | `decompile` | ➖ | ➖ | ⬜️ | ⬜️ | `PENDIENTE` |
 | — | `debug` | ➖ | ➖ | ⬜️ | ➖ | `PENDIENTE` |
 
@@ -295,3 +295,8 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
 - **2026-11-13** · B0′, diseño: dos casos con puente, Banco (ledger de doble partida, transferencias idempotentes,
   conciliación) y Mercado (feed de ticks, velas OHLC, libro de órdenes, P&L), escritos en `docs/Casos.md` con
   entidades, invariantes, datos sintéticos, uso por lección, nueva ruta 🎯 y plan de reemplazo en 6 tandas.
+- **2026-11-13** · B1, tutoriales `cli` y `repl` con ejemplos del caso Banco y Mercado, 15 ejercicios cada uno y un
+  `check.sh` que verifica cada comando del texto (30 y 17 comprobaciones). Medido con Kotlin 2.4.21: bytecode por
+  defecto Java 8, `-include-runtime` mete también `kotlin-reflect` (5.7 MB), `-language-version`/`-api-version` 1.9
+  ya no se aceptan, y el REPL de `kotlinc` no arranca (2.1.21 lo corría con lenguaje 1.9). `.sdkmanrc` de la raíz con
+  `kotlin=2.4.21`.

@@ -61,7 +61,9 @@ referencias externas sobre `git log -p --all`, y se suben los tags con `git push
 1. **B0′ · Casos Banco y Mercado** (en curso): diseño acordado en [`docs/Casos.md`](docs/Casos.md); falta
    reemplazar el dominio provisional de pedidos en 6 tandas (datos, `json`/`io`, `basics`/`oop`/`exceptions`, el resto
    de `01-language`, `04-data`, ejercicios y ruta 🎯).
-2. **Fase B (B0–B10)**: temario completo, tutoriales, ejercicios con la escala de `java-champion-review`, corrutinas y
+2. **B1 · Tutoriales** (en curso): `cli` y `repl` listos, con `check.sh` que verifica cada comando; faltan `install`,
+   `decompile` y `debug`.
+3. **Fase B (B0–B10)**: temario completo, el resto de tutoriales, ejercicios con la escala de `java-champion-review`, corrutinas y
    reactivo, tracks legacy, web, móvil y el resto de secciones.
 
 **Preguntas abiertas** ([sección 10](#10-para-decidir-en-la-revisión)): cortes legacy, numeración de secciones, dónde
@@ -129,7 +131,8 @@ Lo que se deja fuera, a propósito:
 - **1.0–1.3**: no vale la pena un proyecto; las diferencias se cuentan en `docs/LegacyKotlin.md`.
 - **1.5, 1.7 y 1.8**: los cubren los tracks vecinos con etiquetas de versión. Un track por versión menor sería
   repetir casi todo.
-- **`-language-version` en un compilador moderno**: K2 solo acepta pocas versiones hacia atrás ⚠️, y no reproduce
+- **`-language-version` en un compilador moderno**: medido con 2.4.21, el mínimo es `2.0` (y deprecado); `1.9` da
+  `language version 1.9 is no longer supported`. Además no reproduce
   el bytecode, el backend viejo ni el plugin de Gradle de la época. Por eso los tracks usan el compilador real.
 
 ---
@@ -330,7 +333,7 @@ transversal.
 |---|---|---|
 | **B0′** | Elegir el caso de finanzas (sección 11) y reemplazar el dominio provisional de pedidos en datos, lecciones y ejercicios 🎯 | Ruta prioritaria del README rehecha |
 | **B0** | `docs/Temario.md` completo: cada lección con mapeo Java → Kotlin, trampas, etiquetas de versión y su ⚡ | Revisión juntos antes de escribir código |
-| **B1** | `tutorials/`: `install`, `cli`, `repl`, `decompile`, `debug` | 5 tutoriales con sus scripts |
+| **B1** 🟡 | `tutorials/`: `install`, `cli` ✅, `repl` ✅, `decompile`, `debug` | 5 tutoriales con sus scripts y un `check.sh` cada uno |
 | **B2** | Ejercicios de las 12 lecciones actuales llevados a la nueva escala: mínimo 25, 🎤, ⚡ | ~300 → ~330 ejercicios + 12 ⚡ |
 | **B3** | `02-coroutines` (10 lecciones) y `03-reactive` (4) | Código, pruebas, `Exercises.md` |
 | **B4** | Lecciones nuevas de `01-language` (`generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2`) | |

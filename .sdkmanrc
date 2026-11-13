@@ -1,3 +1,5 @@
-# JDK base del curso (Java 21 LTS). Con SDKMAN: `sdk env` (o sdkman_auto_env=true en ~/.sdkman/etc/config)
-# Kotlin no hace falta instalarlo: Gradle baja el compilador. Los tracks legacy (20-22) traen su propio .sdkmanrc.
+# JDK base del curso (Java 21 LTS) y Kotlin 2.4.21 de línea de comandos para los tutoriales (kotlinc, kotlin, scripts).
+# Con SDKMAN: `sdk env` (o `sdk env install`; sdkman_auto_env=true en ~/.sdkman/etc/config lo hace al entrar).
+# Las secciones Gradle no necesitan Kotlin instalado: Gradle baja el compilador. Los tracks legacy traen su .sdkmanrc.
 java=21.0.8-zulu
+kotlin=2.4.21
