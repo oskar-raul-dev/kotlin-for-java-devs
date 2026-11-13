@@ -43,6 +43,9 @@ Bases de datos en Docker: PostgreSQL 17.2 y MySQL 8.4.3 (sin cambios en A7).
 | `21-legacy-kotlin16` | 1.6.21 | 7.6.x ⚠️ | 11 y 17 | Fase B5 |
 | `22-legacy-kotlin19` | 1.9.22 | **9.2.1** (wrapper propio; no llega a 10) | 21 | Build y prueba de humo listos (A6); notas en [`22-legacy-kotlin19/docs/k2-notes.md`](../22-legacy-kotlin19/docs/k2-notes.md) |
 
+Contenedores (`docker/legacy-kotlin/compose.yaml`, fijados por digest): `k14` Temurin 11.0.33, `k16` Temurin 17.0.21,
+`k19` Temurin 21.0.13, todos sobre Ubuntu 26.04 y con variante `arm64`.
+
 Los tracks legacy están **fuera del composite** y traen su propio wrapper y `.sdkmanrc`: se corren desde su carpeta
 (`cd 22-legacy-kotlin19 && ./gradlew test`). El plugin de Gradle de Kotlin 1.9.22 corre en Gradle 9.9.1 con avisos de
 deprecación que serán errores en Gradle 10, así que el track 1.9 se queda en Gradle 9.2.1 (el que usaba la base antes

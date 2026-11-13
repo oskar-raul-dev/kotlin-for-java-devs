@@ -1,0 +1,33 @@
+# JDK de cada track legacy de Kotlin, para correrlos sin instalar JDK viejos en la máquina.
+# Se usa a través de scripts/legacy.sh:
+#   ./scripts/legacy.sh 19 test          ->  docker compose run --rm k19 ./gradlew test
+# Solo se conteneriza el JDK: Gradle llega con el wrapper de cada track y Kotlin con su plugin.
+# Las imágenes son multi-arquitectura (corren nativas en Apple Silicon) y van fijadas por digest para que no
+# cambien solas; cómo actualizarlas está en docker/legacy-kotlin/README.md.
+name: kotlin-learning-legacy
+
+x-track: &track
+  volumes:
+    - ../..:/work                       # el repo completo; cada servicio entra a la carpeta de su track
+    - gradle-home:/gradle-home          # wrappers, dependencias y caché de Gradle, compartidos entre corridas
+  environment:
+    GRADLE_USER_HOME: /gradle-home
+    # El daemon muere con el contenedor (run --rm): arrancarlo solo agrega tiempo.
+    GRADLE_OPTS: -Dorg.gradle.daemon=false
+
+services:
+  k14:                                  # 20-legacy-kotlin14: Kotlin 1.4.32, Gradle 6.8.x (fase B5)
+    <<: *track
+    image: eclipse-temurin:11-jdk@sha256:8b64035b610d11979ee0fdefca06355b8fcfb7001ec657a5223ca996b82614b4
+    working_dir: /work/20-legacy-kotlin14
+  k16:                                  # 21-legacy-kotlin16: Kotlin 1.6.21, Gradle 7.6.x (fase B5)
+    <<: *track
+    image: eclipse-temurin:17-jdk@sha256:5465815640e10433422217335e15a523a3e57021a1f2ae0fc3849380d237979f
+    working_dir: /work/21-legacy-kotlin16
+  k19:                                  # 22-legacy-kotlin19: Kotlin 1.9.22, Gradle 9.2.1
+    <<: *track
+    image: eclipse-temurin:21-jdk@sha256:0a3f329821dcadf54b2a3033a15e2e9f007069a9db43d7f51897e6b80e726b07
+    working_dir: /work/22-legacy-kotlin19
+
+volumes:
+  gradle-home:

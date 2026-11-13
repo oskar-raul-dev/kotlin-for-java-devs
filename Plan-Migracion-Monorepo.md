@@ -18,7 +18,7 @@ Redactado el **10 de noviembre de 2026**. Lo marcado con ⚠️ se verifica al e
 
 ## Estado y próximos pasos
 
-Actualizado el **13 de noviembre de 2026**, al cerrar A6. El avance detallado por sección y lección está en
+Actualizado el **13 de noviembre de 2026**, al cerrar A8. El avance detallado por sección y lección está en
 [`CHECKLIST.md`](CHECKLIST.md).
 
 **Hecho (fase A, pasos A0–A7):**
@@ -32,7 +32,8 @@ Actualizado el **13 de noviembre de 2026**, al cerrar A6. El avance detallado po
 | `0d734cd` Move current lessons into 01-language and 04-data | Composite build en la raíz; 123 pruebas en verde (85 + 38) con PostgreSQL y MySQL |
 | `cb023d3` Close monorepo move (A0-A5) and add progress checklist | `CHECKLIST.md`; importación en IntelliJ comprobada. Tag `monorepo-1.9.22` |
 | `d2f6b35` Migrate base to Kotlin 2.4.21 | A7. Tag `monorepo-2.4.21` |
-| Add Kotlin 1.9 legacy track | A6: `22-legacy-kotlin19` con wrapper propio (Gradle 9.2.1), Kotlin 1.9.22 y 4 pruebas de humo. Tag `legacy-kotlin19` |
+| `98a5125` Add Kotlin 1.9 legacy track | A6: `22-legacy-kotlin19` con wrapper propio (Gradle 9.2.1), Kotlin 1.9.22 y 4 pruebas de humo. Tag `legacy-kotlin19` |
+| Add containers for the legacy Kotlin tracks | A8: `docker/legacy-kotlin/`, `scripts/legacy.sh`, `docs/LegacyKotlin.md`. Tag `legacy-containers` |
 
 **A7 (13 de noviembre de 2026):** la base pasó a **Kotlin 2.4.21**, Gradle 9.9.1, Hibernate 7.4.15 y librerías al
 día, por subpasos y sin romper nada: mismas 123 pruebas en verde y misma salida en los `Main` salvo mensajes de
@@ -44,20 +45,22 @@ librerías. K2 dio 3 avisos nuevos, ya corregidos. Versiones en [`docs/Versions.
 falla a propósito si el track deja de correr con K1: comprueba la versión y el `toString()` de una lambda, que con K2
 cambia por `invokedynamic`.
 
+**A8 (13 de noviembre de 2026):** `./scripts/legacy.sh 19` corre el track 19 en `eclipse-temurin:21-jdk` (fijada por
+digest, `arm64` nativo en Apple Silicon) con las mismas 4 pruebas que en nativo. Las imágenes de los tracks 14
+(Temurin 11) y 16 (Temurin 17) también están fijadas y corren en `arm64`; sus tracks se crean en B5.
+
 Tags anotados: `baseline-1.9.22` (curso v1 de proyecto único), `monorepo-1.9.22` (fin de A5), `monorepo-2.4.21`
-(fin de A7) y `legacy-kotlin19` (fin de A6).
+(fin de A7), `legacy-kotlin19` (fin de A6) y `legacy-containers` (fin de A8).
 
 **Remoto:** `origin` en GitHub desde el 13 de noviembre de 2026. Antes de cada push se repite el escaneo de
 referencias externas sobre `git log -p --all`, y se suben los tags con `git push origin main --follow-tags`.
 
 **Pendiente, en el orden en que se va a hacer:**
 
-1. **A8 · Contenedores**: `docker/legacy-kotlin/`, `scripts/legacy.sh`, `docs/LegacyKotlin.md`, probados en Apple
-   Silicon con el track 19, que ya corre en nativo.
-2. **A9 · Documentación**: README con índice de secciones y CLAUDE.md reescrito. (`CHECKLIST.md` y `docs/Versions.md` ya existen.)
-3. **B0′ · Caso de finanzas**: elegir de la [sección 11](#11-caso-de-punta-a-punta-ideas-de-reemplazo) y reemplazar el
+1. **A9 · Documentación**: README con índice de secciones y CLAUDE.md reescrito. (`CHECKLIST.md` y `docs/Versions.md` ya existen.)
+2. **B0′ · Caso de finanzas**: elegir de la [sección 11](#11-caso-de-punta-a-punta-ideas-de-reemplazo) y reemplazar el
    dominio provisional de pedidos.
-4. **Fase B (B0–B10)**: temario completo, tutoriales, ejercicios con la escala de `java-champion-review`, corrutinas y
+3. **Fase B (B0–B10)**: temario completo, tutoriales, ejercicios con la escala de `java-champion-review`, corrutinas y
    reactivo, tracks legacy, web, móvil y el resto de secciones.
 
 **Preguntas abiertas** ([sección 10](#10-para-decidir-en-la-revisión)): cortes legacy, numeración de secciones, dónde
@@ -157,8 +160,10 @@ scripts/
 - **En nativo**: cada track lleva su `.sdkmanrc` (`java=11.x-zulu`, etc.). `sdk env` y `./gradlew test`.
 - Los tracks 16 y 19 también pueden usar `jvmToolchain` de Gradle; el 14 no, porque su plugin es anterior a 1.5.30.
   Ahí el contenedor o SDKMAN no son opcionales.
-- ⚠️ A probar en A8: Gradle 6.8 dentro de Temurin 11 en arm64, IntelliJ 2026 importando un proyecto con Gradle 6.8,
-  y la caché compartida entre wrappers de Gradle distintos.
+- Probado en A8 con el track 19: imagen `arm64` nativa, volumen `gradle-home` (primera corrida ~1 min, siguientes ~4 s)
+  y `build/` compartido entre contenedor y nativo sin limpiar.
+- ⚠️ Pasa a B5: Gradle 6.8 dentro de Temurin 11 en arm64, IntelliJ 2026 importando un proyecto con Gradle 6.8,
+  la caché compartida entre wrappers de Gradle distintos y el acceso a las bases desde `k16`.
 
 ---
 
@@ -293,7 +298,7 @@ escribir contenido nuevo. Cada paso termina en un commit.
 | **A5 · Cierre del movimiento** ✅ tag `monorepo-1.9.22` | Borrar `src/` y el build del root viejo. Corregir comandos y rutas en README, CLAUDE.md, `docs/Temario.md` y los `Exercises.md`. Importar en IntelliJ | `./gradlew test` en la raíz: 123 pruebas, mismos nombres que la línea base |
 | **A6 · Track 1.9** ✅ tag `legacy-kotlin19` | `22-legacy-kotlin19/` con wrapper propio (9.2.1), build en 1.9.22, `.sdkmanrc` y una prueba de humo. Primer track porque su build ya se sabe que funciona | `cd 22-legacy-kotlin19 && ./gradlew test` en nativo: 4 pruebas. (`./gradlew -p 22-legacy-kotlin19 test` desde la raíz también pasa, pero con el Gradle 9.9.1 de la raíz y sus avisos) |
 | **A7 · Base a 2.x** ✅ | `01` y `04` a Kotlin 2.4.21, Gradle 9.9.1 y librerías al día (Hibernate 7.4.15), en 4 subpasos. Cada cosa que se rompe o cambia de comportamiento se anota en `22-legacy-kotlin19/docs/k2-notes.md` | 123 pruebas en verde en 2.4 |
-| **A8 · Contenedores** ⬜️ | `docker/legacy-kotlin/` (compose + README), `scripts/legacy.sh`, `docs/LegacyKotlin.md`. Probar con el track 19 en Apple Silicon | `./scripts/legacy.sh 19 test` igual que en nativo |
+| **A8 · Contenedores** ✅ tag `legacy-containers` | `docker/legacy-kotlin/` (compose + README), `scripts/legacy.sh`, `docs/LegacyKotlin.md`. Probar con el track 19 en Apple Silicon | `./scripts/legacy.sh 19 test` igual que en nativo |
 | **A9 · Documentación** ⬜️ | README nuevo (índice de secciones como el de Groovy), CLAUDE.md reescrito (versiones, arquitectura, niveles, leyenda, reglas de sincronía). `docs/Versions.md` (A7) y `CHECKLIST.md` ya existen | Revisión juntos |
 
 **Lo que se limpió en el curso v1 (A1)**, porque el repo va a ser público:

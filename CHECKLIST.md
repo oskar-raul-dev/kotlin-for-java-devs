@@ -26,11 +26,11 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, ideas del caso de finanzas |
 | `docs/Temario.md` | 🟡 | `EN CREACIÓN` | El de las 14 lecciones actuales; se reescribe completo en B0 |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
-| `docs/LegacyKotlin.md` | ⬜️ | `PENDIENTE` | Con A8 |
+| `docs/LegacyKotlin.md` | ✅ | `LISTO` | Versiones 1.0 → 2.x, los tres tracks, cómo correrlos y trampas |
 | `docs/JavaToKotlin.md`, `docs/EffectiveKotlin.md` | ⬜️ | `PENDIENTE` | Fase B |
 | `CLAUDE.md` | ✅ | `LISTO` | Al día con el monorepo; se revisa en A9 |
 | Compose de PostgreSQL 17.2 y MySQL 8.4.3 | ✅ | `LISTO` | `docker/postgres`, `docker/mysql` |
-| Contenedores de los tracks legacy (`docker/legacy-kotlin/`, `scripts/legacy.sh`) | ⬜️ | `PENDIENTE` | Paso A8; carpetas creadas |
+| Contenedores de los tracks legacy (`docker/legacy-kotlin/`, `scripts/legacy.sh`) | ✅ | `LISTO` | `k14`/`k16`/`k19` con Temurin 11/17/21 por digest; `k19` probado en Apple Silicon |
 
 ## Migración (fase A)
 
@@ -44,8 +44,8 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | A5 · Cierre del movimiento | ✅ | Composite importado en IntelliJ; 123 pruebas en verde sin SKIPPED; tag `monorepo-1.9.22` |
 | A7 · Base a Kotlin 2.x | ✅ | 4 subpasos, 123 pruebas en verde; notas en `22-legacy-kotlin19/docs/k2-notes.md` |
 | A6 · Track `22-legacy-kotlin19` | ✅ | Wrapper propio 9.2.1, Kotlin 1.9.22, 4 pruebas de humo; fuera del composite |
-| A8 · Contenedores legacy | ⬜️ | **Siguiente** |
-| A9 · Documentación | ⬜️ | README con índice de secciones, CLAUDE.md reescrito |
+| A8 · Contenedores legacy | ✅ | `./scripts/legacy.sh 19` = nativo (4 pruebas); `arm64` nativo |
+| A9 · Documentación | ⬜️ | **Siguiente**: README con índice de secciones, CLAUDE.md reescrito |
 | B0′ · Caso de finanzas | ⬜️ | Elegir de la sección 11 del plan y reemplazar el dominio de pedidos |
 
 ## Secciones
@@ -282,3 +282,6 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
 - **2026-11-13** · A6: `22-legacy-kotlin19` con wrapper propio (Gradle 9.2.1), Kotlin 1.9.22, `.sdkmanrc` y 4 pruebas de
   humo (`data object`, `entries`, `..<`, y el `toString()` de una lambda, que delata si corre K1 o K2). Fuera del
   composite: `cd 22-legacy-kotlin19 && ./gradlew test`. Remoto `origin` en GitHub. Siguiente: A8.
+- **2026-11-13** · A8: `docker/legacy-kotlin/compose.yaml` con `k14`, `k16` y `k19` (Temurin 11.0.33, 17.0.21 y 21.0.13,
+  fijadas por digest, `arm64` nativo), `scripts/legacy.sh` y `docs/LegacyKotlin.md`. `./scripts/legacy.sh 19` pasa las
+  4 pruebas igual que en nativo; caché en el volumen `gradle-home`. Siguiente: A9.
