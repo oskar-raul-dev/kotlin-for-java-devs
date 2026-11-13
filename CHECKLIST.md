@@ -55,7 +55,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 
 | Sección | Estructura | Build base | Código | Pruebas | Ejercicios | Tutorial / docs | Estado |
 |---|---|---|---|---|---|---|---|
-| [`tutorials`](#tutorials) | ✅ | ➖ | ➖ | ➖ | 🟡 30 | 🟡 2 de 5 | `EN CREACIÓN` |
+| [`tutorials`](#tutorials) | ✅ | ➖ | ➖ | ➖ | ✅ 72 | ✅ 5 de 5 | `LISTO` |
 | [`01-language`](#01-language) | ✅ | ✅ Gradle (2.4.21) | 🟡 | 🟡 | 🟡 | ➖ | `EN CREACIÓN` |
 | [`02-coroutines`](#02-coroutines) | ✅ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
 | [`03-reactive`](#03-reactive) | ✅ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
@@ -84,11 +84,11 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
 
 | # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
 |---|---|---|---|---|---|---|
-| — | `install` | ➖ | ➖ | ⬜️ | ➖ | `PENDIENTE` |
+| — | `install` | ✅ ejemplos | ✅ `check.sh` (14) | ✅ 12 | ➖ | `LISTO` |
 | — | `cli` | ✅ ejemplos | ✅ `check.sh` (30) | ✅ 15 | ➖ | `LISTO` |
 | — | `repl` | ✅ ejemplos | ✅ `check.sh` (17) | ✅ 15 | ➖ | `LISTO` |
-| — | `decompile` | ➖ | ➖ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `debug` | ➖ | ➖ | ⬜️ | ➖ | `PENDIENTE` |
+| — | `decompile` | ✅ ejemplos | ✅ `check.sh` (47) | ✅ 16 | ✅ enunciado | `LISTO` |
+| — | `debug` | ✅ ejemplos | ✅ `check.sh` (28) | ✅ 14 | ➖ | `LISTO` |
 
 ### 01-language
 
@@ -300,3 +300,8 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   defecto Java 8, `-include-runtime` mete también `kotlin-reflect` (5.7 MB), `-language-version`/`-api-version` 1.9
   ya no se aceptan, y el REPL de `kotlinc` no arranca (2.1.21 lo corría con lenguaje 1.9). `.sdkmanrc` de la raíz con
   `kotlin=2.4.21`.
+- **2026-11-13** · B1 cerrado: tutoriales `install` (14 comprobaciones), `decompile` (47, con el ⚡ del catálogo de 20
+  construcciones como ejercicio) y `debug` (28). Medido: `jvmToolchain(17)` compila con el 17 aunque Gradle corra en
+  21; con target 21 el `when` sobre `sealed` es `typeSwitch` y la `sealed` lleva `PermittedSubclasses`; el campo de un
+  `lateinit` es público; `filter { }` no crea lambda; `jdb` no entiende operadores de Kotlin; `DebugProbes` solo
+  funcionó como `-javaagent`. 5 tutoriales, 72 ejercicios, 136 comprobaciones.

@@ -69,7 +69,7 @@ of study (`Legacy19SmokeTest` fails on purpose if track 19 stops running Kotlin 
 ./gradlew -p 04-data run -Plesson=jpa --args=postgres         # JPA against Docker Postgres (drop-and-create)
 cd 22-legacy-kotlin19 && ./gradlew test                       # legacy track 19, natively (own wrapper)
 ./scripts/legacy.sh 19 [gradle args | shell]                  # same, inside its JDK container (default: test)
-tutorials/cli/check.sh && tutorials/repl/check.sh             # re-run every command of the tutorials (after `sdk env`)
+for t in install cli repl decompile debug; do tutorials/$t/check.sh || break; done   # re-run every tutorial command (after `sdk env`)
 ```
 
 `-Plesson=<subpackage>` sets `mainClass` to `dev.raul.oskar.learning.kotlin.<lesson>.MainKt` (see each section's

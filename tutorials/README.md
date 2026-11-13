@@ -15,13 +15,19 @@ Las secciones con Gradle no necesitan el compilador instalado (lo baja Gradle); 
 
 ## Índice
 
+Orden sugerido: `install` → `cli` → `repl` → `decompile` → `debug`.
+
 | Tutorial | Qué cubre | Ejercicios | Verificar | Estado |
 |---|---|---|---|---|
 | [`cli/`](cli/README.md) | `kotlinc` y `kotlin`: qué genera el compilador, la stdlib en el classpath, jars ejecutables, librerías y `-cp`, Java consumiendo Kotlin, opciones (`-jvm-target`, `-language-version`, `-Werror`) | [15](cli/Exercises.md) | `tutorials/cli/check.sh` (30) | ✅ |
 | [`repl/`](repl/README.md) | Qué pasó con el REPL (1.9 → 2.1 → 2.4), `-e`, scripts `.kts` y `.main.kts` con dependencias, `@file:Import`, caché, shebang, scratch files y Kotlin Notebook | [15](repl/Exercises.md) | `tutorials/repl/check.sh` (17) | ✅ |
-| `install/` | SDKMAN, brew, toolchains de Gradle, IntelliJ | — | — | Fase B1 |
-| `decompile/` | *Show Kotlin Bytecode*, `javap`, CFR, `@Metadata`; catálogo "qué genera kotlinc" (⚡) | — | — | Fase B1 |
-| `debug/` | Depurador de IntelliJ, corrutinas, `DebugProbes`, `jdb` | — | — | Fase B1 |
+| [`install/`](install/README.md) | Qué instalar y qué no, SDKMAN y `.sdkmanrc`, Homebrew, el wrapper de Gradle, toolchains (`jvmToolchain`, foojay), IntelliJ, Docker | [12](install/Exercises.md) | `tutorials/install/check.sh` (14) | ✅ |
+| [`decompile/`](decompile/README.md) | `javap`, CFR, *Show Kotlin Bytecode* y `@Metadata`: qué genera `kotlinc` para clases, funciones, lambdas, `inline`, `value class`, `suspend` y `when`; cómo cambia con el `jvmTarget` | [16, con ⚡](decompile/Exercises.md) | `tutorials/decompile/check.sh` (47) | ✅ |
+| [`debug/`](debug/README.md) | Información de depuración, `jdb`, JDWP y `--debug-jvm`, SMAP de las funciones `inline`, corrutinas (`-Dkotlinx.coroutines.debug`, `DebugProbes` como agente, `-Xdebug`), IntelliJ | [14](debug/Exercises.md) | `tutorials/debug/check.sh` (28) | ✅ |
+
+```bash
+for t in install cli repl decompile debug; do tutorials/$t/check.sh || break; done   # todos (136 comprobaciones)
+```
 
 ## Convenciones
 
