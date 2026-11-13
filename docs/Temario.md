@@ -340,23 +340,220 @@ sintético de un millón de líneas que corre con el heap limitado (lectura por 
 
 ### 01 · `collections` — Solo lectura frente a mutable, estructuras
 
-> ⬜️ **Pendiente (tanda 2).** Estado: existe. Fuente: contenido anterior en [`archive/Temario-v1.md`](archive/Temario-v1.md) y el código de la lección.
+**Objetivo:** elegir la colección correcta (lista, mapa ordenado, cola, montículo, arreglo primitivo), entender qué
+significa "solo lectura" en Kotlin y usar las estructuras del JDK sin perder la ergonomía de la stdlib.
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** existe (pasa al Mercado en B0′)
+
+> **Hoy → B0′:** los conteos por categoría y día y el historial por usuario pasan a volumen por ticker y día, al
+> libro de órdenes y a la ventana de cierres. `TreeMap`, `ArrayDeque` y `PriorityQueue` ya están en la lección.
+
+| Java | Kotlin | Nota |
+|---|---|---|
+| `List.of(…)` (inmutable) | `listOf(…)` (**solo lectura**) | La interfaz `List` no tiene escritura, pero el objeto de abajo puede cambiar |
+| `new ArrayList<>()` + `add` | `mutableListOf()`, `buildList { add(…) }` `[1.6]` | `buildList` entrega una `List` de solo lectura al terminar |
+| `list.get(i)`, `Collections.min` | `getOrNull(i)`, `firstOrNull()`, `min()` `[1.7]` / `minOrNull()` | `min()` lanza con lista vacía; `minOrNull()` no |
+| `computeIfAbsent(k, …).add(v)`, `merge(k, 1, Integer::sum)` | `getOrPut(k) { mutableListOf() } += v`, `groupingBy { }.eachCount()` | |
+| `for (Map.Entry<K, V> e : m.entrySet())` | `for ((k, v) in m)` | Destructuring |
+| `TreeMap.headMap`, `floorEntry`, `PriorityQueue` | Los mismos de `java.util`; `heap += x` | `plusAssign` funciona sobre cualquier `MutableCollection` |
+| `ArrayDeque` (`java.util`), `list.removeFirst()` (21) | `ArrayDeque` de `kotlin.collections`, `removeFirstOrNull()` | **Ver trampa** de `removeFirst` |
+| `int[]`, `Integer[]`, `Arrays.equals` | `IntArray`, `Array<Int>`, `contentEquals`, `contentToString` | `IntArray` no hace boxing |
+
+**Trampas:**
+- Solo lectura ≠ inmutable: quien guardó la `MutableList` original puede cambiar lo que tú ves como `List`; la
+  defensa es copiar con `toList()`.
+- `removeFirst()`/`removeLast()` sobre una `MutableList`, compilados contra JDK 21, llaman a
+  `java.util.List.removeFirst` (de `SequencedCollection`): `NoSuchMethodError` en JDK 17 o en Android. Ni 1.9.22 ni
+  2.4.21 avisan (medido con `javap`); se usa `removeFirstOrNull()` o `removeAt(0)`.
+- `mutableMapOf()` es un `LinkedHashMap` (orden de inserción) y `HashMap()` no garantiza orden: una prueba que
+  dependa del orden pasa con uno y falla con el otro.
+- `==` entre arreglos compara referencias (K2 lo avisa); hace falta `contentEquals`.
+- `min()` y `max()` cambiaron de significado: deprecados (nullables) en 1.4 y de vuelta no nulos desde 1.7 `[1.7]`.
+
+**Caso:** el `OrderBook` del Mercado: compras en `TreeMap<Long, ArrayDeque<LimitOrder>>` de mayor a menor precio,
+ventas de menor a mayor, FIFO dentro de cada precio; ventana de 7 días de cierres con `subMap`; `PriorityQueue` de
+alertas de precio; volumen por ticker y día. **Ruta 🎯:** bloque 3 (contador, solo lectura, conteo por ticker y día)
+y bloque 4 (ventana de 7 días con `TreeMap`).
+
+**🎤 Entrevista:** ¿`listOf` es inmutable? · ¿Qué estructura usarías para un libro de órdenes y por qué? · ¿Cómo
+funciona un `HashMap` por dentro y qué pasa con un `hashCode` malo?
+
+**⚡ `HashMap` propio:** un mapa de direccionamiento abierto (o de listas, a elegir) con redimensionamiento, que
+implementa `MutableMap` y se usa con claves del caso (tickers y `AccountId`) · **Se verifica con:** una prueba
+diferencial contra `java.util.HashMap` (100 000 operaciones aleatorias con semilla fija, mismo resultado en cada
+paso), una prueba con claves de `hashCode` constante, y una medición con `measureTime` `[1.9]` frente al del
+JDK.
 
 ### 01 · `functional` — Funciones, lambdas, scope functions, pipelines
 
-> ⬜️ **Pendiente (tanda 2).** Estado: existe. Fuente: contenido anterior en [`archive/Temario-v1.md`](archive/Temario-v1.md) y el código de la lección.
+**Objetivo:** reemplazar `Function<>`, Streams y `Collectors` por tipos función y operaciones de colección, saber
+cuándo conviene `Sequence`, y usar las scope functions sin anidarlas.
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** existe (pasa al Mercado en B0′)
+
+> **Hoy → B0′:** `Txn` y el `Order` mutable de las scope functions pasan a `Tick`, `Candle` y `Execution`; el
+> `groupBy` de transacciones pasa a velas, VWAP y P&L.
+
+| Java | Kotlin | Nota |
+|---|---|---|
+| `Function<A, B>`, `Supplier<T>`, `Consumer<T>` | `(A) -> B`, `() -> T`, `(T) -> Unit` | Tipos función estructurales; `andThen` no viene, se escribe como extensión `infix` |
+| `@FunctionalInterface` | `fun interface Rule` `[≤ 1.4]` | Conversión SAM desde lambda, también para interfaces Kotlin |
+| `String::length`, `Tick::new` | `String::length`, `::Tick` | Referencias a función, propiedad y constructor |
+| `stream().map().filter().collect(toList())` | `map { }.filter { }` sobre la `List` | **Ansioso**: una lista intermedia por paso; `asSequence()` para lo perezoso |
+| `groupingBy(f, summingLong(g))`, `partitioningBy` | `groupBy { }.mapValues { }`, `groupingBy { }.fold(…)`, `partition { }` | `Grouping` no materializa las listas |
+| `reduce(identity, op)`, `Stream.iterate` | `fold`, `runningFold` `[≤ 1.4]`, `generateSequence`, `sequence { yield(…) }` | `reduce` falla con colección vacía |
+| `mapToLong(…).sum()`, `summaryStatistics()` | `sumOf { }` `[≤ 1.4]`; estadística con un `fold` | No hay `summaryStatistics`: se escribe en una pasada |
+| — (en Java 21 no hay ventanas) | `windowed(7)`, `chunked`, `zipWithNext` | Medias móviles y deltas sin índices |
+
+**Scope functions:** `apply` (configurar; devuelve el objeto), `also` (efecto lateral; devuelve el objeto), `let`
+(transformar; `?.let` para nulos), `run` y `with` (calcular con el objeto como `this`).
+
+**Trampas:**
+- `map`/`filter` sobre `List` son ansiosos: en un pipeline largo sobre todo el feed, cada paso crea una lista; con
+  `asSequence()` no, pero para listas chicas `Sequence` es más lenta.
+- `sumOf { it.quantity }` con un lambda `Int` suma en `Int` y desborda en silencio: el volumen se suma en `Long`.
+- `groupBy` materializa una lista por grupo; para contar o sumar alcanza `groupingBy { }.eachCount()` o `fold`.
+- Scope functions anidadas sombrean `it` y `this`: más de dos niveles ya no se leen (es un clásico de revisión de PR).
+- Una lambda que captura una `var` la envuelve en un `Ref` mutable (no hay "effectively final"): el valor que ve es
+  el del momento en que corre.
+
+**Caso:** el pipeline de limpieza del feed (`mapNotNull`, `distinctBy`, `sortedBy`), velas OHLC con `groupBy` +
+`fold`, VWAP, media móvil de 7 días con `windowed`, volatilidad en una pasada y P&L del portafolio con `fold`.
+**Ruta 🎯:** bloque 3 (`map`/`filter`/`sumOf`, `mapNotNull`, `groupBy`, `flatMap`, `fold`) y bloque 4 (estadística en
+una pasada).
+
+**🎤 Entrevista:** `Sequence` frente a `Stream` frente a `List`: ¿cuándo cada una? · ¿Cuándo usar `let`, `apply`,
+`also`, `run`? · ¿Qué es una lambda con receptor y para qué sirve?
+
+**⚡ Librería de operadores de `Sequence`:** operadores propios y perezosos con `sequence { }`: `windowedBy` (ventanas
+por tiempo), `chunkedWhile`, `scanWhile`, `mergeSorted` de varias secuencias ordenadas, más indicadores (media móvil,
+cruce de medias) para un backtest simple · **Se verifica con:** pruebas que comparan las velas y medias con las de
+la versión ansiosa sobre `ticks.json`, un contador que demuestra cuántos elementos se consumen (pereza), y una
+secuencia infinita que funciona con `take`.
 
 ### 01 · `json` — kotlinx-serialization
 
-> ⬜️ **Pendiente (tanda 2).** Estado: existe. Fuente: contenido anterior en [`archive/Temario-v1.md`](archive/Temario-v1.md) y el código de la lección.
+**Objetivo:** leer y escribir JSON sin Jackson ni reflexión, con la configuración tolerante que pide un feed real,
+jerarquías selladas y serializadores propios.
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** existe (pasa al Mercado en B0′)
+
+> **Hoy → B0′:** `OrderEvent`, `Address` y `Payment` pasan a `Tick` y a `MarketEvent` sellado (`Trade`, `Quote`,
+> `Halt`), leídos de `ticks.json`; el `BigDecimalAsString` pasa a un serializador de `Money`. Versión:
+> kotlinx-serialization **1.13.0** ([`Versions.md`](Versions.md)).
+
+| Java (Jackson) | Kotlin (kotlinx-serialization 1.13.0) | Nota |
+|---|---|---|
+| `ObjectMapper` (reflexión) | `Json { … }` + plugin `serialization` del compilador | Serializadores generados al compilar; un `Json` por configuración, no uno por llamada |
+| `@JsonProperty("trade-id")` | `@SerialName("trade-id")` | `namingStrategy = SnakeCase` para todo el modelo (estable en 1.13) |
+| `FAIL_ON_UNKNOWN_PROPERTIES = false` | `ignoreUnknownKeys = true` | Por defecto es estricto |
+| Campo ausente → `null` | `explicitNulls = false` | Estable en 1.13 (en 1.6.2 pedía `@OptIn`) |
+| `@JsonTypeInfo` + `@JsonSubTypes` | `@Serializable sealed interface MarketEvent` + `@SerialName` por subclase | Discriminador `"type"`; `classDiscriminatorMode` todavía pide opt-in |
+| `JsonSerializer<BigDecimal>` | `object MoneySerializer : KSerializer<Money>` + `@Serializable(with = …)` | Los tipos de Java (`BigDecimal`, `Currency`, `Instant`) no son serializables solos |
+| `JsonNode`, `ObjectNode.put` | `JsonElement`, `jsonPrimitive.longOrNull`, `buildJsonObject { }` | Árbol sin clases y un DSL para construirlo |
+| `MappingIterator` (streaming) | `Json.decodeToSequence<Tick>(input)` | Pide `@OptIn(ExperimentalSerializationApi::class)` en 1.13 |
+
+**Trampas:**
+- Nullable no es opcional: un `price: Long?` sin valor por defecto es una clave **obligatoria**, salvo con
+  `explicitNulls = false`.
+- Los valores por defecto no se escriben (`encodeDefaults = false`): el que consume el JSON ve campos ausentes.
+- Un `Money` serializado como número pasa por `Double` en muchos clientes: se escribe como cadena (`"100.00"`).
+- Una propiedad que se llame `type` choca con el discriminador por defecto de las jerarquías selladas.
+- Construir `Json { … }` en cada llamada recrea la configuración y sus cachés: va en un `val`.
+
+**Caso:** `Tick` con `@SerialName` y `explicitNulls`; `MarketEvent` sellado; `Money` con serializador propio;
+cargar `ticks.json` con nulos, claves desconocidas y duplicados, y descartar lo inválido con un reporte. **Ruta 🎯:**
+bloque 1 (★ claves con guiones y campo que falta; ida y vuelta; cargar con tolerancia).
+
+**🎤 Entrevista:** Jackson frente a kotlinx-serialization: ¿reflexión o plugin, y qué cambia? · ¿Cómo se serializa
+una jerarquía sellada? · ¿Qué diferencia hay entre un campo nullable y uno opcional?
+
+**⚡ Serializador para un formato binario:** un `Encoder`/`Decoder` propio para un formato compacto (enteros con
+*varint*, cadenas con prefijo de longitud, sin nombres de campo) que sirve para cualquier clase `@Serializable` ·
+**Se verifica con:** ida y vuelta de `Tick`, `MarketEvent` y listas; bytes exactos para un caso fijo; y una prueba
+que mide que `ticks.json` en binario ocupa menos que en JSON.
 
 ### 01 · `datetime` — `java.time` correcto
 
-> ⬜️ **Pendiente (tanda 2).** Estado: existe. Fuente: contenido anterior en [`archive/Temario-v1.md`](archive/Temario-v1.md) y el código de la lección.
+**Objetivo:** usar `java.time` sin los errores clásicos (zonas, horario de verano, formatos estrictos, "ahora" sin
+inyectar) y saber qué aporta la stdlib de Kotlin (`kotlin.time`).
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** existe (pasa a los casos en B0′)
+
+> **Hoy → B0′:** la edad, el epoch y las ventanas de días pasan al horario del mercado de Nueva York, a los días
+> hábiles con feriados y al cierre de mes del Banco. Aquí casi no hay mapeo de lenguaje: es `java.time` usado bien.
+
+| Java | Kotlin | Nota |
+|---|---|---|
+| `Instant.now()` dentro de la lógica | `fun isOpen(clock: Clock = Clock.systemUTC())` | `Clock` como parámetro por defecto: se prueba con `Clock.fixed` |
+| `Duration.ofMinutes(5)` | `5.minutes` `[1.6]` (`kotlin.time.Duration`), `toJavaDuration()` | Dos `Duration` con el mismo nombre: cuidado con los imports |
+| `System.nanoTime()` y restar | `measureTime { }` `[1.9]`, `TimeSource.Monotonic` | Tiempo monotónico, no de reloj |
+| `Instant`, `Clock` de `java.time` | `kotlin.time.Instant`, `Clock.System.now()` `[2.3]` | En la stdlib; útil en multiplataforma, en la JVM se convierte |
+| `!d.isBefore(a) && d.isBefore(b)` | `d in a..<b` `[1.9]` | Rangos sobre cualquier `Comparable` |
+| `Stream.iterate(d, x -> x.plusDays(1))` | `generateSequence(d) { it.plusDays(1) }.takeWhile { … }` | Días como `Sequence` |
+| `ofPattern("MM/dd/yyyy")` | `ofPattern("MM/dd/uuuu").withResolverStyle(STRICT)` | Igual que Java: `uuuu` para que `STRICT` funcione |
+| Joda-Time / `java.time` | kotlinx-datetime ⚠️ (se fija en `11-multiplatform`) | En la JVM no hace falta |
+
+**Trampas:**
+- El día de mercado no es el día UTC: un tick de las 20:30 en Nueva York es del día siguiente en UTC; se agrupa por
+  fecha en `America/New_York`.
+- Con horario de verano un día dura 23 o 25 h: `plusHours(24)` no es `plusDays(1)`, y la sesión de 09:30 a 16:00 cae
+  a distinta hora UTC en marzo y en noviembre.
+- `yyyy` con `ResolverStyle.STRICT` falla porque es "año de la era": hace falta `uuuu`.
+- `plusMonths(1)` sobre el 31 de enero da el 28 o 29 de febrero, y volver con `minusMonths(1)` no regresa al 31.
+- `LocalDateTime` no es un instante: guardar un tick como `LocalDateTime` pierde la zona y la hora de verano.
+
+**Caso:** horario del mercado (09:30–16:00 en `America/New_York`, de lunes a viernes, con feriados ficticios), día
+hábil de un tick, ventana de 7 días de cierres, cierre de mes del Banco, todo con `Clock` inyectado. **Ruta 🎯:**
+bloque 2 (instante del tick en la zona del mercado, día hábil, fecha estricta), bloque 3 (agrupar por día de mercado)
+y bloque 4 (★ ventana de 7 días).
+
+**🎤 Entrevista:** `Instant`, `LocalDateTime` y `ZonedDateTime`: ¿cuál se guarda y cuál se muestra? · ¿Cómo se
+prueba código que depende de "ahora"? · `Duration` frente a `Period`.
+
+**⚡ Velas por sesión:** agrupar los ticks en velas de 1 minuto y de sesión (09:30–16:00 en Nueva York) respetando la
+zona y el horario de verano, con los ticks fuera de horario descartados y reportados · **Se verifica con:** pruebas
+con ticks de los días de cambio de horario de marzo y noviembre (las dos sesiones duran 6.5 h y una vela por día UTC
+daría otro resultado) y con el tick fuera de horario de `ticks.json`.
 
 ### 01 · `exceptions` — Sin checked exceptions, errores como valores
 
-> ⬜️ **Pendiente (tanda 2).** Estado: existe. Fuente: contenido anterior en [`archive/Temario-v1.md`](archive/Temario-v1.md) y el código de la lección.
+**Objetivo:** manejar errores sin checked exceptions: precondiciones de la stdlib, jerarquías selladas, `Result` y
+errores como valores, y saber cuándo usar cada uno.
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Banco · **Estado:** existe (pasa al Banco en B0′)
+
+> **Hoy → B0′:** `OrderException`, `OrderService` y el cliente de inventario pasan a `BankException` sellada y
+> `TransferService`; la validación de `Applicant` pasa a validar una `Transfer`.
+
+| Java | Kotlin | Nota |
+|---|---|---|
+| Checked exceptions, `throws` | No existen; `@Throws(IOException::class)` para quien llama desde Java | `Files.readString` compila sin `try` |
+| `try` como sentencia | `val x = try { … } catch (e: E) { … }` | `try` es expresión |
+| `throw` como sentencia | `?: throw …`, `?: error("…")` | `throw` es expresión de tipo `Nothing` |
+| `Objects.requireNonNull`, `Preconditions.checkArgument` | `require`, `requireNotNull`, `check`, `checkNotNull`, `error` | `require` → `IllegalArgumentException`, `check` → `IllegalStateException`; hacen smart cast |
+| `catch (A \| B e)` | `catch (e: Exception) { when (e) { is A, is B -> …; else -> throw e } }` | No hay multi-catch |
+| Jerarquía de excepciones | `sealed class BankException : RuntimeException` + `when` exhaustivo | Traducción a HTTP sin `else` |
+| try-with-resources + suprimidas | `use { }` | Mismo comportamiento con `addSuppressed` |
+| `Optional`, `Either` de Vavr | `Result<T>` `[1.5]` (`runCatching`, `getOrElse`, `mapCatching`) o un `sealed` propio | Arrow (`Either`, `Raise`) en `07 · fp` |
+
+**Trampas:**
+- `runCatching` atrapa `Throwable`: se traga la `CancellationException` de una corrutina (y los `Error`); en código
+  con corrutinas hace falta relanzarla (`runCatchingCancellable` de la lección).
+- `require` frente a `check`: confundirlos cambia `IllegalArgumentException` (400, culpa del cliente) por
+  `IllegalStateException` (500, culpa nuestra).
+- Desde Java, un método Kotlin que lanza `IOException` sin `@Throws` no se puede atrapar: `javac` dice que el `catch`
+  es inalcanzable.
+- Un `return` en `finally` se traga la excepción, igual que en Java.
+- Devolver `Result<T>` de una función no compilaba antes de 1.5; en código viejo aparece envuelto.
+
+**Caso:** `BankException` sellada (`InsufficientFunds`, `AccountFrozen`, `CurrencyMismatch`, `DuplicateTransfer`,
+`UnbalancedEntry`), `TransferService` con `require`/`check`, validación de una `Transfer` que acumula errores, causa
+encadenada al envolver la falla de un servicio externo, y su traducción a códigos HTTP. **Ruta 🎯:** bloque 5 (★ `!!`
+en un PR y `require`/`check`; envolver sin perder la causa; jerarquía sellada a HTTP).
+
+**🎤 Entrevista:** ¿por qué Kotlin no tiene checked exceptions y qué se pierde? · Excepciones, `Result` o `sealed`:
+¿cuándo cada uno? · ¿Qué pasa con `runCatching` dentro de una corrutina cancelada?
+
+**⚡ `TransferService` completo:** transferencias entre cuentas con `BankException` sellada, validación que acumula
+todos los errores de una solicitud, idempotencia por clave (la misma clave devuelve el mismo resultado) y traducción
+a HTTP · **Se verifica con:** una prueba parametrizada de tabla (solicitud → resultado o excepción → código HTTP), un
+reintento con la misma clave que no duplica asientos, y una comprobación de que ningún saldo queda negativo.
 
 ### 01 · `generics` — Varianza, `*`, `reified`, `T & Any`, `typealias`
 

@@ -162,7 +162,7 @@ línea al script y se corre `scripts/version-probes.sh <nombre>`.
 |---|---|---|---|
 | 0 | ✅ | 2026-11-13 | Referencia medida con cinco `kotlinc` (1.9 a 2.4); esqueleto de 88 entradas pendientes; temario anterior en `archive/Temario-v1.md`; chuleta, idioms y trampas migradas y puestas al día |
 | 1 | ✅ | 2026-11-13 | 5 tutoriales (versión corta) y `basics`, `control`, `strings`, `oop`, `io`. Referencia ampliada a once `kotlinc` (1.4.31 a 2.4.21) con 27 construcciones nuevas; `path.walk` pasa a `[2.1]` y `T & Any`, `enumEntries` y `@SubclassOptInRequired` quedan sin ⚠️. ⚡ nuevos (no están en la sección 5 del plan): `control` matcher por búsqueda binaria, `strings` códec estilo FIX, `io` conciliador de extracto |
-| 2 | ⬜️ | | |
+| 2 | ✅ | 2026-11-13 | `collections`, `functional`, `json`, `datetime`, `exceptions`, con la ruta 🎯 del Mercado (bloques 1 a 4) y del Banco (bloque 5) en cada entrada. kotlinx-serialization 1.13.0 medida aparte: `explicitNulls` y `namingStrategy` estables, `decodeToSequence` y `classDiscriminatorMode` con opt-in. ⚡ nuevos (no están en la sección 5 del plan): `datetime` velas por sesión, `exceptions` `TransferService` completo |
 | 3 | ⬜️ | | |
 | 4 | ⬜️ | | |
 | 5 | ⬜️ | | |

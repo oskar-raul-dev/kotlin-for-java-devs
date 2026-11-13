@@ -24,7 +24,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | `README.md` (índice general) | ✅ | `LISTO` | Documentos, requisitos, IDE y terminal, índice de secciones, tracks legacy, convenciones (A9) |
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
 | `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, ideas del caso de finanzas |
-| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tanda 1 escrita (10 entradas); faltan las tandas 2 a 10. El anterior, en `docs/archive/Temario-v1.md` |
+| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tandas 1 y 2 escritas (15 entradas); faltan las tandas 3 a 10. El anterior, en `docs/archive/Temario-v1.md` |
 | `docs/Temario-Plan.md` y `docs/prompts/temario-tanda.md` | ✅ | `LISTO` | Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
 | `docs/LegacyKotlin.md` | ✅ | `LISTO` | Versiones 1.0 → 2.x, los tres tracks, cómo correrlos y trampas |
@@ -322,3 +322,8 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   interface` y `value class` `[1.5]`, `readln` `[1.6]`, `when` no exhaustivo como error `[1.7]`, `path.walk` `[2.1]`,
   `toLowerCase()` error desde 2.1). Medido aparte: `MutableList.removeFirst()` contra JDK 21 llama a
   `java.util.List.removeFirst` sin aviso. ⚡ nuevos: matcher por búsqueda binaria, códec estilo FIX, conciliador.
+- **2026-11-13** · B0, tanda 2: `collections`, `functional`, `json`, `datetime` y `exceptions` en la plantilla nueva,
+  con la ruta 🎯 por bloque (Mercado en 1 a 4, Banco en 5). Medido con el jar de kotlinx-serialization 1.13.0:
+  `explicitNulls` y `namingStrategy` estables; `decodeToSequence` y `classDiscriminatorMode` todavía piden opt-in.
+  ⚡ nuevos: velas por sesión (`datetime`) y `TransferService` completo (`exceptions`); los de `collections`,
+  `functional` y `json` son los del plan, con datos del Mercado.
