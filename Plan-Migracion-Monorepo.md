@@ -30,7 +30,7 @@ medias**. El avance por sección y lección está en [`CHECKLIST.md`](CHECKLIST.
 | B1 · Tutoriales | ✅ | — (5 tutoriales, 72 ejercicios, 136 comprobaciones en sus `check.sh`) |
 | B0 · Temario | ✅ | — (88 entradas, los dos 🐉 y la trazabilidad; revisado con el usuario: [`docs/Temario-Plan.md`](docs/Temario-Plan.md#estado)) |
 | B0′ · Casos Banco y Mercado | ✅ | — (las 6 tandas del [reemplazo](docs/Casos.md#plan-de-reemplazo): el dominio de pedidos ya no existe) |
-| B0″ · Guías de lección | ✅ (mapa) · 🟡 guías de estudio: 4 de 12 (`basics`, `control`, `strings`, `oop`) ([sección 13](#13-guías-de-estudio-teoría-y-fuentes-propuesta)) | — (índice, plantilla y 12 guías en [`docs/lessons/`](docs/lessons/README.md); se mantienen con cada cambio de código) |
+| B0″ · Guías de lección | ✅ (mapa) · 🟡 guías de estudio: 8 de 12 (faltan `datetime`, `exceptions`, `jdbc`, `jpa`) ([sección 13](#13-guías-de-estudio-teoría-y-fuentes-propuesta)) | — (índice, plantilla y 12 guías en [`docs/lessons/`](docs/lessons/README.md); se mantienen con cada cambio de código) |
 | B2–B10 | ⬜️ | Todo |
 
 ### La base del curso v1, verificada en Kotlin 2.x
@@ -115,7 +115,8 @@ Tags anotados: `baseline-1.9.22` (curso v1 de proyecto único), `monorepo-1.9.22
 | `6247429` Propose study guides with theory and sources | Sección 13 del plan y la guía de `basics` como muestra |
 | `1aed5c7` Adopt the study guide format | Reglas, plantilla y `scripts/check-guide-links.sh` |
 | `d0a14f1` Write study guides 1: control, strings, oop | Guías de estudio de `control`, `strings` y `oop` |
-| Move the database ports to the 20000 range | PostgreSQL 25432 y MySQL 23306 |
+| `b32d9cc` Move the database ports to the 20000 range | PostgreSQL 25432 y MySQL 23306 |
+| Write study guides 2: io, collections, functional, json | Guías de estudio de `io`, `collections`, `functional` y `json` |
 
 **Remoto:** `origin` en GitHub desde el 13 de noviembre de 2026. Antes de cada push se repite el escaneo de
 referencias externas sobre `git log -p --all`, y se suben los tags con `git push origin main --follow-tags`.

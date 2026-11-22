@@ -470,3 +470,9 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   23306, para no chocar con los contenedores de otro proyecto que usan el rango 10000. Cambia en los `compose.yaml`, en
   los valores por defecto del código (`postgresConfig`, `mysqlConfig`, `postgresFactory`) y en la documentación.
   Contenedores recreados; 157 pruebas en verde con las dos bases arriba, 0 `SKIPPED`.
+- **2026-11-22** · **Guías de estudio, entrega 2 (`io`, `collections`, `functional`, `json`):** `io` a fondo (NIO
+  debajo de `kotlin.io.path`, UTF-8 frente a JEP 400, cargar todo frente a `useLines`, `use` y suprimidas, CSV, recursos y
+  consola testeable, Kermit); `collections` con lo medido para la guía (qué clase de Java hay debajo de `listOf`,
+  `mapOf`, `setOf`; un cast a `MutableList` permite `set` sobre `listOf`; covarianza de `List`) y la trampa de JEP 431;
+  `functional` con la tabla `List`/`Sequence`/`Stream` y la de scope functions; `json` comparado con Jackson. 41 enlaces
+  responden; Baeldung bloquea clientes automáticos.
