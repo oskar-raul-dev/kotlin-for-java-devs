@@ -25,7 +25,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
 | `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, casos de finanzas, guías de lección (propuesta); estado al 2026-11-22 |
 | `docs/lessons/` (guías de lección) | ✅ | `LISTO` | Índice, plantilla y 12 guías (10 de `01-language`, `jdbc`, `jpa`), en `docs/lessons/<sección>/NN-<lección>.md` (B0″) |
-| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tandas 1 a 4 y 6 escritas (43 entradas); faltan las tandas 5 y 7 a 10. El anterior, en `docs/archive/Temario-v1.md` |
+| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tandas 1 a 6 escritas (53 entradas); faltan las tandas 7 a 10. El anterior, en `docs/archive/Temario-v1.md` |
 | `docs/Temario-Plan.md` y `docs/prompts/temario-tanda.md` | ✅ | `LISTO` | Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
 | `docs/LegacyKotlin.md` | ✅ | `LISTO` | Versiones 1.0 → 2.x, los tres tracks, cómo correrlos y trampas |
@@ -396,3 +396,9 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   el diagrama de un `require` en 2.4.21, y sin `kotlin-reflect` funcionan `simpleName` y las referencias a propiedades
   pero `members` lanza `KotlinReflectionNotSupportedError`. Las librerías de las tres secciones quedan ⚠️ hasta fijar
   sus versiones. Quedan 45 de 88 entradas.
+- **2026-11-22** · **B0, tanda 5 (`03-reactive` y `04-data`):** `reactor`, `rxjava`, `bridges` y `backpressure` con
+  el pipeline del feed del Mercado en los tres modelos; `jdbc` y `jpa` pasados a la plantilla con el ledger del Banco
+  (aislamiento por motor, actualización perdida, `FOR UPDATE`, `@Version`, N+1) y su nota "Hoy → B0′"; `exposed`,
+  `jooq` (velas y medias con funciones de ventana), `r2dbc` (con el ⚡ de la sección: la misma app con cinco
+  accesos) y `sqldelight` (la capa local de `11-multiplatform`). Librerías sin versión fijada quedan ⚠️. Quedan 35
+  de 88 entradas.

@@ -1166,19 +1166,136 @@ Reactor, RxJava y puentes con corrutinas. **Build:** 2 · **Caso:** Mercado.
 
 ### 03 · `reactor` — `Mono`/`Flux` desde Kotlin, extensiones
 
-> ⬜️ **Pendiente (tanda 5).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** leer y escribir código Reactor desde Kotlin (el de WebFlux y de muchas librerías Java), con las
+extensiones de `reactor-kotlin-extensions` y sin pelear con los tipos nullables.
+**Sección:** `03-reactive` · **Build:** nivel 2 · **Caso:** Mercado · **Estado:** nueva
+
+| Java 21 | Kotlin (Reactor ⚠️ se fija al escribir la sección) | Nota |
+|---|---|---|
+| `Mono.just(x)`, `Flux.fromIterable(list)` | `x.toMono()`, `list.toFlux()` | Extensiones de `reactor-kotlin-extensions` |
+| `flux.map(t -> …).filter(…)` | `flux.map { … }.filter { … }` | Lambdas finales fuera del paréntesis |
+| `Mono<Void>` | `Mono<Void>` / `Mono<Unit>` con cuidado | `Void` no tiene valores; `Unit` sí: no se mezclan |
+| `Mono.empty()` como "no hay" | `Mono<T>` vacío; `awaitSingleOrNull()` lo convierte en `null` | El vacío no es `null`: Reactor no admite `null` dentro |
+| `StepVerifier.create(flux)` | `flux.test().expectNext(…).verifyComplete()` | `reactor-test` con extensión de Kotlin |
+| `subscribeOn` / `publishOn` | Los mismos | Equivalen a elegir dispatcher, pero por operador |
+
+**Trampas:**
+- Nada pasa hasta `subscribe()`: un `Mono` que se crea y no se suscribe no ejecuta nada (el error clásico al portar
+  código imperativo).
+- Reactor prohíbe `null` como elemento: `Mono.just(maybeNull)` lanza; desde Kotlin hay que usar `justOrEmpty` o
+  `toMono()` sobre un nullable.
+- `block()` dentro de un flujo reactivo (o en un hilo de Netty) se queda bloqueado o lanza
+  `IllegalStateException`.
+- Los tipos de Reactor son Java: un `Flux<Tick>` puede traer platform types en las firmas de librerías viejas.
+- Un `flatMap` sin límite de concurrencia lanza todas las suscripciones internas a la vez.
+
+**Caso:** el feed de ticks del Mercado como `Flux<Tick>`: limpieza, velas de un minuto y alertas, el mismo pipeline
+que `02 · flow` escrito en Reactor.
+
+**🎤 Entrevista:** ¿qué significa que Reactor es *lazy*? · `map` frente a `flatMap` en Reactor · ¿Por qué Reactor no
+admite `null`?
+
+**⚡ Pipeline del feed en Reactor:** limpieza, velas y alertas del feed sobre `Flux` · **Se verifica con:** pruebas
+con `StepVerifier` en tiempo virtual (`withVirtualTime`) que dan las mismas velas que la versión `Flow` de
+`02 · flow` para el mismo `ticks.json`.
 
 ### 03 · `rxjava` — RxJava desde Kotlin
 
-> ⬜️ **Pendiente (tanda 5).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** mantener código RxJava (muy común en Android y en servicios viejos) desde Kotlin y saber cómo migrarlo
+a corrutinas.
+**Sección:** `03-reactive` · **Build:** nivel 2 · **Caso:** Mercado · **Estado:** nueva
+
+| Java 21 | Kotlin (RxJava 3 ⚠️) | Nota |
+|---|---|---|
+| `Observable`, `Flowable`, `Single`, `Maybe`, `Completable` | Los mismos | `Flowable` es el único con backpressure |
+| `observable.subscribe(onNext, onError)` | `subscribeBy(onNext = { }, onError = { })` (RxKotlin ⚠️) | Argumentos con nombre: no se confunden los callbacks |
+| `CompositeDisposable.add(d)` | `d.addTo(disposables)` | Hay que liberar las suscripciones |
+| `Schedulers.io()`, `observeOn` | Los mismos | Similares a `Dispatchers.IO` |
+| `TestObserver` | `observable.test().assertValues(…)` | Igual que en Java |
+| — | `kotlinx-coroutines-rx3`: `await()`, `asFlow()`, `rxSingle { }` | El camino de migración a corrutinas |
+
+**Trampas:**
+- Un `subscribe()` sin `onError` lanza `OnErrorNotImplementedException` al primer error, que termina en el handler
+  global (y en Android cierra la app).
+- `Observable` no tiene backpressure: un productor rápido llena la memoria; para eso está `Flowable`.
+- Una suscripción que nadie libera (`dispose`) sigue viva y retiene lo que capturó (fugas de memoria en Android).
+- RxJava tampoco admite `null`: un `map` que devuelve `null` desde Kotlin lanza `NullPointerException`.
+- Mezclar `observeOn` y `subscribeOn` sin entender cuál afecta a qué deja el trabajo en el hilo equivocado.
+
+**Caso:** el mismo pipeline del feed del Mercado, ahora en RxJava, y su migración paso a paso a `Flow`.
+
+**🎤 Entrevista:** `Observable` frente a `Flowable` · ¿Qué pasa con un error sin `onError`? · ¿Cómo migrarías RxJava a
+corrutinas sin reescribir todo de golpe?
+
+**⚡ Migración incremental:** el pipeline en RxJava migrado a `Flow` por partes, con puentes en las fronteras ·
+**Se verifica con:** la misma batería de pruebas en verde en cada paso de la migración (un commit por paso), y una
+prueba final sin dependencias de RxJava en el núcleo.
 
 ### 03 · `bridges` — `kotlinx-coroutines-reactor`, `awaitSingle`, `asFlow`, `asFlux`
 
-> ⬜️ **Pendiente (tanda 5).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** cruzar entre corrutinas y Reactor/RxJava sin perder la cancelación, el contexto ni la backpressure, que
+es lo que pide un backend WebFlux escrito en Kotlin.
+**Sección:** `03-reactive` · **Build:** nivel 2 · **Caso:** Mercado · **Estado:** nueva
+
+| Java 21 | Kotlin (`kotlinx-coroutines-reactor` ⚠️, la versión de coroutines de la sección) | Nota |
+|---|---|---|
+| `mono.block()` | `mono.awaitSingle()`, `awaitSingleOrNull()` | Suspende en vez de bloquear |
+| `flux.toIterable()` | `flux.asFlow()` | La backpressure de Reactor se mapea a la suspensión |
+| Crear un `Flux` desde un productor | `flow.asFlux()`, `flux { send(…) }` | De `Flow` a Reactor |
+| `Mono.fromCallable(…)` | `mono { suspendingCall() }` | Corre una corrutina como `Mono` |
+| Contexto de Reactor (`contextWrite`) | `ReactorContext` en el `CoroutineContext` | El contexto cruza el puente en los dos sentidos |
+| Controlador WebFlux que devuelve `Mono<T>` | `suspend fun` en el controlador | Spring hace el puente solo (`09-spring`) |
+
+**Trampas:**
+- `awaitSingle()` sobre un `Mono` vacío lanza `NoSuchElementException`: para "puede no haber" se usa
+  `awaitSingleOrNull()`.
+- Cancelar la corrutina cancela la suscripción, y viceversa; un `GlobalScope` en el puente rompe esa cadena.
+- `asFlow()` sobre un `Flux` caliente no lo vuelve frío: varios `collect` comparten la fuente.
+- El `ReactorContext` (por ejemplo, el de Spring Security) solo llega si se usa el puente; un `launch` aparte lo pierde.
+- Un `runBlocking` en un controlador WebFlux bloquea un hilo de Netty: todo el servidor se frena.
+
+**Caso:** un servicio del Mercado que lee precios de un cliente Reactor y los expone como `Flow` a la lógica escrita
+con corrutinas.
+
+**🎤 Entrevista:** ¿cómo se llama a una API Reactor desde una corrutina? · ¿Se conserva la cancelación al cruzar el
+puente? · ¿Qué pasa con el contexto de Reactor?
+
+**⚡ Puente con cancelación y contexto:** un adaptador `Flow` ↔ `Flux` para el feed, con un id de correlación en el
+contexto · **Se verifica con:** pruebas de que cancelar del lado `Flow` cancela la suscripción de Reactor (y al
+revés), de que el id de correlación llega a los dos lados, y de que la backpressure frena al productor.
 
 ### 03 · `backpressure` — Backpressure en los tres modelos
 
-> ⬜️ **Pendiente (tanda 5).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** comparar cómo manejan un productor más rápido que el consumidor Reactor (`request(n)`), RxJava
+(`Flowable`) y `Flow` (suspensión), y elegir estrategia (buffer, descarte, último valor) según el dato.
+**Sección:** `03-reactive` · **Build:** nivel 2 · **Caso:** Mercado · **Estado:** nueva
+
+| Java 21 | Kotlin | Nota |
+|---|---|---|
+| `Flow.Subscription.request(n)` (`java.util.concurrent.Flow`) | `emit` que suspende | En `Flow` no hay `request`: el productor espera al consumidor |
+| `onBackpressureBuffer(n)` | `buffer(n)` | Cola acotada entre los dos |
+| `onBackpressureDrop()` | `buffer(n, BufferOverflow.DROP_LATEST)` | Descarta lo nuevo |
+| `onBackpressureLatest()` | `conflate()` | Se queda con el último |
+| `Flowable` frente a `Observable` | Todo `Flow` tiene backpressure | En RxJava hay que elegir el tipo correcto |
+| `limitRate(n)` | `buffer(n)` + `flowOn` | Prefetch entre hilos |
+
+**Trampas:**
+- Un buffer sin límite no es backpressure: solo cambia cuándo se acaba la memoria.
+- Descartar o quedarse con el último sirve para precios, nunca para ejecuciones u órdenes, que hay que procesar todas.
+- `flowOn` agrega un buffer implícito (de 64 por defecto) entre los dos contextos.
+- Un consumidor lento en un `SharedFlow` puede frenar a todos los demás suscriptores.
+- Medir sin carga sostenida (unos segundos) no muestra el problema: la memoria crece de a poco.
+
+**Caso:** una ráfaga del feed del Mercado (diez veces el ritmo normal) contra un consumidor lento: precios con
+`conflate`, ejecuciones con `buffer` acotado.
+
+**🎤 Entrevista:** ¿qué es la backpressure y cómo la resuelve cada modelo? · ¿Cuándo descartas datos y cuándo no? ·
+¿Por qué `Observable` no la tiene?
+
+**⚡ El mismo pipeline en tres modelos:** el pipeline del feed en Reactor, RxJava y `Flow`, bajo la misma carga ·
+**Se verifica con:** una tabla de throughput y memoria máxima de cada uno (con calentamiento, carga sostenida de un
+minuto) guardada en la lección, y una prueba por estrategia que muestra qué elementos llegan (todos, los últimos, los
+primeros).
 
 ---
 
@@ -1188,27 +1305,213 @@ Bases de datos relacionales. **Build:** 2 · **Caso:** Banco.
 
 ### 04 · `jdbc` — JDBC idiomático, tres motores (SQLite, PostgreSQL, MySQL)
 
-> ⬜️ **Pendiente (tanda 5).** Estado: existe. Fuente: contenido anterior en [`archive/Temario-v1.md`](archive/Temario-v1.md) y el código de la lección.
+**Objetivo:** escribir JDBC sin ceremonia con extensiones de Kotlin, aislar las diferencias entre motores en un
+dialecto y probar todo con una sola batería de contrato.
+**Sección:** `04-data` · **Build:** nivel 2 · **Caso:** Banco · **Estado:** existe (pasa al Banco en B0′, tanda 5)
+
+> **Hoy → B0′:** el repositorio de productos (`ProductRepository`, `ProductRepositoryContract`) pasa a
+> `LedgerRepository` con cuentas, asientos y postings, la transferencia en una transacción, la actualización perdida
+> y `SELECT … FOR UPDATE`. Guía: [`01-jdbc.md`](lessons/04-data/01-jdbc.md). Versiones: sqlite-jdbc 3.54.1.0,
+> PostgreSQL JDBC 42.7.14, mysql-connector-j 26.10.0; PostgreSQL 17.2 y MySQL 8.4.3 en Docker
+> ([`Versions.md`](Versions.md)).
+
+| Java 21 | Kotlin | Nota |
+|---|---|---|
+| `try (PreparedStatement ps = …)` | `conn.prepareStatement(sql).use { ps -> }` | `use` cierra igual que try-with-resources |
+| `while (rs.next()) list.add(map(rs))` | `inline fun <T> ResultSet.mapRows(mapper)` | Extensión propia de la lección |
+| `setAutoCommit(false)` / `commit` / `rollback` | `inline fun <T> Connection.inTransaction(block: Connection.() -> T)` | Lambda con receptor: adentro, `this` es la conexión |
+| Interfaz Strategy por motor | `interface Dialect` + `object PostgresDialect : Dialect` | `object` como estrategia sin estado |
+| Clase de configuración + builder | `data class DbConfig` + `companion { fun fromEnv(…) }` | Variables `PG_URL`, `MYSQL_URL` |
+| Suite abstracta de pruebas | `abstract class …Contract` + `assumeTrue` | La misma batería en los tres motores; sin contenedor, `SKIPPED` |
+| `rs.getInt` + `wasNull()` | `rs.getObject("x", Long::class.javaObjectType)` → `Long?` | El nulo de SQL como nulo de Kotlin |
+
+**Trampas:**
+- `getInt` sobre un `NULL` devuelve `0`: sin `wasNull()` (o `getObject`), un saldo nulo parece cero.
+- `COALESCE(SUM(amount), 0)` hace falta porque `SUM` sobre cero filas devuelve `NULL`, no `0`.
+- El aislamiento por defecto cambia por motor: `READ COMMITTED` en PostgreSQL, `REPEATABLE READ` en MySQL (InnoDB);
+  un "leer saldo, restar, escribir" pierde actualizaciones en los dos sin `SELECT … FOR UPDATE` o una versión.
+- El upsert no es estándar: `ON CONFLICT` en PostgreSQL y SQLite, `ON DUPLICATE KEY UPDATE` en MySQL, que además
+  consume valores de `AUTO_INCREMENT` aunque actualice.
+- SQLite guarda los `NUMERIC` con afinidad flexible: un monto puede volver como `Double` si no se cuida el tipo.
+
+**Caso:** `LedgerRepository` del Banco: cuentas, asientos (`JournalEntry`) y postings; la transferencia como un asiento
+en una transacción que valida débitos = créditos; la actualización perdida reproducida y evitada con `FOR UPDATE`; las
+diferencias de aislamiento entre motores en la misma prueba de contrato.
+
+**🎤 Entrevista:** ¿qué aislamiento usa por defecto cada motor y qué anomalías permite? · ¿Cómo evitas la
+actualización perdida en un saldo? · ¿Por qué un contrato de pruebas para varios motores?
+
+**⚡ Ledger concurrente en tres motores:** el `LedgerRepository` con transferencias concurrentes (hilos o corrutinas
+sobre un pool) en SQLite, PostgreSQL y MySQL · **Se verifica con:** el contrato en los tres motores, una prueba que
+muestra la actualización perdida sin bloqueo y otra que la evita con `FOR UPDATE` (o con una columna de versión), y
+la suma de todos los saldos igual antes y después.
 
 ### 04 · `jpa` — Hibernate 7 sin Spring
 
-> ⬜️ **Pendiente (tanda 5).** Estado: existe. Fuente: contenido anterior en [`archive/Temario-v1.md`](archive/Temario-v1.md) y el código de la lección.
+**Objetivo:** usar JPA desde Kotlin sin caer en sus trampas (clases `final`, `data class`, ids nulos), entender el
+contexto de persistencia y medir el N+1.
+**Sección:** `04-data` · **Build:** nivel 2 · **Caso:** Banco · **Estado:** existe (pasa al Banco en B0′, tanda 5)
+
+> **Hoy → B0′:** `Customer`, `PurchaseOrder` y `OrderLine` pasan a `Account` con `@Version` y `JournalEntry` con
+> `Posting` (cascade, `orphanRemoval`), con el N+1 al listar movimientos. Guía: [`02-jpa.md`](lessons/04-data/02-jpa.md).
+> Versiones: Hibernate ORM 7.4.15 (JPA 3.2), H2 2.5.252 ([`Versions.md`](Versions.md)).
+
+| Java 21 | Kotlin | Nota |
+|---|---|---|
+| Constructor sin argumentos para JPA | Plugin `kotlin("plugin.jpa")` (no-arg) | Lo genera el compilador; Kotlin no lo puede llamar |
+| Clases y métodos no `final` para los proxies | Plugin `allopen` para `@Entity`, `@MappedSuperclass`, `@Embeddable` | Sin él, `LAZY` no funciona |
+| Entidad con `equals`/`hashCode` de Lombok | Clase normal; `equals` por id y `hashCode` constante por clase | **Nunca** `data class` |
+| `Long id` nulo antes de persistir | `var id: Long? = null` | |
+| `cascade = {CascadeType.ALL}` | `cascade = [CascadeType.ALL]` | Arreglos en anotaciones |
+| `Account.class` | `Account::class.java` | |
+| `getSingleResult()` y `NoResultException` | `resultList.firstOrNull()` | Sin excepción para "no hay" |
+| `@Version long version` | `@Version var version: Long = 0` | Bloqueo optimista |
+
+**Trampas:**
+- Una entidad `data class` usa todos los campos en `equals`/`hashCode` (también las colecciones lazy, y el id que
+  cambia al persistir): se rompen los `Set` y se disparan cargas inesperadas.
+- `toString` que imprime una colección lazy fuera de la transacción lanza `LazyInitializationException` (o carga toda
+  la relación dentro de ella).
+- Un UPDATE masivo con JPQL no actualiza las entidades que ya están en el contexto de persistencia: hay que limpiarlo.
+- Las propiedades no nullables de Kotlin no impiden que Hibernate cargue un `null` desde la base: la columna tiene que
+  ser `NOT NULL` de verdad.
+- Sin sincronizar los dos lados de una relación (`addPosting` que setea el padre), `mappedBy` ignora el cambio.
+
+**Caso:** `Account` del Banco con `@Version` para el bloqueo optimista en transferencias concurrentes, `JournalEntry`
+con sus `Posting` en cascada, y el N+1 al listar los movimientos de un mes medido con las estadísticas de Hibernate.
+
+**🎤 Entrevista:** ¿por qué una entidad no debe ser `data class`? · ¿Qué es el N+1 y cómo lo resuelves? · Bloqueo
+optimista frente a pesimista.
+
+**⚡ Ledger en JPA con concurrencia:** el ledger con `@Version`, reintento ante `OptimisticLockException` y consultas
+sin N+1 · **Se verifica con:** una prueba de dos transacciones que modifican la misma cuenta (una falla y se
+reintenta), el número exacto de sentencias SQL de cada consulta (con `statementCount()`), y la suma de saldos intacta.
 
 ### 04 · `exposed` — Exposed (DSL y DAO)
 
-> ⬜️ **Pendiente (tanda 5).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** acceder a SQL con Exposed (el framework SQL de JetBrains), comparar su DSL type-safe con su capa DAO y
+con JDBC/JPA.
+**Sección:** `04-data` · **Build:** nivel 2 · **Caso:** Banco · **Estado:** nueva
+
+| Java 21 | Kotlin (Exposed ⚠️ se fija al escribir la sección) | Nota |
+|---|---|---|
+| SQL en cadenas con JDBC | `Accounts.selectAll().where { Accounts.status eq OPEN }` | DSL type-safe: las columnas son objetos |
+| `CREATE TABLE` a mano | `object Accounts : LongIdTable() { val balance = decimal(…) }` | El esquema en Kotlin; `SchemaUtils` lo crea |
+| Entidades de JPA | DAO: `class Account(id) : LongEntity(id)` | Más liviano que JPA, sin proxies |
+| `@Transactional` | `transaction { }` | Bloque con la transacción como receptor |
+| `inTransaction` propio (lección `jdbc`) | `newSuspendedTransaction { }` | Versión con corrutinas |
+
+**Trampas:**
+- Fuera de un bloque `transaction { }` no hay conexión: una consulta perezosa usada afuera lanza.
+- La capa DAO cachea entidades dentro de la transacción: un UPDATE con el DSL no se ve en una entidad ya cargada.
+- Exposed cambió bastante su API entre versiones (por ejemplo, `select` frente a `selectAll().where`): los ejemplos de
+  internet suelen ser viejos.
+- El DSL no protege del N+1: recorrer referencias desde la capa DAO hace una consulta por elemento.
+- Un `decimal(precision, scale)` mal dimensionado redondea montos en silencio según el motor.
+
+**Caso:** el ledger del Banco (cuentas, asientos, postings) con el DSL y con la capa DAO, y la misma transferencia
+que en `jdbc`.
+
+**🎤 Entrevista:** Exposed frente a JPA · DSL frente a DAO · ¿Cómo maneja Exposed las transacciones?
+
+**⚡ El ledger en Exposed:** el mismo contrato del `LedgerRepository` implementado con el DSL de Exposed · **Se verifica
+con:** el contrato de `jdbc` en verde en PostgreSQL y MySQL, y el SQL que genera cada operación guardado y revisado
+(sin N+1).
 
 ### 04 · `jooq` — jOOQ desde Kotlin
 
-> ⬜️ **Pendiente (tanda 5).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** escribir SQL complejo (ventanas, CTE, upserts) con el DSL type-safe de jOOQ generado desde el esquema,
+desde Kotlin.
+**Sección:** `04-data` · **Build:** nivel 2 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin (jOOQ ⚠️ se fija al escribir la sección) | Nota |
+|---|---|---|
+| `ctx.select(ACCOUNT.ID).from(ACCOUNT).where(…)` | Lo mismo, con lambdas finales y sin `;` | jOOQ es Java: desde Kotlin se usa igual |
+| Clases generadas desde el esquema | Generación con el plugin de Gradle de jOOQ | Las tablas y columnas tipadas salen de la base |
+| `Record` a POJO | `fetchInto(AccountRow::class.java)`, `mapping(::AccountRow)` | Mapeo a `data class` por constructor |
+| Funciones de ventana en SQL crudo | `avg(TICK.PRICE).over(partitionBy(…).orderBy(…))` | El fuerte de jOOQ |
+| `MERGE`/upsert por motor | `insertInto(…).onConflict(…).doUpdate()` | jOOQ traduce al dialecto |
+
+**Trampas:**
+- La generación de código necesita una base con el esquema (o los DDL): el build depende de eso.
+- Los tipos generados son Java: una columna nullable aparece como platform type salvo que se configure la generación
+  para Kotlin.
+- La edición gratuita de jOOQ cubre bases de código abierto (PostgreSQL, MySQL, SQLite); otras piden licencia.
+- `fetchOne()` lanza si hay más de una fila; `fetchAny()` no: elegir según lo que garantiza la consulta.
+- Escribir SQL "a la jOOQ" no lo hace portable: las funciones propias de un motor siguen siendo de ese motor.
+
+**Caso:** velas del Mercado guardadas en tablas y consultadas con funciones de ventana (media móvil, VWAP por día);
+el ledger del Banco para comparar con Exposed.
+
+**🎤 Entrevista:** jOOQ frente a JPA: ¿cuándo cada uno? · ¿Qué gana generar código desde el esquema? · ¿Cómo
+escribirías una media móvil en SQL?
+
+**⚡ Analítica del Mercado en SQL:** velas, media móvil de 7 días y VWAP diario calculados en la base con jOOQ ·
+**Se verifica con:** los mismos resultados que el cálculo en memoria de `functional` sobre `ticks.json` (prueba que
+compara uno a uno), en PostgreSQL y MySQL.
 
 ### 04 · `r2dbc` — R2DBC con corrutinas
 
-> ⬜️ **Pendiente (tanda 5).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** acceder a la base sin bloquear hilos con R2DBC y corrutinas, y saber cuándo eso mejora algo y cuándo
+solo complica frente a JDBC (o JDBC con hilos virtuales).
+**Sección:** `04-data` · **Build:** nivel 2 · **Caso:** Banco · **Estado:** nueva
+
+| Java 21 | Kotlin (R2DBC ⚠️, drivers de PostgreSQL y MySQL) | Nota |
+|---|---|---|
+| `Connection` y `PreparedStatement` de JDBC | `ConnectionFactory`, `Statement` de R2DBC | API reactiva: devuelve `Publisher` |
+| `Mono`/`Flux` de Reactor | `awaitSingle()`, `asFlow()` (`03 · bridges`) | Desde corrutinas se escribe en estilo directo |
+| Pool de conexiones JDBC (HikariCP) | `r2dbc-pool` | Otro pool, otra configuración |
+| `@Transactional` | Transacciones de R2DBC (o de Spring Data R2DBC en `09-spring`) | La transacción viaja en el contexto, no en el hilo |
+| JDBC sobre hilos virtuales (Java 21) | La alternativa sin reescribir | Comparar con medición |
+
+**Trampas:**
+- R2DBC no tiene JPA: no hay carga perezosa, ni cascadas, ni contexto de persistencia.
+- Un `Flux` de filas sin consumir mantiene la conexión ocupada: hay que consumirlo entero o cancelarlo.
+- Mezclar R2DBC y JDBC en la misma transacción no se puede: son conexiones distintas.
+- Con hilos virtuales (Java 21), JDBC bloqueante ya es barato: R2DBC solo gana con mucha concurrencia y streaming.
+- Los drivers R2DBC no siempre soportan lo mismo que su par JDBC (tipos, `RETURNING`, lotes).
+
+**Caso:** el ledger del Banco: la consulta de movimientos como `Flow` y la transferencia en una transacción reactiva.
+
+**🎤 Entrevista:** ¿qué problema resuelve R2DBC? · ¿R2DBC o JDBC con hilos virtuales? · ¿Cómo maneja R2DBC las
+transacciones?
+
+**⚡ La misma app en cinco accesos:** el ledger con JDBC, JPA, Exposed, jOOQ y R2DBC detrás del mismo puerto ·
+**Se verifica con:** el contrato del `LedgerRepository` en verde en las cinco, el SQL generado por cada una guardado
+para comparar, y un benchmark de throughput con carga concurrente (calentamiento y repeticiones) con su tabla.
 
 ### 04 · `sqldelight` — SQLDelight
 
-> ⬜️ **Pendiente (tanda 5).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** escribir el SQL a mano en archivos `.sq` y obtener APIs Kotlin type-safe generadas, que es el acceso a
+datos más usado en Kotlin Multiplatform y Android.
+**Sección:** `04-data` · **Build:** nivel 2 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin (SQLDelight ⚠️) | Nota |
+|---|---|---|
+| SQL en cadenas dentro del código | Archivos `.sq` con las consultas con nombre | El SQL es la fuente: se valida al compilar |
+| DAOs escritos a mano | Interfaces generadas (`ledgerQueries.selectByAccount(id)`) | Tipos de Kotlin, nullables incluidos |
+| Migraciones con Flyway | Archivos `.sqm` de SQLDelight | Verificación de migraciones al compilar |
+| Room (Android, con anotaciones) | SQLDelight (SQL primero) | Los dos generan código; Room con KSP |
+| Driver JDBC | Drivers por plataforma (JDBC, Android, nativo) | La misma capa en JVM, Android e iOS |
+
+**Trampas:**
+- Un error de SQL en un `.sq` rompe la compilación: bueno, pero el mensaje sale del plugin de Gradle, no del IDE de
+  Kotlin.
+- El dialecto se configura en el build: escribir SQL de PostgreSQL con el dialecto de SQLite no compila.
+- Las consultas reactivas (`asFlow()`) vuelven a correr ante cualquier cambio en la tabla, no solo en las filas que
+  importan.
+- Las migraciones son responsabilidad propia: un `.sqm` faltante deja bases viejas sin la columna nueva.
+- En multiplataforma, cada plataforma necesita su driver y su forma de crear la base.
+
+**Caso:** el saldo y los movimientos de una cuenta del Banco y la lista de seguimiento de tickers del Mercado, como la
+capa local de la app de `11-multiplatform`.
+
+**🎤 Entrevista:** SQL primero (SQLDelight) frente a anotaciones (Room) · ¿Qué valida SQLDelight al compilar? · ¿Cómo
+se migra el esquema?
+
+**⚡ Capa local compartida:** las consultas `.sq` de saldo, movimientos y lista de seguimiento con su migración ·
+**Se verifica con:** pruebas en la JVM con SQLite en memoria, una migración `.sqm` aplicada sobre una base de la
+versión anterior con los datos intactos, y la misma capa usada luego por `11-multiplatform` sin cambios.
 
 ---
 
