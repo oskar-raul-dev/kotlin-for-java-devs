@@ -73,6 +73,53 @@ Las cinco hacen lo mismo (ejecutar un bloque con un objeto) y se distinguen por 
 La trampa no es elegir mal una: es anidarlas. Con dos niveles, `this` e `it` ya apuntan a objetos distintos según dónde
 se lea, y es de lo primero que se marca en una revisión de código. → [Scope functions][scope]
 
+### 7. Referencias a funciones, propiedades y constructores
+
+`String::length`, `::isPrime`, `::Tick` o `Tick::price` son referencias: valores de tipo función que se pasan donde se espera
+una lambda (`listOf("1", "22").map(String::length)` en `Main`). Hay dos formas: la **no ligada** (`String::startsWith`)
+recibe el objeto como primer parámetro, y la **ligada** (`"ACME"::startsWith`) ya lo tiene fijado (medido: una referencia
+ligada tipada como `(String) -> Boolean` funciona). Es el `String::length` de Java, con dos diferencias: en Kotlin la
+referencia tiene un tipo función propio, y cuando el nombre está sobrecargado hay que dar el tipo esperado (sin él, el
+compilador reporta ambigüedad, medido). → [Callable references][callable-refs]
+
+### 8. Lambdas con receptor: la base de los builders
+
+Un tipo `StringBuilder.() -> Unit` es una función que se ejecuta **con un `StringBuilder` como `this`**: dentro del bloque
+se llama `append(…)` sin prefijo. Así están hechos `buildString`, `buildList`, `apply`, el `inTransaction` de `04 · jdbc`, el
+`html { }` de la lección y todos los DSL (`01 · dsl`). En Java no hay equivalente: el patrón builder se escribe con una clase
+y métodos encadenados. → [Function literals with receiver][receivers]
+
+### 9. Pureza, inmutabilidad y efectos
+
+Una función **pura** devuelve lo mismo para los mismos argumentos y no cambia nada afuera. La lección la da por supuesta en
+tres lugares: `memoize` solo es correcta si la función memorizada es pura (si no, devuelve un valor viejo), `fold` acumula
+sin `var` porque cada paso devuelve un acumulador nuevo, y los pipelines no modifican la lista de entrada (`map` crea una
+nueva). En Kotlin la inmutabilidad es una disciplina, no una garantía: `val` impide reasignar, no mutar el objeto, y una
+`data class` con `var` sigue siendo mutable. Para "modificar" un valor inmutable se usa `copy(…)` (`OrderTicket` en
+`scopeFunctions`).
+
+### 10. Generar secuencias
+
+Además de `asSequence()`, una `Sequence` se crea con `generateSequence(semilla) { siguiente }` (infinita hasta que devuelva
+`null`; `firstSquaresAbove`) o con `sequence { yield(x) }`, que se escribe como código secuencial y produce valores a medida
+que se piden. `sequence { }` está hecho con corrutinas restringidas (sin hilos ni dispatcher: `02 · internals`), y es la base
+del ⚡ de la lección (operadores propios como `windowedBy`).
+
+### 11. Interoperabilidad con `Stream` de Java
+
+Un `Stream` que viene de una API Java (`Files.lines`, un repositorio de Spring Data) se convierte con `stream.asSequence()`,
+y una `Sequence` se entrega a Java con `asStream()`; las dos están en `kotlin.streams` de la stdlib (medido con 2.4.21). Lo
+que `Sequence` no tiene es paralelismo: para repartir trabajo de CPU entre núcleos, en Kotlin se usan corrutinas
+(`02 · dispatchers`) o, en la frontera con Java, `parallelStream()`.
+
+### 12. Qué cuesta cada cosa
+
+- Las lambdas de funciones `inline` (`map`, `filter`, `let`…) no crean objetos; una lambda guardada en una variable o pasada a
+  una función no `inline` sí (con `invokedynamic` desde 2.0).
+- `Sequence<Int>` y `List<Int>` guardan `Integer` (boxing); para millones de números conviene `IntArray` o un bucle.
+- Para colecciones chicas, la `List` ansiosa suele ganarle a la `Sequence` (que paga un objeto por operación): la regla es
+  medir con `measureTime` antes de cambiar, como pide el ejercicio 24 de la lección.
+
 ## Cómo correrla
 
 ```bash
@@ -104,6 +151,8 @@ se lea, y es de lo primero que se marca en una revisión de código. → [Scope 
 - [Higher-order functions and lambdas][lambdas]: tipos función, lambdas, referencias, lambdas con receptor.
 - [Inline functions][inline]: qué se copia, `noinline`, `crossinline`, `reified`.
 - [Functional (SAM) interfaces][fun-interfaces]: `fun interface` y la conversión de lambdas.
+- [Callable references][callable-refs]: referencias a funciones, propiedades y constructores, ligadas y no ligadas.
+- [Function literals with receiver][receivers]: el tipo `T.() -> R` que usan los builders.
 - [Scope functions][scope]: la tabla oficial de las cinco y cuándo usar cada una.
 - [Sequences][sequences]: evaluación perezosa y cuándo conviene.
 - [Grouping][grouping]: `groupBy`, `groupingBy`, `eachCount`, `fold`.
@@ -135,3 +184,5 @@ se lea, y es de lo primero que se marca en una revisión de código. → [Scope 
 [bootcamp-functional]: https://developers.google.com/codelabs/kotlin-bootcamp-sams?hl=es-419
 [scope-video]: https://www.youtube.com/watch?v=d0BYBs4JSsE
 [scope-es]: https://www.youtube.com/watch?v=KJdvDejcIdw
+[callable-refs]: https://kotlinlang.org/docs/reflection.html#callable-references
+[receivers]: https://kotlinlang.org/docs/lambdas.html#function-literals-with-receiver

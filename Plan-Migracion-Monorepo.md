@@ -117,7 +117,8 @@ Tags anotados: `baseline-1.9.22` (curso v1 de proyecto único), `monorepo-1.9.22
 | `d0a14f1` Write study guides 1: control, strings, oop | Guías de estudio de `control`, `strings` y `oop` |
 | `b32d9cc` Move the database ports to the 20000 range | PostgreSQL 25432 y MySQL 23306 |
 | `1696458` Write study guides 2: io, collections, functional, json | Guías de estudio de `io`, `collections`, `functional` y `json` |
-| Write study guides 3: datetime, exceptions, jdbc, jpa | Las 12 guías con teoría; fuentes solo en inglés o español |
+| `8f2942f` Write study guides 3: datetime, exceptions, jdbc, jpa | Las 12 guías con teoría; fuentes solo en inglés o español |
+| Deepen the io, collections and functional guides | 12 apartados de teoría en cada una, con lo medido |
 
 **Remoto:** `origin` en GitHub desde el 13 de noviembre de 2026. Antes de cada push se repite el escaneo de
 referencias externas sobre `git log -p --all`, y se suben los tags con `git push origin main --follow-tags`.

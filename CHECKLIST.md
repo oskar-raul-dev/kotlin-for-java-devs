@@ -483,3 +483,10 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   subtítulos fiables en inglés), por eso sale la charla en ruso de `json`; y más apartados en los temas largos o
   difíciles. Tres enlaces que `curl` no pudo comprobar (403) se confirmaron con búsquedas; uno que no se pudo confirmar
   se quitó.
+- **2026-11-22** · **Más profundidad en `io`, `collections` y `functional`** (12 apartados de teoría cada una). `io`: las
+  capas de `java.io` y el buffer de 8192 bytes, errores de E/S (`NoSuchFileException`), escritura atómica con
+  `ATOMIC_MOVE`, recorrido de directorios, memoria y E/S bloqueante. `collections`: tabla de costos, claves mutables
+  (medido: un elemento mutado deja de encontrarse en un `HashSet`), lectura de mapas (medido: `withDefault` solo
+  responde a `getValue`), orden estable (medido), concurrencia e interoperabilidad. `functional`: referencias ligadas y
+  no ligadas (medido), lambdas con receptor, pureza, `sequence { }`, puente con `Stream` (medido: `asSequence` y
+  `asStream` en la stdlib) y costos.

@@ -60,6 +60,59 @@ programa compila y falla en runtime con `NoSuchMethodError` (medido con `javap` 
 `==` entre ellos compara referencias (desde 2.0 el compilador lo avisa): se usa `contentEquals` y `contentToString`.
 En código de dominio casi siempre conviene `List`; los arreglos primitivos quedan para algoritmos y rendimiento.
 
+### 7. Elegir la estructura: lo que cuesta cada operación
+
+Las colecciones son las del JDK, así que sus costos también:
+
+| Estructura | Acceso por índice | Buscar | Insertar / quitar | Orden | Para qué en el curso |
+|---|---|---|---|---|---|
+| `ArrayList` (`mutableListOf`) | O(1) | O(n) | O(1) al final, O(n) en el medio | Inserción | Listas de ticks, movimientos |
+| `ArrayDeque` | O(1) | O(n) | O(1) en los dos extremos | Inserción | Pilas, colas, FIFO de un nivel del libro |
+| `HashMap` / `LinkedHashMap` (`mutableMapOf`) | — | O(1) promedio | O(1) promedio | Ninguno / inserción | Conteos, índices por clave |
+| `TreeMap` | — | O(log n) | O(log n) | Por clave | Cierres por fecha, niveles de precio |
+| `PriorityQueue` | — | O(n) | O(log n) | El mínimo arriba | Alertas, top-k |
+
+`LinkedList` casi nunca conviene (cada nodo es un objeto y recorrerla es lento por la memoria); para colas, `ArrayDeque`.
+
+### 8. `equals`, `hashCode` y las claves mutables
+
+Un `HashMap` o `HashSet` ubica cada elemento por su `hashCode`. Si una clave cambia **después** de entrar, queda en el
+casillero viejo y deja de encontrarse. Medido: una `data class Key(var ticker: String)` agregada a un `HashSet` y luego
+modificada da `contains(k) == false`, aunque el set sigue teniendo un elemento. Por eso las claves son `val` (y una
+`data class` con `var` como clave es un hallazgo típico de revisión, `25 · prreview`). El `TreeMap` tiene la misma trampa
+con `compareTo`.
+
+### 9. Mapas: leer sin sorpresas
+
+`map[k]` devuelve `V?` (null si falta), `map.getValue(k)` lanza `NoSuchElementException` si falta y
+`map.getOrElse(k) { … }` calcula una alternativa. La trampa es `withDefault`: medido, `mapOf("ACME" to 1).withDefault { 0 }`
+devuelve `null` con `map["NUBE"]` y `0` solo con `getValue("NUBE")`. Para construir, `buildMap { put(…) }` (como
+`buildList`) entrega al final un mapa de solo lectura (su implementación es `kotlin.collections.builders.MapBuilder`, medido),
+y `associateBy`, `associateWith` y `groupBy` convierten listas en mapas sin bucles. → [Map-specific operations][map-ops]
+
+### 10. Ordenar
+
+`sorted()`, `sortedBy { it.price }`, `sortedDescending()` y `sortedWith(compareBy({ it.ticker }, { it.day }))` devuelven una
+lista nueva; `sort()` ordena una `MutableList` en el lugar. El ordenamiento es **estable** (medido: los elementos con la
+misma clave conservan su orden original), igual que el de Java para objetos, así que ordenar primero por día y después
+por ticker deja los días ordenados dentro de cada ticker. `compareBy`, `thenBy` y `reversed()` arman un `Comparator` de
+Java, así que sirven también para un `TreeMap` o una `PriorityQueue`. → [Ordering][ordering]
+
+### 11. Concurrencia: las colecciones no son seguras entre hilos
+
+`mutableListOf()` y `mutableMapOf()` son un `ArrayList` y un `LinkedHashMap`: modificarlos desde dos hilos (o dos
+corrutinas en `Dispatchers.Default`) corrompe la estructura o lanza `ConcurrentModificationException`, igual que en Java.
+Las salidas también son las de Java: `ConcurrentHashMap`, confinar la colección a un solo hilo o actor (`02 · channels`), o
+compartir solo colecciones que nadie modifica (una copia con `toList()` es una foto segura de leer). Que la interfaz sea
+de solo lectura no la hace segura si alguien la modifica por otro lado.
+
+### 12. Interoperabilidad con Java
+
+Una `List` de Kotlin pasada a un método Java llega como `java.util.List`: Java puede llamar `add` sobre ella (y lanzar o,
+peor, modificarla). Y lo que viene de Java llega como *platform type*: un método Java que devuelve `List<String>` se ve en
+Kotlin como `(Mutable)List<String!>`, ni nullable ni no nullable, ni de solo lectura ni mutable; el que recibe decide y
+asume el riesgo (`01 · interop`). En una frontera con Java conviene copiar al entrar y al salir.
+
 ## Cómo correrla
 
 ```bash
@@ -94,6 +147,8 @@ En código de dominio casi siempre conviene `List`; los arreglos primitivos qued
 - [Collections in Java and Kotlin][j2k-collections]: la guía oficial para quien viene de Java, operación por operación.
 - [Constructing collections][constructing] y [Collection operations][operations]: `buildList`, copias, operaciones.
 - [Arrays][arrays]: arreglos primitivos, `contentEquals`, cuándo usar arreglos.
+- [Map-specific operations][map-ops]: `getValue`, `getOrElse`, `withDefault`, filtros y escrituras sobre mapas.
+- [Ordering][ordering]: orden natural, `compareBy`, `sortedWith`, estabilidad.
 - [JEP 431: Sequenced Collections][jep431]: el cambio de Java 21 detrás de la trampa de `removeFirst`.
 - [`kotlinx.collections.immutable`][kx-immutable]: colecciones inmutables y persistentes.
 
@@ -125,3 +180,5 @@ En código de dominio casi siempre conviene `List`; los arreglos primitivos qued
 [bootcamp-basics]: https://developers.google.com/codelabs/kotlin-bootcamp-basics?hl=es-419
 [colecciones-es]: https://www.youtube.com/watch?v=WenqxF-RIyI
 [typealias-clip]: https://www.youtube.com/watch?v=sGjeknOcqEo
+[map-ops]: https://kotlinlang.org/docs/map-operations.html
+[ordering]: https://kotlinlang.org/docs/collection-ordering.html
