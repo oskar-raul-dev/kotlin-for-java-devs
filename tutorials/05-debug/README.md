@@ -7,7 +7,7 @@ Este tutorial las muestra con herramientas de línea de comandos que se pueden v
 
 > **Versión:** Kotlin **2.4.21**, kotlinx-coroutines 1.11.0, JDK 21. Lo de la terminal está verificado en
 > [`check.sh`](check.sh) (28 comprobaciones). **Ejercicios:** [`Exercises.md`](Exercises.md). Conviene haber hecho
-> [`decompile`](../decompile/README.md).
+> [`decompile`](../04-decompile/README.md).
 
 **Salto rápido:** [Información de depuración](#1-qué-deja-kotlinc-para-el-depurador) · [jdb](#2-jdb) ·
 [Remoto](#3-depuración-remota-jdwp) · [Inline](#4-funciones-inline-y-smap) · [Corrutinas](#5-corrutinas) ·
@@ -15,7 +15,7 @@ Este tutorial las muestra con herramientas de línea de comandos que se pueden v
 
 ```bash
 sdk env                              # en la raíz del repo: Kotlin 2.4.21
-cd tutorials/debug/examples
+cd tutorials/05-debug/examples
 kotlinc Fees.kt -d out
 ```
 
@@ -60,7 +60,7 @@ main[1] cont
 [1.00, 5.00, 1.00]
 ```
 
-- **La clase es `FeesKt`** (funciones de nivel superior; [`cli`](../cli/README.md)). `stop at FeesKt:12` pone el
+- **La clase es `FeesKt`** (funciones de nivel superior; [`cli`](../02-cli/README.md)). `stop at FeesKt:12` pone el
   punto de parada en la línea 12 del archivo.
 - **`print` evalúa Java, no Kotlin**: `result.toPlainString()` y `result.max(min)` funcionan porque son métodos;
   `amount * min` (el operador de Kotlin) da `ParseException: Invalid operation '*' on an Object`. El equivalente es
@@ -183,7 +183,7 @@ Lo mismo de arriba, con interfaz:
   la versión del plugin si no aparece).
 - **Depurar una prueba:** el ícono junto a la prueba, *Debug*. Desde la terminal, `./gradlew test --debug-jvm` y
   *Remote JVM Debug* en el 5005.
-- **Show Kotlin Bytecode** ([`decompile`](../decompile/README.md)) ayuda a entender por qué el depurador se comporta
+- **Show Kotlin Bytecode** ([`decompile`](../04-decompile/README.md)) ayuda a entender por qué el depurador se comporta
   raro en código `inline`.
 
 ## Trampas

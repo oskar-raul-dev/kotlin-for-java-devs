@@ -122,7 +122,7 @@ Con él, Gradle baja el JDK que falte a `~/.gradle/jdks`. El curso **no** lo usa
 tienes); comprobado que aplica en Gradle 9.9.1, pero la descarga en sí no se probó aquí.
 
 `jvmToolchain(n)` también fija el `jvmTarget` del bytecode a `n`: por eso un proyecto Gradle con `jvmToolchain(21)`
-genera bytecode Java 21, mientras que `kotlinc` a mano genera Java 8 por defecto ([`cli`](../cli/README.md)).
+genera bytecode Java 21, mientras que `kotlinc` a mano genera Java 8 por defecto ([`cli`](../02-cli/README.md)).
 
 ## 5. El IDE
 
@@ -156,7 +156,7 @@ Sin Docker, las pruebas de PostgreSQL y MySQL salen `SKIPPED` y los tracks legac
 
 ```bash
 sdk env
-tutorials/install/check.sh
+tutorials/01-install/check.sh
 ```
 
 ## Trampas

@@ -53,7 +53,7 @@ next; its order is in `Plan-Migracion-Monorepo.md`.
 | Where | Kotlin | Gradle | JDK | Notable libraries |
 |---|---|---|---|---|
 | Base: `01-language`, `04-data` | 2.4.21 | 9.9.1 (root wrapper) | 21 (toolchain, `.sdkmanrc`) | kotlinx-serialization 1.13.0, Kermit 2.2.0, Hibernate 7.4.15, H2 2.5.252, JUnit BOM 5.14.4 |
-| `tutorials/` (no build) | 2.4.21 CLI (`.sdkmanrc`: `kotlin=2.4.21`) | — | 21 | Each tutorial has a `check.sh` that re-runs every command in its README; keep them in sync |
+| `tutorials/` (no build) | 2.4.21 CLI (`.sdkmanrc`: `kotlin=2.4.21`) | — | 21 | Folders are numbered in reading order (`01-install` … `05-debug`; Kotlin packages keep the bare name, `…tutorials.cli`). Each tutorial has a `check.sh` that re-runs every command in its README; keep them in sync |
 | `22-legacy-kotlin19` | 1.9.22 | 9.2.1 (own wrapper) | 21 | JUnit BOM 5.10.3 |
 | `20-legacy-kotlin14`, `21-legacy-kotlin16` | 1.4.32, 1.6.21 | 6.8.x, 7.6.x ⚠️ | 11, 17 | Phase B5 |
 
@@ -75,7 +75,7 @@ of study (`Legacy19SmokeTest` fails on purpose if track 19 stops running Kotlin 
 ./gradlew -p 04-data run -Plesson=jpa --args=postgres         # JPA against Docker Postgres (drop-and-create)
 cd 22-legacy-kotlin19 && ./gradlew test                       # legacy track 19, natively (own wrapper)
 ./scripts/legacy.sh 19 [gradle args | shell]                  # same, inside its JDK container (default: test)
-for t in install cli repl decompile debug; do tutorials/$t/check.sh || break; done   # re-run every tutorial command (after `sdk env`)
+for t in tutorials/0*/check.sh; do "$t" || break; done       # re-run every tutorial command, in order (after `sdk env`)
 scripts/version-probes.sh [name…]                             # in which Kotlin version each construct is stable (all SDKMAN kotlinc)
 ```
 

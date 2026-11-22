@@ -1,6 +1,6 @@
 # Ejercicios: instalar y preparar el entorno
 
-> **Tutorial:** [`install`](README.md) · **Dónde se resuelven:** `tutorials/install/practice/` (un `NOTAS.md` con los
+> **Tutorial:** [`install`](README.md) · **Dónde se resuelven:** `tutorials/01-install/practice/` (un `NOTAS.md` con los
 > comandos, las salidas y las respuestas; y los proyectos de prueba que armes) · **Verificar:** cada ejercicio trae
 > el comando y lo que debe salir.
 >
@@ -11,7 +11,7 @@
 
 ## 🟢 Fáciles
 
-**01 🟢 🎯 Tu entorno.** Corre `sdk env` en la raíz y luego `tutorials/install/check.sh`. Copia el resultado en
+**01 🟢 🎯 Tu entorno.** Corre `sdk env` en la raíz y luego `tutorials/01-install/check.sh`. Copia el resultado en
 `NOTAS.md`; si algo falla, anota qué instalaste para arreglarlo.
 
 **02 🟢 `current` frente a `sdk env`.** Abre dos terminales. En una entra a la raíz del repo y haz `sdk env`; en la

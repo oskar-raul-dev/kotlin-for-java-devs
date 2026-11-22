@@ -1,6 +1,6 @@
 # Ejercicios: decompilar Kotlin
 
-> **Tutorial:** [`decompile`](README.md) · **Dónde se resuelven:** `tutorials/decompile/practice/` (fuentes `.kt`,
+> **Tutorial:** [`decompile`](README.md) · **Dónde se resuelven:** `tutorials/04-decompile/practice/` (fuentes `.kt`,
 > un `NOTAS.md` con los comandos, fragmentos de `javap`/CFR y las respuestas; el ⚡ con su propio `check.sh`) ·
 > **Verificar:** cada ejercicio dice qué tiene que aparecer (o no) en el bytecode.
 >

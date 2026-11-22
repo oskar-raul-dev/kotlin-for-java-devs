@@ -25,7 +25,7 @@ Los ejemplos están en [`examples/`](examples/) y usan los casos Banco y Mercado
 
 ```bash
 sdk env                                              # Kotlin 2.4.21 (en la raíz del repo)
-cd tutorials/decompile/examples
+cd tutorials/04-decompile/examples
 kotlinc *.kt -jvm-target 21 -d out                   # target 21: lo que genera un proyecto Gradle con jvmToolchain(21)
 cd out/dev/raul/oskar/learning/kotlin/tutorials/decompile
 ```

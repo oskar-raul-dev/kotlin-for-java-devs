@@ -87,11 +87,11 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
 
 | # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
 |---|---|---|---|---|---|---|
-| — | `install` | ✅ ejemplos | ✅ `check.sh` (14) | ✅ 12 | ➖ | `LISTO` |
-| — | `cli` | ✅ ejemplos | ✅ `check.sh` (30) | ✅ 15 | ➖ | `LISTO` |
-| — | `repl` | ✅ ejemplos | ✅ `check.sh` (17) | ✅ 15 | ➖ | `LISTO` |
-| — | `decompile` | ✅ ejemplos | ✅ `check.sh` (47) | ✅ 16 | ✅ enunciado | `LISTO` |
-| — | `debug` | ✅ ejemplos | ✅ `check.sh` (28) | ✅ 14 | ➖ | `LISTO` |
+| — | `01-install` | ✅ ejemplos | ✅ `check.sh` (14) | ✅ 12 | ➖ | `LISTO` |
+| — | `02-cli` | ✅ ejemplos | ✅ `check.sh` (30) | ✅ 15 | ➖ | `LISTO` |
+| — | `03-repl` | ✅ ejemplos | ✅ `check.sh` (17) | ✅ 15 | ➖ | `LISTO` |
+| — | `04-decompile` | ✅ ejemplos | ✅ `check.sh` (47) | ✅ 16 | ✅ enunciado | `LISTO` |
+| — | `05-debug` | ✅ ejemplos | ✅ `check.sh` (28) | ✅ 14 | ➖ | `LISTO` |
 
 ### 01-language
 
@@ -448,3 +448,7 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   secuencia perezosa y determinista de comandos `Place` (con límite o a mercado) y `Cancel` (siempre de una orden con
   límite anterior), con precios que se cruzan alrededor del medio y cantidades que dejan ejecuciones parciales. Sin
   archivo: las pruebas lo llaman al vuelo. `OrderDataTest` (4 pruebas). 157 pruebas (107 + 50), 0 `SKIPPED`.
+- **2026-11-22** · **Tutoriales numerados:** las carpetas pasan a `01-install`, `02-cli`, `03-repl`, `04-decompile` y
+  `05-debug` (el orden de lectura); los paquetes de Kotlin de los ejemplos siguen sin número (`…tutorials.cli`). Rutas
+  actualizadas en los tutoriales, el temario, las guías, el README y CLAUDE.md; el bucle que corre todos los
+  `check.sh` pasa a `for t in tutorials/0*/check.sh`. Las 136 comprobaciones pasan con las carpetas nuevas.

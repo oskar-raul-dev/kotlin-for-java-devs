@@ -2,7 +2,7 @@
 # Verifica que los comandos del tutorial cli (README.md) hagan lo que el texto dice.
 # Compila en una carpeta temporal: no deja nada dentro del repo.
 #
-#   tutorials/cli/check.sh          (con kotlinc 2.4.x en el PATH: `sdk env` en la raíz del repo)
+#   tutorials/02-cli/check.sh          (con kotlinc 2.4.x en el PATH: `sdk env` en la raíz del repo)
 set -euo pipefail
 
 here="$(cd "$(dirname "$0")" && pwd)"

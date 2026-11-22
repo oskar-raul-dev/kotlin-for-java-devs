@@ -76,7 +76,7 @@ del 9.2.1 del track, con avisos de deprecación del plugin 1.9.22.
 ## Trampas de los builds viejos
 
 - **El REPL de `kotlinc` solo funciona de verdad en 1.9.** En 2.1.21 está deprecado y corre con `-language-version 1.9`;
-  en 2.4.21 no arranca ni con `-Xrepl` (detalle en [`tutorials/repl`](../tutorials/repl/README.md)).
+  en 2.4.21 no arranca ni con `-Xrepl` (detalle en [`tutorials/03-repl`](../tutorials/03-repl/README.md)).
 - **Gradle 10 y el plugin 1.9.22.** Corre en Gradle 9.9 con deprecaciones que serán errores en Gradle 10: el track 19
   se queda en Gradle 9.x.
 - **JUnit 5 con Kotlin 1.9.22 en Gradle 9.** `kotlin-test-junit5` 1.9.22 trae JUnit 5.6.3 y Gradle 9 ya no inyecta el

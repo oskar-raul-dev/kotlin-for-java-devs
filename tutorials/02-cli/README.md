@@ -16,7 +16,7 @@ mano evita sorpresas cuando un build falla o cuando hay que correr algo en un se
 ```bash
 sdk env install          # en la raíz del repo: JDK 21 y Kotlin 2.4.21 (lee .sdkmanrc)
 kotlinc -version         # info: kotlinc-jvm 2.4.21 (JRE 21.0.8+9-LTS)
-cd tutorials/cli/examples
+cd tutorials/02-cli/examples
 ```
 
 Sin SDKMAN: `brew install kotlin` (instala la última, no necesariamente la 2.4.21) o el zip de la página de
@@ -174,7 +174,7 @@ kotlinc -X             # opciones avanzadas (-X…), que pueden cambiar entre ve
 | `-api-version <v>` | Hasta qué API de la stdlib se puede usar | Igual: `API version 1.9 is no longer supported` |
 | `-Werror` | Avisos = errores | `error: warnings found and -Werror specified` |
 | `-e '<código>'` | Evalúa una expresión | `kotlin -e 'println((1..5).sum())'` → `15` |
-| `-script <archivo.kts>` | Corre un script | Ver el tutorial [`repl`](../repl/README.md) |
+| `-script <archivo.kts>` | Corre un script | Ver el tutorial [`repl`](../03-repl/README.md) |
 
 El dato de `-language-version` importa para los tracks legacy: un compilador 2.4 **no puede** compilar "como 1.9".
 Por eso el track `22-legacy-kotlin19` usa el compilador 1.9.22 de verdad
@@ -198,7 +198,7 @@ Warn.kt:3:17: warning: unnecessary non-null assertion (!!) on a non-null receive
 | `jar cfe app.jar Main -C out .` | `kotlinc src -d app.jar` (el manifiesto lo escribe solo) |
 | — (un jar de Java corre con el JDK) | `-include-runtime`, porque hace falta la stdlib |
 | `javac --release 17` | `kotlinc -jvm-target 17 -Xjdk-release=17` (`-jvm-target` fija el bytecode; `-Xjdk-release`, la API del JDK visible) |
-| `jshell` | No hay REPL estable en 2.4: scripts `.main.kts` ([`repl`](../repl/README.md)) |
+| `jshell` | No hay REPL estable en 2.4: scripts `.main.kts` ([`repl`](../03-repl/README.md)) |
 
 ## Trampas
 

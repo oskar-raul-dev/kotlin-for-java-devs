@@ -2,7 +2,7 @@
 # Verifica el entorno descrito en el tutorial install (README.md): JDK, Kotlin, Gradle y toolchains.
 # Crea un proyecto Gradle temporal para demostrar los toolchains; no deja nada dentro del repo.
 #
-#   tutorials/install/check.sh      (después de `sdk env` en la raíz del repo)
+#   tutorials/01-install/check.sh      (después de `sdk env` en la raíz del repo)
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/../.." && pwd)"

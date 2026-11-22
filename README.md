@@ -87,7 +87,7 @@ El número del directorio es el orden de estudio. El nivel indica qué tan compl
 
 | Sección | Tema | Kotlin | Build | Lecciones | Estado |
 |---|---|---|---|---|---|
-| [`tutorials/`](tutorials/) | Guías de la terminal | 2.4 | 0 | `install`, `cli`, `repl`, `decompile`, `debug` | ✅ 5 tutoriales, 72 ejercicios |
+| [`tutorials/`](tutorials/) | Guías de la terminal | 2.4 | 0 | `01-install`, `02-cli`, `03-repl`, `04-decompile`, `05-debug` | ✅ 5 tutoriales, 72 ejercicios |
 | [`01-language/`](01-language/) | El lenguaje y su stdlib desde Java | 2.4 | 1 | `basics`, `control`, `strings`, `oop`, `io`, `collections`, `functional`, `json`, `datetime`, `exceptions` · luego `generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2` | 🟡 10 lecciones |
 | [`02-coroutines/`](02-coroutines/) | Corrutinas, `Flow` y concurrencia | 2.4 | 1 | `fundamentals`, `cancellation`, `dispatchers`, `channels`, `flow`, `hotflows`, `sync`, `internals`, `testing`, `loom` | Fase B3 |
 | [`03-reactive/`](03-reactive/) | Reactor, RxJava y puentes con corrutinas | 2.4 | 2 | `reactor`, `rxjava`, `bridges`, `backpressure` | Fase B3 |
@@ -372,7 +372,7 @@ kotlin-for-java-devs/
 │       ├── main/resources/simplelogger.properties    # slf4j-simple solo en WARN
 │       └── test/kotlin/…/jdbc/, jpa/
 ├── 22-legacy-kotlin19/         # Kotlin 1.9.22: wrapper propio (Gradle 9.2.1), .sdkmanrc, prueba de humo, docs/k2-notes.md
-├── tutorials/                  # install, cli, repl, decompile, debug: README, Exercises.md y check.sh cada uno
+├── tutorials/                  # 01-install … 05-debug: README, Exercises.md y check.sh cada uno
 └── 02-coroutines/ … 21-legacy-kotlin16/, 25-interview/, 26-kotlin-next/   # (vacías) fase B
 ```
 

@@ -1,6 +1,6 @@
 # Ejercicios: depurar Kotlin
 
-> **Tutorial:** [`debug`](README.md) · **Dónde se resuelven:** `tutorials/debug/practice/` (programas `.kt`, un
+> **Tutorial:** [`debug`](README.md) · **Dónde se resuelven:** `tutorials/05-debug/practice/` (programas `.kt`, un
 > `NOTAS.md` con las sesiones de `jdb` o capturas de IntelliJ y las respuestas) · **Verificar:** cada ejercicio dice
 > qué tiene que aparecer en la sesión.
 >

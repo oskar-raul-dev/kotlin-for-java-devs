@@ -1,6 +1,6 @@
 # Ejercicios: Kotlin desde la línea de comandos
 
-> **Tutorial:** [`cli`](README.md) · **Dónde se resuelven:** `tutorials/cli/practice/` (archivos `.kt`, `.java` y un
+> **Tutorial:** [`cli`](README.md) · **Dónde se resuelven:** `tutorials/02-cli/practice/` (archivos `.kt`, `.java` y un
 > `NOTAS.md` con los comandos y las respuestas) · **Verificar:** cada ejercicio trae el comando y lo que debe salir.
 > No hay pruebas de Gradle: el tutorial es de nivel 0 (sin build).
 >

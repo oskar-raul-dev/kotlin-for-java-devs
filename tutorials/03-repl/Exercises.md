@@ -1,6 +1,6 @@
 # Ejercicios: REPL, expresiones y scripts
 
-> **Tutorial:** [`repl`](README.md) · **Dónde se resuelven:** `tutorials/repl/practice/` (scripts `.kts` y
+> **Tutorial:** [`repl`](README.md) · **Dónde se resuelven:** `tutorials/03-repl/practice/` (scripts `.kts` y
 > `.main.kts`, y un `NOTAS.md` con los comandos y las respuestas) · **Verificar:** cada ejercicio trae el comando y lo
 > que debe salir. No hay pruebas de Gradle: el tutorial es de nivel 0 (sin build).
 >

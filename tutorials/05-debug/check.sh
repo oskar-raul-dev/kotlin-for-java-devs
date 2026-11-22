@@ -3,7 +3,7 @@
 # Trabaja en una carpeta temporal. La primera corrida baja kotlinx-coroutines-debug de Maven Central (necesita red).
 # La sesión de jdb se alimenta con pausas (jdb no espera al punto de parada): en una máquina lenta, subir PAUSE.
 #
-#   tutorials/debug/check.sh        (con kotlinc 2.4.x en el PATH: `sdk env` en la raíz del repo)
+#   tutorials/05-debug/check.sh        (con kotlinc 2.4.x en el PATH: `sdk env` en la raíz del repo)
 set -euo pipefail
 
 here="$(cd "$(dirname "$0")" && pwd)"

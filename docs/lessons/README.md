@@ -26,9 +26,9 @@ qué prueba lo demuestra, cómo correrlo y qué está hecho y qué falta. No rep
 
 ### `tutorials` (sin guía: el README de cada tutorial es el recorrido)
 
-[`install`](../../tutorials/install/README.md) · [`cli`](../../tutorials/cli/README.md) ·
-[`repl`](../../tutorials/repl/README.md) · [`decompile`](../../tutorials/decompile/README.md) ·
-[`debug`](../../tutorials/debug/README.md)
+[`install`](../../tutorials/01-install/README.md) · [`cli`](../../tutorials/02-cli/README.md) ·
+[`repl`](../../tutorials/03-repl/README.md) · [`decompile`](../../tutorials/04-decompile/README.md) ·
+[`debug`](../../tutorials/05-debug/README.md)
 
 ### `01-language`
 

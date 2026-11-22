@@ -2,7 +2,7 @@
 # Verifica que los comandos del tutorial repl (README.md) hagan lo que el texto dice.
 # Trabaja en una carpeta temporal; la primera corrida baja kotlinx-serialization de Maven Central (necesita red).
 #
-#   tutorials/repl/check.sh         (con kotlin 2.4.x en el PATH: `sdk env` en la raíz del repo)
+#   tutorials/03-repl/check.sh         (con kotlin 2.4.x en el PATH: `sdk env` en la raíz del repo)
 set -euo pipefail
 
 here="$(cd "$(dirname "$0")" && pwd)"

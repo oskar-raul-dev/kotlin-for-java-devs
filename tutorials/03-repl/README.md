@@ -5,7 +5,7 @@ expresiones de una línea con `-e`, y los scripts `.kts` y `.main.kts`, que baja
 reemplazar scripts de bash o Python con Kotlin tipado.
 
 > **Versión:** Kotlin **2.4.21** sobre JDK 21; las salidas están medidas con esa versión y [`check.sh`](check.sh) las
-> vuelve a verificar. **Ejercicios:** [`Exercises.md`](Exercises.md). Antes conviene haber hecho [`cli`](../cli/README.md).
+> vuelve a verificar. **Ejercicios:** [`Exercises.md`](Exercises.md). Antes conviene haber hecho [`cli`](../02-cli/README.md).
 
 **Salto rápido:** [El REPL](#1-qué-pasó-con-el-repl) · [Expresiones](#2-expresiones-de-una-línea) ·
 [Scripts .kts](#3-scripts-kts) · [Scripts .main.kts](#4-scripts-mainkts) · [En el IDE](#5-en-el-ide) ·
@@ -13,7 +13,7 @@ reemplazar scripts de bash o Python con Kotlin tipado.
 
 ```bash
 sdk env install          # en la raíz del repo: JDK 21 y Kotlin 2.4.21
-cd tutorials/repl/examples
+cd tutorials/03-repl/examples
 ```
 
 ## 1. Qué pasó con el REPL

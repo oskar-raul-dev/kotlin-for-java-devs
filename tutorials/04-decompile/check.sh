@@ -2,7 +2,7 @@
 # Verifica lo que el tutorial decompile (README.md) dice que genera kotlinc, con javap, CFR y @Metadata.
 # Compila en una carpeta temporal. CFR se baja una vez de Maven Central a ~/.cache/kotlin-for-java-devs/.
 #
-#   tutorials/decompile/check.sh    (con kotlinc 2.4.x en el PATH: `sdk env` en la raíz del repo)
+#   tutorials/04-decompile/check.sh    (con kotlinc 2.4.x en el PATH: `sdk env` en la raíz del repo)
 set -euo pipefail
 
 here="$(cd "$(dirname "$0")" && pwd)"
