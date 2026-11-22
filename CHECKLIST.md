@@ -51,7 +51,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | A6 · Track `22-legacy-kotlin19` | ✅ | Wrapper propio 9.2.1, Kotlin 1.9.22, 4 pruebas de humo; fuera del composite |
 | A8 · Contenedores legacy | ✅ | `./scripts/legacy.sh 19` = nativo (4 pruebas); `arm64` nativo |
 | A9 · Documentación | ✅ | README con índice de secciones, CLAUDE.md reescrito; tag `phase-a` |
-| B0′ · Casos Banco y Mercado | 🟡 | Diseño en `docs/Casos.md` ✅; reemplazo del dominio de pedidos en 6 tandas ⬜️ |
+| B0′ · Casos Banco y Mercado | 🟡 | Diseño en `docs/Casos.md` ✅; tanda 1 (datos y generador) ✅; tandas 2 a 6 ⬜️ |
 | B0″ · Guías de lección | ✅ | 12 guías en `docs/lessons/`, símbolos y pruebas citados comprobados contra el código |
 
 ## Secciones
@@ -343,3 +343,10 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   símbolos → prueba y estado. Cada símbolo, archivo y nombre de prueba citado se comprobó contra el código con un
   script, y todos los enlaces resuelven. Regla de sincronía nueva en CLAUDE.md y README ("Agregar una lección").
   Pruebas sin cambios: 123 de 123 con PostgreSQL y MySQL arriba (0 `SKIPPED`).
+- **2026-11-22** · **B0′, tanda 1 (datos y generador):** paquete `datagen` en `01-language` (`MarketData.kt`,
+  `BankData.kt`, `Datasets.kt`, `Main.kt`; `-Plesson=datagen`) con semilla fija y `java.util.Random`. Genera
+  `ticks.json` (2,005 ticks de 5 tickers en 10 días hábiles que cruzan el fin del horario de verano, con nulos, clave
+  desconocida, duplicados, desorden, un hueco y un tick fuera de horario), `bank-statement.csv` y su contraparte
+  `ledger-movements.csv` (nuevo: hace falta para conciliar), y `fx-rates.json` (con un día sin tasa). `DatagenTest`
+  (7 pruebas) comprueba determinismo, que los recursos coinciden byte a byte con el generador y cada imperfección.
+  `orders.json` y `sales.csv` siguen hasta la tanda 6. 130 pruebas (92 + 38), 0 `SKIPPED`.

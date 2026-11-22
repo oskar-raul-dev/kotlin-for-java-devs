@@ -1,0 +1,28 @@
+id,date,description,amount
+JE-000001,2026-10-01,Depósito de nómina,3200.00
+JE-000002,2026-10-02,Pago con tarjeta Librería Norte,-154.30
+JE-000003,2026-10-05,Pago con tarjeta Farmacia Sol,-205.19
+JE-000004,2026-10-05,Pago con tarjeta Gasolinera Ruta 9,-242.75
+JE-000005,2026-10-06,Pago con tarjeta Cafetería Luna,-166.67
+JE-000006,2026-10-07,Compra 10 ACME,-1001.00
+JE-000007,2026-10-08,Pago con tarjeta Farmacia Sol,-25.91
+JE-000008,2026-10-09,Transferencia a ACC-00005678-39,-500.00
+JE-000009,2026-10-12,Pago con tarjeta Gasolinera Ruta 9,-149.57
+JE-000010,2026-10-13,Pago con tarjeta Librería Norte,-220.44
+JE-000011,2026-10-15,Pago con tarjeta Librería Norte,-52.08
+JE-000012,2026-10-16,Depósito de nómina,3200.00
+JE-000013,2026-10-16,Pago con tarjeta Cafetería Luna,-56.96
+JE-000014,2026-10-19,Pago con tarjeta Librería Norte,-208.17
+JE-000015,2026-10-19,Pago con tarjeta Gasolinera Ruta 9,-31.87
+JE-000016,2026-10-20,Pago con tarjeta Farmacia Sol,-34.77
+JE-000017,2026-10-20,Pago con tarjeta Farmacia Sol,-195.91
+JE-000018,2026-10-21,Pago con tarjeta Gasolinera Ruta 9,-69.32
+JE-000019,2026-10-21,Venta 5 ORBX,211.75
+JE-000020,2026-10-22,Pago con tarjeta Farmacia Sol,-114.62
+JE-000021,2026-10-22,Pago con tarjeta Librería Norte,-59.58
+JE-000022,2026-10-22,Pago con tarjeta Gasolinera Ruta 9,-218.20
+JE-000023,2026-10-23,"Pago servicios ""Luz del Valle"", S.A.",-84.30
+JE-000024,2026-10-26,Pago con tarjeta Gasolinera Ruta 9,-65.53
+JE-000025,2026-10-26,Pago con tarjeta Cafetería Luna,-65.51
+JE-000026,2026-10-29,Pago con tarjeta Súper Ahorro,-228.33
+JE-000027,2026-10-30,Intereses del mes,1.23

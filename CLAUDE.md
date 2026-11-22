@@ -70,6 +70,7 @@ of study (`Legacy19SmokeTest` fails on purpose if track 19 stops running Kotlin 
 ./gradlew -p 01-language test --tests '*.StringsTest'         # a single test class
 ./gradlew -p 01-language run -Plesson=basics                  # run a lesson's Main.kt (default: basics)
 ./gradlew -p 01-language run -Plesson=io --console=plain      # io reads stdin; plain console avoids progress-bar noise
+./gradlew -p 01-language run -Plesson=datagen                 # regenerate the case data files (fixed seed)
 ./gradlew -p 04-data run -Plesson=jdbc.postgres               # default in 04-data: jdbc.sqlite
 ./gradlew -p 04-data run -Plesson=jpa --args=postgres         # JPA against Docker Postgres (drop-and-create)
 cd 22-legacy-kotlin19 && ./gradlew test                       # legacy track 19, natively (own wrapper)
@@ -111,7 +112,7 @@ all tests with both databases up** (no SKIPPED).
   `07`, `25`) · 2 Gradle + libraries/Docker (`03`–`06`) · 3 framework (`09`, `10`) · 4 multi-module/platforms
   (`11`, `12`) · 5 build tooling (`08`) · 6 legacy in a container (`20`–`22`).
 - Lessons: `01-language` has `basics`, `control`, `strings`, `oop`, `collections`, `functional`, `exceptions`, `io`,
-  `datetime`, `json`; `04-data` has `jdbc.*` and `jpa`. Each lesson has a `Main.kt` (demo only), logic in separate
+  `datetime`, `json` (plus `datagen`, the data generator, which is not a lesson); `04-data` has `jdbc.*` and `jpa`. Each lesson has a `Main.kt` (demo only), logic in separate
   `.kt` files so it is testable, an `Exercises.md`, and a mirrored `src/test/.../<lesson>/<Lesson>Test.kt` using
   `kotlin.test` on JUnit 5.
 - `jdbc/` root holds shared code: `ProductRepository`, the `Dialect` interface, `mapRows`/`inTransaction`
@@ -123,8 +124,11 @@ all tests with both databases up** (no SKIPPED).
   (unit `learning`, H2 by default). `h2Factory(name)` gives each test its own in-memory DB; `postgresFactory()`
   targets Docker; `inTransaction`, `statementCount()` and `resetStatistics()` (for N+1 demos) are extensions in
   `jpa/Jpa.kt`.
-- Sample data for io/json lessons is on the classpath: `01-language/src/main/resources/data/{sales.csv,orders.json}`.
-  The end-to-end example domain (store orders) is **provisional**; it is being replaced by the Bank and Market
+- Sample data is on the classpath in `01-language/src/main/resources/data/`: the case files `ticks.json`,
+  `bank-statement.csv`, `ledger-movements.csv`, `fx-rates.json` are **generated** by the `datagen` package
+  (`run -Plesson=datagen`, fixed seed, `java.util.Random`); never edit them by hand: change the generator and
+  regenerate (`DatagenTest` compares them byte for byte). `sales.csv` and `orders.json` are the old domain, deleted in
+  B0′ batch 6. The end-to-end example domain (store orders) is **provisional**; it is being replaced by the Bank and Market
   cases designed in `docs/Casos.md` (step B0′). New examples and exercises must use those cases, all data fictional.
 
 ## Exercise conventions

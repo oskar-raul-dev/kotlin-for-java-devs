@@ -137,18 +137,24 @@ Compra de 10 ACME a 100.00 USD, comisión 1.00 USD
 ## Datos
 
 Todo en `src/main/resources/data/` de la sección que lo use, generado por un programa con **semilla fija**
-(reproducible). Dónde vive el generador ⚠️: propuesta, un `Main` aparte en `01-language`
-(`./gradlew -p 01-language run -Plesson=datagen`), sin agregar herramientas nuevas.
+(reproducible). El generador es el paquete `datagen` de `01-language` (no es una lección: no tiene temario ni
+ejercicios) y se corre con `./gradlew -p 01-language run -Plesson=datagen`. Usa `java.util.Random`, cuyo algoritmo
+fija la especificación de Java, y `DatagenTest` falla si los archivos del classpath dejan de coincidir con lo que
+genera. Cada imperfección está declarada en `TickFlaws` y `StatementFlaws`, para que pruebas y ejercicios sepan qué
+buscar.
 
 | Archivo | Caso | Contenido | Imperfecciones a propósito |
 |---|---|---|---|
-| `ticks.json` | Mercado | ~2,000 ticks de los cinco tickers en 10 días hábiles | Nulos, claves desconocidas, duplicados, desorden, un hueco, un tick fuera de horario, el cambio de horario de noviembre |
+| `ticks.json` | Mercado | 2,005 ticks de los cinco tickers en 10 días hábiles (del 26 de octubre al 6 de noviembre de 2026). Claves `seq`, `ticker`, `ts` (epoch millis), `price` (cadena), `volume`, a veces `bid-price`/`ask-price` | ~1 % con `price: null`, ~1 % sin `volume`, ~2 % con la clave desconocida `venue`, 10 duplicados (mismo `seq`), 15 pares fuera de orden, una hora sin ticks de `LUMA` el 29 de octubre, un tick de `KAPA` a las 17:05 del 3 de noviembre, el fin del horario de verano el 1 de noviembre |
 | `orders.ndjson` ⚠️ | Mercado | Secuencia de órdenes para alimentar el libro | Órdenes que cruzan, parciales, cancelaciones |
-| `bank-statement.csv` | Banco | Extracto externo de un mes | Fechas con un día de desfase, montos con centavos de diferencia, una línea sin pareja, comas en la descripción |
+| `bank-statement.csv` | Banco | Extracto externo de octubre de 2026 de `ACC-00001234-82`: `date,description,amount,reference` (`BNK-…`), con el texto del banco en mayúsculas | 3 fechas con un día de desfase, 2 montos con 0.01 de diferencia, un cargo que el ledger no tiene, un movimiento del ledger que falta, comas y comillas en la descripción (RFC 4180) |
+| `ledger-movements.csv` | Banco | La contraparte para conciliar: los movimientos de esa cuenta según el ledger, `id,date,description,amount` (`JE-…`) | — (es la referencia) |
 | `ledger-seed.json` ⚠️ | Banco | Cuentas y asientos iniciales para `04-data` | — |
 | `fx-rates.json` | Banco | Tasas USD/EUR/MXN por día | Un día sin tasa (hay que tomar la anterior) |
 
-Reemplazan a `orders.json` y `sales.csv`, que se borran al final del reemplazo.
+Reemplazan a `orders.json` y `sales.csv`, que se borran al final del reemplazo. `ledger-movements.csv` no estaba en el
+diseño: se agregó en la tanda 1 porque el extracto necesita una contraparte para conciliar (`io` y su ⚡).
+`orders.ndjson` y `ledger-seed.json` siguen pendientes (ver abajo).
 
 ## Qué usa cada lección
 
@@ -208,7 +214,8 @@ Los números de ejercicio cambian con el reemplazo; la tabla del README se rehac
 
 Por tandas, cada una con las pruebas en verde (con PostgreSQL y MySQL arriba) y su commit:
 
-1. **Datos y generador:** `ticks.json`, `bank-statement.csv`, `fx-rates.json` y el `Main` generador.
+1. ✅ **Datos y generador:** `ticks.json`, `bank-statement.csv`, `ledger-movements.csv`, `fx-rates.json` y el
+   paquete `datagen` (22 de noviembre de 2026).
 2. **`json` e `io`:** modelo `Tick`/`MarketEvent`, conciliación del extracto.
 3. **`basics`, `oop` y `exceptions`:** `Money`, `Order` sellado, `BankException`, `TransferService`.
 4. **`strings`, `collections`, `functional`, `datetime`, `control`:** los ejemplos y pruebas que mencionan pedidos.
@@ -229,7 +236,7 @@ para no reescribir los enunciados dos veces.
 
 ## Pendiente de decidir
 
-- [ ] Dónde vive el generador de datos (propuesta: `Main` en `01-language`, lección `datagen`).
+- [x] Dónde vive el generador de datos: paquete `datagen` en `01-language`, `-Plesson=datagen` (tanda 1).
 - [ ] Formato de las órdenes para el libro: `orders.ndjson` o generadas en las pruebas.
 - [ ] Si el cierre de mes usa la zona del mercado o una zona por cliente.
 - [ ] Si `ledger-seed.json` hace falta o `04-data` siembra los datos en código, como hoy `jpa/Seed.kt`.

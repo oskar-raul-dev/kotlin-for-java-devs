@@ -74,7 +74,7 @@ cd 22-legacy-kotlin19 && ./gradlew test                         # track legacy K
 - `--args` pasa argumentos al `main(args)`.
 - `--console=plain` quita la barra de progreso de Gradle, que se mezcla con lo que se escribe en la consola.
 
-Estado actual: **123 pruebas** en la base (85 en `01-language` y 38 en `04-data`), todas en verde, más **4 de humo**
+Estado actual: **130 pruebas** en la base (92 en `01-language` y 38 en `04-data`), todas en verde, más **4 de humo**
 en `22-legacy-kotlin19`. Las 18 de PostgreSQL y MySQL salen `SKIPPED` si sus contenedores no están arriba.
 
 ## Índice de secciones
@@ -129,7 +129,8 @@ Paquete raíz: `dev.raul.oskar.learning.kotlin`. Cada subpaquete tiene su `Main.
 `<sección>/src/main/kotlin/…/<subpaquete>/`, y sus pruebas en el mismo paquete bajo `<sección>/src/test/kotlin`.
 Las lecciones 1–9 y 14 están en `01-language`; las de bases de datos (10–13), en `04-data`. Cada una tiene su
 **guía** en [`docs/lessons/`](docs/lessons/README.md): por dónde empezar a leer, qué muestra cada archivo y qué prueba
-lo demuestra.
+lo demuestra. Los datos de los casos (`ticks.json`, `bank-statement.csv`, `ledger-movements.csv`, `fx-rates.json`) los
+genera el paquete `datagen` con semilla fija: `./gradlew -p 01-language run -Plesson=datagen`.
 
 | # | Subpaquete | Qué repasa | Ejercicios | 🎯 |
 |---|---|---|---|---|
@@ -353,12 +354,12 @@ kotlin-for-java-devs/
 │   └── legacy-kotlin/          # compose.yaml (k14, k16, k19) y README: el JDK de cada track legacy
 ├── scripts/legacy.sh           # ./scripts/legacy.sh <14|16|19> [tareas de Gradle | shell]
 ├── scripts/version-probes.sh   # en qué versión de Kotlin es estable cada construcción (1.9 a 2.4)
-├── 01-language/                # basics, control, strings, oop, collections, functional, exceptions, io, datetime, json
+├── 01-language/                # basics, control, strings, oop, collections, functional, exceptions, io, datetime, json; datagen
 │   ├── settings.gradle.kts, build.gradle.kts   # Kotlin jvm + serialization, Kermit
 │   └── src/
 │       ├── main/kotlin/dev/raul/oskar/learning/kotlin/<lección>/Main.kt, *.kt, Exercises.md
 │       ├── main/kotlin/…/<lección>/practice/   # tus soluciones (se crea al resolver)
-│       ├── main/resources/data/sales.csv, orders.json
+│       ├── main/resources/data/     # ticks.json, bank-statement.csv, ledger-movements.csv, fx-rates.json (los genera datagen)
 │       └── test/kotlin/…/<lección>/<Lección>Test.kt y practice/
 ├── 04-data/                    # jdbc (sqlite, postgres, mysql) y jpa
 │   ├── settings.gradle.kts, build.gradle.kts   # Kotlin jvm + jpa + allopen, drivers, Hibernate, H2
