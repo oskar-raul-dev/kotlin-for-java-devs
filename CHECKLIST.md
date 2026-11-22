@@ -25,7 +25,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
 | `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, casos de finanzas, guías de lección (propuesta); estado al 2026-11-22 |
 | `docs/lessons/` (guías de lección) | ✅ | `LISTO` | Índice, plantilla y 12 guías (10 de `01-language`, `jdbc`, `jpa`), en `docs/lessons/<sección>/NN-<lección>.md` (B0″) |
-| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tandas 1 a 3 escritas (21 entradas); faltan las tandas 4 a 10. El anterior, en `docs/archive/Temario-v1.md` |
+| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tandas 1 a 4 escritas (31 entradas); faltan las tandas 5 a 10. El anterior, en `docs/archive/Temario-v1.md` |
 | `docs/Temario-Plan.md` y `docs/prompts/temario-tanda.md` | ✅ | `LISTO` | Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
 | `docs/LegacyKotlin.md` | ✅ | `LISTO` | Versiones 1.0 → 2.x, los tres tracks, cómo correrlos y trampas |
@@ -381,3 +381,11 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   script separa los campos con `|`. Medidos a mano: los `@Nullable` de JSpecify (ignorados en 1.7, aviso de 1.8 a 2.0,
   error desde 2.1) y los métodos con cuerpo en interfaces, que desde 2.2 compilan como `default` de Java (`javap`).
   ⚡ nuevos en las cinco lecciones que el plan no traía. Quedan 67 de 88 entradas.
+- **2026-11-22** · **B0, tanda 4 (`02-coroutines`):** las 10 entradas (`fundamentals`, `cancellation`, `dispatchers`,
+  `channels`, `flow`, `hotflows`, `sync`, `internals`, `testing`, `loom`) comparadas con Java 21 (`CompletableFuture`,
+  `StructuredTaskScope` y `ScopedValue` en vista previa, hilos virtuales), con el feed y el `OrderBook` como actor del
+  Mercado y las transferencias concurrentes del Banco. Medido contra kotlinx-coroutines 1.11.0 qué API pide opt-in
+  (`debounce`/`sample` `FlowPreview`; `chunked`, `flatMapMerge`, `flatMapLatest`, `produce` experimentales; `actor` y
+  `ticker` obsoletas; `GlobalScope` delicada), que un `suspend` dentro de `synchronized` no compila y que `withContext`
+  dentro de `flow { }` lanza `IllegalStateException`. Turbine, atomicfu y la versión de coroutines de la sección
+  quedan ⚠️ hasta B3. Quedan 57 de 88 entradas.

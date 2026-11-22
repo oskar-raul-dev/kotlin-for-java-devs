@@ -170,6 +170,25 @@ también vale como referencia. La tabla sale de [`scripts/version-probes.sh`](..
 una línea por construcción, compilado con cada `kotlinc` instalado. Para medir una construcción nueva, se agrega una
 línea al script y se corre `scripts/version-probes.sh <nombre>`.
 
+### Librerías: qué pide opt-in (medido)
+
+Las librerías no llevan etiqueta de lenguaje (regla 3): se cita su versión. Lo que sí se mide es qué API compila
+limpia y cuál pide opt-in en esa versión, compilando un ejemplo de una línea con `kotlinc` 2.4.21 contra el jar.
+
+**kotlinx-coroutines 1.11.0** (medido el 22 de noviembre de 2026, tanda 4; la versión de la sección se fija en B3 ⚠️):
+
+| Compila sin opt-in | Pide opt-in |
+|---|---|
+| `runBlocking`, `launch`, `async`/`awaitAll`, `coroutineScope`, `supervisorScope`, `withTimeoutOrNull`, `ensureActive`, `yield` | `GlobalScope` (`@DelicateCoroutinesApi`) |
+| `Dispatchers.IO.limitedParallelism(n)` y `limitedParallelism(n, "nombre")`, `Executor.asCoroutineDispatcher()` | `newSingleThreadContext` (`@ExperimentalCoroutinesApi`; además delicada) |
+| `Channel`, `select { onReceive }` | `produce` (`@ExperimentalCoroutinesApi`); `actor` y `ticker` (`@ObsoleteCoroutinesApi`) |
+| `buffer`, `conflate`, `flowOn`, `callbackFlow` | `debounce`, `sample` (`@FlowPreview`); `chunked`, `flatMapMerge`, `flatMapLatest` (`@ExperimentalCoroutinesApi`) |
+| `MutableStateFlow.update`, `stateIn`, `shareIn`, `Mutex.withLock`, `Semaphore.withPermit` | — |
+
+Comportamientos medidos con la misma versión: un `suspend` dentro de `synchronized` **no compila** ("the 'delay'
+suspension point is inside a critical section"); `withContext` dentro de `flow { }` lanza `IllegalStateException`
+("Flow invariant is violated").
+
 ## Estado
 
 | Tanda | Estado | Fecha | Notas |
@@ -178,7 +197,7 @@ línea al script y se corre `scripts/version-probes.sh <nombre>`.
 | 1 | ✅ | 2026-11-13 | 5 tutoriales (versión corta) y `basics`, `control`, `strings`, `oop`, `io`. Referencia ampliada a once `kotlinc` (1.4.31 a 2.4.21) con 27 construcciones nuevas; `path.walk` pasa a `[2.1]` y `T & Any`, `enumEntries` y `@SubclassOptInRequired` quedan sin ⚠️. ⚡ nuevos (no están en la sección 5 del plan): `control` matcher por búsqueda binaria, `strings` códec estilo FIX, `io` conciliador de extracto |
 | 2 | ✅ | 2026-11-13 | `collections`, `functional`, `json`, `datetime`, `exceptions`, con la ruta 🎯 del Mercado (bloques 1 a 4) y del Banco (bloque 5) en cada entrada. kotlinx-serialization 1.13.0 medida aparte: `explicitNulls` y `namingStrategy` estables, `decodeToSequence` y `classDiscriminatorMode` con opt-in. ⚡ nuevos (no están en la sección 5 del plan): `datetime` velas por sesión, `exceptions` `TransferService` completo |
 | 3 | ✅ | 2026-11-22 | `generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2`. 12 construcciones nuevas en `version-probes.sh` (la de `\|\|` se reescribió con De Morgan: el script separa con `\|`) y dos medidas a mano: JSpecify (error desde 2.1) y métodos `default` en interfaces (desde 2.2, con `javap`). ⚡ nuevos (solo el de `dsl` está en la sección 5 del plan): colecciones persistentes covariantes, utilidades sin asignaciones, módulo mixto Java + Kotlin, configuración tipada con delegados, catálogo ejecutable de 2.x |
-| 4 | ⬜️ | | |
+| 4 | ✅ | 2026-11-22 | `02-coroutines` completa (10 entradas), con el feed y el libro del Mercado y las transferencias concurrentes del Banco. Sin etiquetas de lenguaje nuevas (es librería): se midió qué API de kotlinx-coroutines 1.11.0 pide opt-in ([tabla](#librerías-qué-pide-opt-in-medido)). ⚡ nuevos además de los tres del plan (`flow`, `internals`, `loom`): fan-out de cotizaciones, transferencia con compensación, dimensionar dispatchers, motor como actor, tablero en vivo, transferencias concurrentes, sesión en un segundo |
 | 5 | ⬜️ | | |
 | 6 | ⬜️ | | |
 | 7 | ⬜️ | | |

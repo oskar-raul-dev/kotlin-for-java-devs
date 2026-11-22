@@ -808,43 +808,355 @@ Corrutinas, `Flow` y concurrencia. **Build:** 1 · **Caso:** Mercado (y Banco en
 
 ### 02 · `fundamentals` — `suspend`, structured concurrency, `Job`
 
-> ⬜️ **Pendiente (tanda 4).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** escribir código concurrente que se lee como secuencial, con corrutinas que viven dentro de un scope y
+nunca quedan huérfanas, y saber qué es (y qué no es) una función `suspend`.
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin (kotlinx-coroutines 1.11.0 ⚠️) | Nota |
+|---|---|---|
+| `CompletableFuture.thenCompose(…).thenApply(…)` | Llamadas `suspend` una tras otra | El código asíncrono se escribe en orden, sin callbacks |
+| `executor.submit(…)` + `future.get()` | `async { }` + `await()` | `await` suspende la corrutina, no bloquea el hilo |
+| `StructuredTaskScope` (vista previa en 21) | `coroutineScope { }` | Estable: el bloque no termina hasta que terminan sus hijos |
+| `CountDownLatch`, `invokeAll` | `awaitAll(…)`, `joinAll(…)` | Si un hijo falla, cancela a sus hermanos |
+| `future.cancel(true)` | `job.cancel()` | Cancela también a los hijos del `Job` |
+| Un hilo nuevo por tarea | `launch { }` dentro de un scope | Miles de corrutinas cuestan lo que unos pocos hilos |
+| `main` que espera al pool | `runBlocking { }` | Solo en `main` y en pruebas, nunca dentro de una corrutina |
+
+**Trampas:**
+- `GlobalScope.launch` crea corrutinas sin dueño (nadie las cancela ni espera): en 1.11.0 pide
+  `@DelicateCoroutinesApi` (medido).
+- `suspend` no quiere decir "en otro hilo": la función corre en el hilo de quien la llama hasta su primer punto de
+  suspensión, y si adentro hay JDBC o `Thread.sleep`, bloquea igual.
+- Una excepción dentro de `async` cancela al scope padre aunque nadie haya llamado a `await`.
+- `runBlocking` dentro de una corrutina bloquea el hilo; sobre un dispatcher de un solo hilo, se cuelga.
+- `launch` devuelve un `Job` sin resultado: para un valor hace falta `async`.
+
+**Caso:** el Mercado consulta los precios de los cinco tickers en paralelo con `async` y arma el valor del
+portafolio; el Banco pide en paralelo el saldo y la tasa de cambio antes de una transferencia multimoneda.
+
+**🎤 Entrevista:** ¿qué es structured concurrency y qué problema resuelve? · `launch` frente a `async` · ¿Una
+corrutina es un hilo?
+
+**⚡ Fan-out de cotizaciones:** cinco fuentes de precios simuladas con latencias fijas, consultadas en paralelo dentro
+de un `coroutineScope` · **Se verifica con:** una prueba en tiempo virtual (`runTest`) donde el tiempo total es el de
+la fuente más lenta y no la suma, y otra donde una fuente falla y se comprueba que las demás quedaron canceladas (no
+terminaron).
 
 ### 02 · `cancellation` — Cooperativa, `withTimeout`, excepciones, `SupervisorJob`
 
-> ⬜️ **Pendiente (tanda 4).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** cancelar sin dejar trabajo a medias, poner tiempos límite, y decidir cuándo una falla debe tumbar a las
+corrutinas hermanas y cuándo no.
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin (kotlinx-coroutines 1.11.0 ⚠️) | Nota |
+|---|---|---|
+| `Thread.interrupt()` + `isInterrupted()` | Cancelación cooperativa: `ensureActive()`, `isActive`, `yield()` | Cada `suspend` de la librería ya comprueba la cancelación |
+| `InterruptedException` | `CancellationException` | Es el mecanismo normal de cancelar: no se trata como error |
+| `future.get(2, SECONDS)` | `withTimeout(2.seconds)` / `withTimeoutOrNull` | El segundo devuelve `null` en vez de lanzar |
+| `finally` que libera recursos | `finally { withContext(NonCancellable) { … } }` | Sin `NonCancellable`, un `suspend` dentro de `finally` de una corrutina cancelada no corre |
+| Un pool donde una tarea falla sola | `supervisorScope { }`, `SupervisorJob()` | La falla de un hijo no cancela a los demás |
+| `UncaughtExceptionHandler` | `CoroutineExceptionHandler` | Solo sirve en la corrutina raíz (`launch` de nivel superior) |
+
+**Trampas:**
+- Un bucle de cálculo sin puntos de suspensión no se entera de que lo cancelaron.
+- `catch (e: Exception)` y `runCatching` atrapan la `CancellationException`: si no se relanza, la corrutina sigue
+  viva después de cancelarse (ver `runCatchingCancellable` en `exceptions`).
+- `withTimeout` lanza `TimeoutCancellationException`, que es una cancelación: si nadie la atrapa, la corrutina termina
+  "en silencio" en vez de fallar.
+- `launch(SupervisorJob()) { }` saca a la corrutina de la jerarquía: ya no es hija del scope y nadie la espera.
+- `CoroutineExceptionHandler` en un `async` o en un hijo no hace nada.
+
+**Caso:** el Banco pide la tasa al `FxRateClient` con tiempo límite y, si la transferencia se cancela a mitad, revierte
+el débito en un `finally` con `NonCancellable`; el Mercado sigue a cada ticker en un hijo de `supervisorScope`, así la
+caída de uno no corta a los otros.
+
+**🎤 Entrevista:** ¿por qué la cancelación es cooperativa? · ¿Qué pasa si atrapas `CancellationException`? ·
+`coroutineScope` frente a `supervisorScope`.
+
+**⚡ Transferencia con tiempo límite y compensación:** débito, consulta de tasa con `withTimeout` y crédito, con
+reversión si algo falla o se cancela · **Se verifica con:** pruebas en tiempo virtual: el tiempo límite salta en el
+instante exacto, la compensación corre una sola vez aunque la cancelación llegue durante la compensación, y la
+cancelación del padre se propaga (no se traga).
 
 ### 02 · `dispatchers` — `withContext`, `limitedParallelism`, bloquear hilos
 
-> ⬜️ **Pendiente (tanda 4).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** elegir en qué hilos corre cada cosa (CPU, E/S bloqueante, UI), limitar el paralelismo sin crear pools a
+mano y no agotar los hilos con llamadas bloqueantes.
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin (kotlinx-coroutines 1.11.0 ⚠️) | Nota |
+|---|---|---|
+| `ForkJoinPool.commonPool()` para cálculo | `Dispatchers.Default` | Tantos hilos como núcleos |
+| Un pool grande para E/S bloqueante | `Dispatchers.IO` | 64 hilos (o más si hay más núcleos), compartidos con `Default` |
+| `Executors.newFixedThreadPool(4)` dedicado | `Dispatchers.IO.limitedParallelism(4, "db")` | Medido: el nombre compila sin opt-in en 1.11.0 |
+| `executor.submit { }` y esperar | `withContext(Dispatchers.IO) { }` | Cambia de hilo y vuelve con el resultado |
+| `Executors.newVirtualThreadPerTaskExecutor()` | `.asCoroutineDispatcher()` | Compila sin opt-in; se compara en `loom` |
+| `Executors.newSingleThreadExecutor()` | `limitedParallelism(1)`; `newSingleThreadContext` | El segundo pide `@ExperimentalCoroutinesApi` (medido) y hay que cerrarlo |
+| `ThreadLocal` (MDC del logger) | `ThreadLocal.asContextElement()`, `MDCContext` | El valor viaja con la corrutina, no con el hilo |
+
+**Trampas:**
+- JDBC o `Thread.sleep` en `Default` ocupa un núcleo entero mientras espera: con unas pocas llamadas, todo lo demás se
+  frena.
+- `limitedParallelism` sobre `IO` es una vista elástica (puede sumar hilos); sobre `Default` no agrega hilos, solo
+  limita.
+- Un `ThreadLocal` se pierde al cambiar de hilo: el MDC del log aparece vacío después de un `withContext`.
+- `Dispatchers.Unconfined` sigue en el hilo que reanudó la corrutina: el orden de ejecución deja de ser predecible.
+- Un `newSingleThreadContext` que no se cierra deja un hilo vivo que impide terminar la JVM.
+
+**Caso:** el `LedgerRepository` JDBC de `04-data` llamado con `withContext(db)`, donde
+`db = Dispatchers.IO.limitedParallelism(poolSize)` coincide con el pool de conexiones; las velas del Mercado se
+calculan en `Default`.
+
+**🎤 Entrevista:** ¿`Default` o `IO`, y por qué? · ¿Qué pasa si llamas a JDBC desde `Default`? · ¿Cómo limitas a N las
+llamadas simultáneas a la base?
+
+**⚡ Dimensionar dispatchers:** 1 000 llamadas bloqueantes simuladas (10 ms cada una) sobre `Default`, `IO`,
+`limitedParallelism(10)` y un dispatcher de hilos virtuales · **Se verifica con:** una prueba con un contador de
+llamadas simultáneas que demuestra que `limitedParallelism(10)` nunca pasa de 10, y la tabla de tiempos de cada
+variante guardada junto a la prueba (con calentamiento).
 
 ### 02 · `channels` — `Channel`, `select`, productores
 
-> ⬜️ **Pendiente (tanda 4).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** comunicar corrutinas con canales (el `BlockingQueue` que suspende en vez de bloquear), esperar varias
+fuentes a la vez con `select` y escribir un actor de un solo escritor.
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** nueva
+
+| Java 21 | Kotlin (kotlinx-coroutines 1.11.0 ⚠️) | Nota |
+|---|---|---|
+| `BlockingQueue.put` / `take` | `channel.send` / `receive` | Suspenden en vez de bloquear |
+| `ArrayBlockingQueue(n)`, `SynchronousQueue` | `Channel(n)`, `Channel(Channel.RENDEZVOUS)` | Por defecto es *rendezvous*: `send` espera a que alguien reciba |
+| Hilo productor que llena una cola | `produce { send(…) }` | Pide `@ExperimentalCoroutinesApi` (medido) |
+| Esperar la primera de varias colas | `select { a.onReceive { }; b.onReceive { } }` | Estable (compila sin opt-in) |
+| Un hilo dueño del estado + cola de comandos | `Channel<Command>` + un `launch` que lo consume | `actor { }` es `@ObsoleteCoroutinesApi` (medido): se escribe a mano |
+| `ScheduledExecutorService` | Un `flow { while (true) { emit(…); delay(…) } }` | `ticker` también es `@ObsoleteCoroutinesApi` (medido) |
+| *Poison pill* para terminar | `channel.close()` + `for (x in channel)` | El `for` termina cuando el canal se cierra y se vacía |
+
+**Trampas:**
+- Un `send` a un canal *rendezvous* sin nadie que reciba suspende para siempre.
+- Si el productor no cierra el canal, el `for` del consumidor no termina nunca.
+- `Channel.UNLIMITED` esconde la falta de backpressure hasta que se acaba la memoria.
+- `trySend` sobre un canal lleno no lanza: devuelve un resultado fallido que hay que mirar.
+- Varios consumidores de un canal se **reparten** los elementos; para que todos reciban todo hace falta un
+  `SharedFlow`.
+
+**Caso:** el `OrderBook` del Mercado como actor: un `Channel` de comandos (`Place`, `Cancel`) y una sola corrutina que
+modifica el libro, sin locks; las ejecuciones salen por otro canal hacia la liquidación del Banco.
+
+**🎤 Entrevista:** `Channel` frente a `BlockingQueue` · ¿Qué es un actor y por qué evita los locks? · ¿Qué hace
+`select`?
+
+**⚡ Motor de emparejamiento como actor:** el libro de órdenes de `collections` detrás de un canal de comandos, con
+precio-tiempo y ejecuciones parciales · **Se verifica con:** la misma secuencia de órdenes que el ⚡ de `control` da
+las mismas ejecuciones, y una prueba con 100 corrutinas que envían órdenes a la vez donde el libro nunca queda cruzado
+y la cantidad total se conserva.
 
 ### 02 · `flow` — Operadores, `flowOn`, buffer, conflate
 
-> ⬜️ **Pendiente (tanda 4).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** procesar flujos de datos asíncronos con `Flow` (frío, con backpressure por suspensión), cambiar de
+contexto bien y elegir entre `buffer`, `conflate` y los operadores de tiempo.
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** nueva
+
+| Java 21 | Kotlin (kotlinx-coroutines 1.11.0 ⚠️) | Nota |
+|---|---|---|
+| `Stream` (síncrono, de un solo uso) | `Flow` (asíncrono, frío: se puede recolectar muchas veces) | Cada `collect` vuelve a correr el productor |
+| `Flow.Publisher` / `Flux` | `Flow`; los puentes están en `03-reactive` | Sin `request(n)`: el productor se frena porque `emit` suspende |
+| `subscribeOn` / `publishOn` | `flowOn(Dispatchers.IO)` | Cambia el contexto **aguas arriba** del operador |
+| Callbacks de un cliente | `callbackFlow { trySend(…); awaitClose { } }` | Compila sin opt-in |
+| Cola entre productor y consumidor | `buffer(64)`, `conflate()` | `conflate` se queda solo con el último valor |
+| `debounce`, `sample` de Reactor | `debounce(…)`, `sample(…)` | Piden `@FlowPreview` (medido) |
+| `flatMap` de Reactor, `buffer(n)` | `flatMapMerge`, `flatMapLatest`, `chunked(n)` | Piden `@ExperimentalCoroutinesApi` (medido) |
+
+**Trampas:**
+- `withContext` dentro de `flow { }` rompe la preservación del contexto: lanza `IllegalStateException` ("Flow
+  invariant is violated", medido); se usa `flowOn` o `channelFlow`.
+- Dos `collect` del mismo `Flow` frío abren dos veces la fuente (dos conexiones, dos lecturas del archivo).
+- `catch` solo atrapa lo que pasa aguas arriba; una excepción dentro de `collect` sigue de largo.
+- `conflate` pierde valores intermedios: sirve para el último precio, no para ejecuciones que hay que liquidar todas.
+- Los operadores con opt-in pueden cambiar de firma entre versiones de la librería.
+
+**Caso:** el feed de `ticks.json` del Mercado como `Flow` con ráfagas: limpieza (duplicados, desorden), velas de un
+minuto, alertas de precio y un consumidor lento que obliga a elegir entre `buffer` y `conflate`.
+
+**🎤 Entrevista:** `Flow` frío frente a caliente · ¿Cómo funciona la backpressure en `Flow`? · ¿Qué hace `flowOn` y por
+qué no se usa `withContext` adentro?
+
+**⚡ Operadores propios con backpressure:** `windowedByTime`, `throttleLatest` y `batch(size, timeout)` escritos con
+`flow { }` y `channelFlow { }` · **Se verifica con:** pruebas en tiempo virtual con las emisiones exactas en los
+instantes exactos, una prueba con un consumidor lento que demuestra que el productor se frena (buffer acotado), y la
+comparación con `sample` de la librería donde hacen lo mismo.
 
 ### 02 · `hotflows` — `StateFlow`, `SharedFlow`
 
-> ⬜️ **Pendiente (tanda 4).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** publicar estado y eventos a varios suscriptores con flujos calientes, convertir uno frío en caliente sin
+fugas y saber qué recibe un suscriptor que llega tarde.
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin (kotlinx-coroutines 1.11.0 ⚠️) | Nota |
+|---|---|---|
+| `AtomicReference` + listeners, `BehaviorSubject` | `MutableStateFlow(valor)` | Siempre tiene valor; el que llega tarde recibe el actual |
+| Bus de eventos, `PublishSubject` | `MutableSharedFlow(replay, extraBufferCapacity)` | Sin valor actual; `replay` decide cuántos ve el que llega tarde |
+| Bucle con `compareAndSet` | `state.update { it + 1 }` | Compila sin opt-in |
+| `ConnectableFlux.autoConnect()` | `stateIn` / `shareIn` con `SharingStarted.WhileSubscribed(5000)` | La fuente se detiene 5 s después del último suscriptor |
+| `LiveData` (Android) | `StateFlow` | Se ve en `12-android` |
+
+**Trampas:**
+- `StateFlow` compara con `equals`: volver a asignar un valor igual, o mutar un objeto y reasignarlo, no avisa a
+  nadie.
+- Un `MutableSharedFlow()` con `replay = 0` y sin suscriptores pierde lo que se emite.
+- `stateIn(scope, SharingStarted.Eagerly, …)` en un scope de larga vida mantiene la fuente activa para siempre.
+- Un suscriptor lento de un `SharedFlow` con buffer lleno hace suspender a quien emite (salvo `onBufferOverflow`).
+- `collect` sobre un `StateFlow` nunca termina: en una prueba hace falta `first()`, `take(n)` o Turbine.
+
+**Caso:** el último precio de cada ticker como `StateFlow` y las alertas como `SharedFlow` (Mercado); el saldo de una
+cuenta como `StateFlow` que se actualiza con cada asiento (Banco).
+
+**🎤 Entrevista:** `StateFlow` frente a `SharedFlow` · ¿Qué recibe un suscriptor que llega tarde a cada uno? · ¿Para
+qué sirve `WhileSubscribed(5000)`?
+
+**⚡ Tablero de precios en vivo:** `StateFlow` por ticker alimentado por el feed y un `SharedFlow` de alertas · **Se
+verifica con:** pruebas con Turbine en tiempo virtual: el suscriptor tardío recibe el último precio en el acto, las
+alertas no se repiten para quien llega tarde, y la fuente se detiene exactamente 5 s después del último suscriptor.
 
 ### 02 · `sync` — `Mutex`, `Semaphore`, atomicfu, `@Volatile` y el JMM
 
-> ⬜️ **Pendiente (tanda 4).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** proteger estado compartido entre corrutinas sin bloquear hilos, y saber cuándo un lock sobra porque se
+puede confinar el estado.
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Banco · **Estado:** nueva
+
+| Java 21 | Kotlin (kotlinx-coroutines 1.11.0 ⚠️) | Nota |
+|---|---|---|
+| `synchronized`, `ReentrantLock` | `mutex.withLock { }` | Suspende en vez de bloquear; **no** es reentrante |
+| `java.util.concurrent.Semaphore` | `semaphore.withPermit { }` | Limita cuántas corrutinas entran a la vez |
+| `AtomicLong`, `AtomicReference` | Los mismos de `java.util.concurrent.atomic`; atomicfu ⚠️; `kotlin.concurrent.atomics` `[exp 2.4]` | atomicfu y la stdlib importan en multiplataforma |
+| `volatile` | `@Volatile` | Visibilidad, no atomicidad; mismo modelo de memoria (JMM) |
+| `ConcurrentHashMap` | El mismo | `getOrPut` no pisa un valor existente pero puede calcularlo de más; `computeIfAbsent` lo calcula una vez |
+| Un hilo dueño del estado | Confinamiento: un actor (`channels`) o `limitedParallelism(1)` | Muchas veces más simple que un lock |
+
+**Trampas:**
+- Llamar a una función `suspend` dentro de `synchronized` no compila ("suspension point is inside a critical section",
+  medido): se usa `Mutex`.
+- `Mutex` no es reentrante: un `withLock` anidado sobre el mismo `Mutex` en la misma corrutina se queda esperando para
+  siempre.
+- `count++` sobre un `@Volatile` no es atómico: dos corrutinas en hilos distintos pierden incrementos.
+- Bloquear dos cuentas en orden distinto (A→B y B→A a la vez) es un deadlock: hay que bloquear siempre en el mismo
+  orden (por id).
+- `getOrPut` de Kotlin sobre un `ConcurrentHashMap` puede ejecutar la lambda dos veces (se queda con un solo
+  resultado): si la lambda abre una conexión o cobra una comisión, ese efecto se repite.
+
+**Caso:** transferencias concurrentes del Banco con un `Mutex` por cuenta, tomadas en orden de `AccountId` para evitar
+el deadlock; un `Semaphore` que limita las llamadas simultáneas al `FxRateClient`.
+
+**🎤 Entrevista:** `Mutex` frente a `synchronized` · ¿Por qué `@Volatile` no basta para un contador? · ¿Cómo evitas un
+deadlock al transferir entre dos cuentas?
+
+**⚡ Transferencias concurrentes sin perder saldo:** 10 000 transferencias aleatorias desde 100 corrutinas en
+`Dispatchers.Default` sobre 50 cuentas · **Se verifica con:** una prueba de que el total de dinero se conserva y ningún
+saldo queda negativo, otra con transferencias cruzadas A→B y B→A que termina dentro de un `withTimeout` (sin deadlock),
+y una variante con el mismo estado confinado a un actor que da el mismo resultado.
 
 ### 02 · `internals` — CPS, máquina de estados decompilada, `Continuation` a mano
 
-> ⬜️ **Pendiente (tanda 4).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** entender qué genera el compilador para una función `suspend`, adaptar APIs de callbacks a `suspend` y
+saber qué cuesta cada punto de suspensión.
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** nueva
+
+| Java 21 | Kotlin | Nota |
+|---|---|---|
+| Callback `onSuccess`/`onError` | `suspendCancellableCoroutine { cont -> … cont.resume(x) }` | Adapta un callback a `suspend` |
+| `CompletableFuture<T>` como retorno | `suspend fun f(): T` → `f(Continuation<T>): Any?` | *Continuation-passing style*: el compilador agrega el parámetro |
+| — (Java no tiene corrutinas en el lenguaje) | Máquina de estados con `label` y `COROUTINE_SUSPENDED` | Un estado por cada punto de suspensión |
+| — | `createCoroutine` / `startCoroutine` (stdlib, sin kotlinx) | La base sobre la que kotlinx construye todo |
+| Generadores (no hay) | `sequence { yield(x) }` | Suspensión restringida: corre sin hilos ni dispatcher |
+| `ThreadLocal` | Elementos del `CoroutineContext` | El contexto viaja con la `Continuation` |
+
+**Trampas:**
+- Reanudar dos veces la misma `Continuation` lanza `IllegalStateException`.
+- `suspendCoroutine` no se entera de la cancelación: con una API que se puede cancelar se usa
+  `suspendCancellableCoroutine` e `invokeOnCancellation`.
+- Las variables locales que siguen vivas después de un punto de suspensión pasan a ser campos del objeto de la
+  máquina de estados (más memoria por corrutina suspendida).
+- Las pilas de excepciones salen cortadas en los puntos de suspensión; `kotlinx-coroutines-debug` (tutorial
+  `debug`) las reconstruye.
+- Desde Java, una función `suspend` pide un `Continuation` como último parámetro: no se puede llamar de forma natural.
+
+**Caso:** un cliente de cotizaciones del Mercado que entrega precios por callback, adaptado a `suspend fun quote(…)`
+con cancelación.
+
+**🎤 Entrevista:** ¿cómo compila Kotlin una función `suspend`? · ¿Qué es una `Continuation`? · ¿Por qué las
+corrutinas son "baratas"?
+
+**⚡ Scheduler de corrutinas propio sobre `createCoroutine`:** un planificador de un solo hilo, con su propio `yield`
+y `delay`, sin kotlinx · **Se verifica con:** una prueba del intercalado exacto de N corrutinas (salida esperada fija),
+y la máquina de estados decompilada (tutorial `decompile`) guardada en la lección, con tantos estados como puntos de
+suspensión más uno.
 
 ### 02 · `testing` — `runTest`, tiempo virtual, Turbine
 
-> ⬜️ **Pendiente (tanda 4).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** probar código con corrutinas, tiempos y flujos de forma determinista y en milisegundos, sin `sleep` ni
+pruebas que fallan de vez en cuando.
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin (kotlinx-coroutines-test 1.11.0 ⚠️, Turbine ⚠️) | Nota |
+|---|---|---|
+| `Thread.sleep` en la prueba, Awaitility | `runTest { }` con tiempo virtual | `delay` avanza el reloj virtual al instante |
+| Reloj falso hecho a mano | `advanceTimeBy`, `advanceUntilIdle`, `currentTime` | El planificador de la prueba controla el tiempo |
+| Inyectar un `Executor` | Inyectar un `CoroutineDispatcher` (`StandardTestDispatcher`) | Sin inyección, el código escapa del tiempo virtual |
+| `TestObserver` de RxJava | Turbine: `flow.test { awaitItem() }` | Comprueba emisiones una por una |
+| Hilo de fondo que la prueba ignora | `backgroundScope.launch { }` | Se cancela solo al terminar la prueba |
+| UI thread en pruebas de Android | `Dispatchers.setMain(StandardTestDispatcher())` | Se ve en `12-android` |
+
+**Trampas:**
+- Un `withContext(Dispatchers.IO)` fijo dentro del código probado sale del tiempo virtual: sus `delay` duran de verdad.
+- `StandardTestDispatcher` no corre nada hasta que la prueba avanza el tiempo o cede (`advanceUntilIdle`, `yield`);
+  `UnconfinedTestDispatcher` corre de inmediato: cambiar uno por otro cambia el orden.
+- Una corrutina lanzada en un scope propio que nunca termina cuelga o hace fallar la prueba; para eso está
+  `backgroundScope`.
+- Un `StateFlow` es *conflated*: Turbine puede no ver los valores intermedios si se emiten sin suspender.
+- `runBlocking` en una prueba usa tiempo real.
+
+**Caso:** las velas de un minuto del feed del Mercado y el tiempo límite de una transferencia del Banco, probados en
+tiempo virtual.
+
+**🎤 Entrevista:** ¿cómo se prueba un `delay(5.minutes)` sin esperar? · `StandardTestDispatcher` frente a
+`UnconfinedTestDispatcher` · ¿Cómo pruebas un `Flow`?
+
+**⚡ Una sesión de mercado en un segundo:** la sesión completa (6.5 h de ticks simulados) procesada en tiempo virtual
+· **Se verifica con:** `measureTime` que muestra menos de 1 s de reloj real, el mismo resultado en 100 corridas
+seguidas, y pruebas con Turbine del orden de las velas y las alertas.
 
 ### 02 · `loom` — Corrutinas frente a hilos virtuales
 
-> ⬜️ **Pendiente (tanda 4).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** comparar corrutinas e hilos virtuales de Java 21 (qué resuelve cada uno, qué cuesta y cuándo conviene
+mezclarlos) con mediciones propias y no con opiniones.
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** nueva
+
+| Java 21 | Kotlin (kotlinx-coroutines 1.11.0 ⚠️) | Nota |
+|---|---|---|
+| Hilos virtuales (JEP 444, finales en 21) | Corrutinas | Los dos hacen barata la concurrencia; Loom sin cambiar el código bloqueante |
+| `Executors.newVirtualThreadPerTaskExecutor()` | `.asCoroutineDispatcher()` | Corrutinas sobre hilos virtuales: compila sin opt-in |
+| `StructuredTaskScope` (vista previa en 21) | `coroutineScope { }` | Estable en Kotlin desde hace años |
+| `ScopedValue` (vista previa en 21) | `CoroutineContext` | Contexto que viaja con la tarea |
+| JDBC bloqueante en un hilo virtual | `withContext(Dispatchers.IO)` | Con Loom bloquear es barato; con corrutinas hay que mover el bloqueo |
+| `synchronized` con bloqueo adentro | `Mutex` | Ver la trampa de *pinning* |
+
+**Trampas:**
+- En JDK 21, un hilo virtual que bloquea dentro de `synchronized` queda fijado a su hilo portador (*pinning*) y deja
+  de ser barato; JDK 24 lo corrigió (JEP 491) ⚠️, pero el curso usa 21.
+- Los hilos virtuales no traen cancelación estructurada, `Flow` ni backpressure: eso sigue siendo de las corrutinas.
+- Un `ThreadLocal` pesado en millones de hilos virtuales multiplica la memoria.
+- Un benchmark sin calentamiento ni repeticiones (JIT, GC) mide el arranque, no el modelo.
+- Mezclar los dos modelos sin necesidad duplica las herramientas de diagnóstico (volcados de hilos, depurador).
+
+**Caso:** un servidor de difusión de precios del Mercado (cada cliente se suscribe a tickers y recibe actualizaciones),
+el "chat" del ⚡ con los datos del caso.
+
+**🎤 Entrevista:** ¿los hilos virtuales hacen innecesarias las corrutinas? · ¿Qué es el *pinning*? · ¿Cuándo usarías
+cada uno en un backend Spring?
+
+**⚡ Servidor de difusión con tres modelos:** el mismo servidor de suscripciones (tipo chat) con hilos de plataforma,
+hilos virtuales y corrutinas, bajo 10 000 clientes simulados · **Se verifica con:** una tabla de throughput, latencia
+p99 y memoria de cada modelo guardada en la lección (con calentamiento y repeticiones), y una prueba que reproduce el
+*pinning* en JDK 21 con un `synchronized` y lo resuelve con `ReentrantLock` o `Mutex`.
 
 ---
 
