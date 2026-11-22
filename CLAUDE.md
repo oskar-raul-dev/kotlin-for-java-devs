@@ -41,7 +41,8 @@ next; its order is in `Plan-Migracion-Monorepo.md`.
 - New lesson → new guide in `docs/lessons/<section>/` and its row in `docs/lessons/README.md`; a file added, renamed
   or removed in a lesson, or a cited symbol or test that changes → that lesson's guide (cite symbols, never line
   numbers). A guide is a study guide: theory (deeper where the model differs from Java), code map, and checked
-  sources (official first; English first, Spanish marked *(es)*); run `scripts/check-guide-links.sh` after editing.
+  sources (official first; only English or Spanish, or reliable English subtitles; English first, Spanish marked
+  *(es)*; long or hard topics get deeper theory); run `scripts/check-guide-links.sh` after editing.
 
 ## Language rules
 

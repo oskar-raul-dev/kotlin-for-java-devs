@@ -476,3 +476,10 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   `mapOf`, `setOf`; un cast a `MutableList` permite `set` sobre `listOf`; covarianza de `List`) y la trampa de JEP 431;
   `functional` con la tabla `List`/`Sequence`/`Stream` y la de scope functions; `json` comparado con Jackson. 41 enlaces
   responden; Baeldung bloquea clientes automáticos.
+- **2026-11-22** · **Guías de estudio, entrega 3 (`datetime`, `exceptions`, `jdbc`, `jpa`):** `jdbc` y `jpa` a fondo
+  (atomicidad frente a aislamiento, el nivel por defecto de cada motor, la actualización perdida y sus tres arreglos;
+  los plugins de JPA, por qué no `data class`, el contexto de persistencia, relaciones, N+1 y `@Version`), con
+  Hibernate 7.4 (la versión fijada). Las 12 guías tienen teoría. Reglas nuevas: fuentes solo en inglés o español (o con
+  subtítulos fiables en inglés), por eso sale la charla en ruso de `json`; y más apartados en los temas largos o
+  difíciles. Tres enlaces que `curl` no pudo comprobar (403) se confirmaron con búsquedas; uno que no se pudo confirmar
+  se quitó.

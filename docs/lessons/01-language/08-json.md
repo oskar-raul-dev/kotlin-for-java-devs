@@ -109,8 +109,6 @@ Datos: `data/ticks.json`, generado por `datagen` (ver [`Casos.md`](../../Casos.m
 **Videos**
 
 - [kotlinx.serialization 1.0][ks-1-0] (Leonid Startsev, JetBrains): el diseño de la librería contado por su autor.
-- [Дизайн kotlinx.serialization][ks-design] (Leonid Startsev): la charla de diseño en ruso, con las decisiones de
-  arquitectura (para quien la pueda seguir).
 
 ## Estado
 
@@ -125,4 +123,3 @@ Datos: `data/ticks.json`, generado por `datagen` (ver [`Casos.md`](../../Casos.m
 [jackson-kotlin]: https://github.com/FasterXML/jackson-module-kotlin
 [changelog]: https://github.com/Kotlin/kotlinx.serialization/blob/master/CHANGELOG.md
 [ks-1-0]: https://www.youtube.com/watch?v=Azi57n59ICM
-[ks-design]: https://www.youtube.com/watch?v=XwG4cyqhpFI

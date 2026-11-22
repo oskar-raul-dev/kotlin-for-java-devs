@@ -16,8 +16,8 @@
 <El concepto, el contraste con Java 21 (qué se escribía allá y por qué), el **por qué** del diseño de Kotlin, el
 símbolo de la lección que lo muestra (`simbolo` en `Archivo.kt`) y la fuente.> → [Fuente oficial][ref]
 
-<De 4 a 8 apartados. Más profundidad y más comparación con Java donde el modelo cambia de verdad (oop, io,
-corrutinas, reactivo, JPA); menos donde Kotlin solo cambia la sintaxis. Lo que la teoría afirma y no está en las
+<De 4 a 12 apartados. Los temas largos o difíciles (oop, io, collections, functional, corrutinas, reactivo, JPA…)
+llevan más apartados, más detalle de lo que hay debajo y más comparación con Java; los cortos, menos. Lo que la teoría afirma y no está en las
 fuentes, se mide antes de escribirlo.>
 
 ## Cómo correrla
@@ -64,7 +64,7 @@ fuentes, se mide antes de escribirlo.>
 <!--
 Reglas (docs/lessons/README.md):
 - Se citan símbolos, no números de línea; cada fila del mapa apunta a una prueba que existe.
-- Fuentes: primero lo oficial (en la versión fijada), luego lecturas y videos; inglés primero, español cuando hay
-  material de la misma calidad, marcado (es). Cada enlace comprobado con scripts/check-guide-links.sh.
+- Fuentes: primero lo oficial (en la versión fijada), luego lecturas y videos; solo inglés o español (o con subtítulos
+  fiables en inglés); inglés primero, español cuando hay material de la misma calidad, marcado (es). Cada enlace comprobado con scripts/check-guide-links.sh.
 - "Estado" habla solo de esta lección; el total vive en CHECKLIST.md.
 -->

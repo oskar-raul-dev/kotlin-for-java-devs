@@ -19,10 +19,12 @@ que se lee para aprender.
   solo vive en `docs/`: paquetes, directorios de código y nombres de prueba no cambian.
 - Se citan **símbolos, no números de línea**, y cada fila del mapa apunta a una prueba que existe.
 - **Partes:** qué vas a aprender, teoría (de 4 a 8 apartados), cómo correrla, recorrido, mapa del código, para
-  profundizar y estado. La profundidad depende del tema: más teoría y más comparación con Java donde el modelo cambia
-  de verdad (`oop`, `io`, corrutinas, reactivo, JPA), menos donde Kotlin solo cambia la sintaxis.
-- **Fuentes:** primero la documentación oficial (en la versión fijada), luego lecturas y videos reconocidos. Inglés
-  primero; español cuando hay material de la misma calidad, marcado *(es)*. Cada enlace se comprueba con
+  profundizar y estado. La profundidad depende del tema: los temas largos o difíciles (`oop`, `io`, `collections`,
+  `functional`, corrutinas, reactivo, JPA…) llevan más apartados, más detalle de lo que hay debajo y más comparación con
+  Java; los temas cortos, donde Kotlin solo cambia la sintaxis, menos.
+- **Fuentes:** primero la documentación oficial (en la versión fijada), luego lecturas y videos reconocidos. Solo en
+  inglés o en español (o con subtítulos fiables en inglés); inglés primero, español cuando hay material de la misma
+  calidad, marcado *(es)*. Cada enlace se comprueba con
   `scripts/check-guide-links.sh` y la guía dice la fecha de revisión. Lo que la teoría afirma y no está en las
   fuentes, se mide antes de escribirlo.
 - La guía nace con el código, no con el temario: una lección sin código no tiene guía. Los tutoriales tampoco: su
