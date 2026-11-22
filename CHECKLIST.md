@@ -457,3 +457,7 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   "Para profundizar" con documentación oficial, lecturas y videos verificados. Muestra: `01-basics.md`, con 14 enlaces
   (13 responden 200; Baeldung bloquea clientes automáticos) y una trampa nueva medida (la división `/` de Kotlin sobre
   `BigDecimal` redondea con `HALF_EVEN` a la escala del dividendo). Pendiente de revisión.
+- **2026-11-22** · **Guías de estudio aprobadas:** formato de `01-basics.md` como base, con más teoría y comparación con
+  Java donde el tema lo pide; fuentes en inglés y en español (prioridad inglés, *(es)* marcado); las 11 guías del
+  código hecho en una primera tanda y, desde B2, código y guía juntos. Plantilla y reglas de `docs/lessons/`
+  actualizadas, regla en CLAUDE.md y `scripts/check-guide-links.sh` (enlaces rotos frente a sitios que bloquean bots).

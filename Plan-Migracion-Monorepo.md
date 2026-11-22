@@ -30,7 +30,7 @@ medias**. El avance por sección y lección está en [`CHECKLIST.md`](CHECKLIST.
 | B1 · Tutoriales | ✅ | — (5 tutoriales, 72 ejercicios, 136 comprobaciones en sus `check.sh`) |
 | B0 · Temario | ✅ | — (88 entradas, los dos 🐉 y la trazabilidad; revisado con el usuario: [`docs/Temario-Plan.md`](docs/Temario-Plan.md#estado)) |
 | B0′ · Casos Banco y Mercado | ✅ | — (las 6 tandas del [reemplazo](docs/Casos.md#plan-de-reemplazo): el dominio de pedidos ya no existe) |
-| B0″ · Guías de lección | ✅ (mapa) · 📝 propuesta de teoría y fuentes ([sección 13](#13-guías-de-estudio-teoría-y-fuentes-propuesta)) | — (índice, plantilla y 12 guías en [`docs/lessons/`](docs/lessons/README.md); se mantienen con cada cambio de código) |
+| B0″ · Guías de lección | ✅ (mapa) · 🟡 guías de estudio: `basics` hecha, 11 en curso ([sección 13](#13-guías-de-estudio-teoría-y-fuentes-propuesta)) | — (índice, plantilla y 12 guías en [`docs/lessons/`](docs/lessons/README.md); se mantienen con cada cambio de código) |
 | B2–B10 | ⬜️ | Todo |
 
 ### La base del curso v1, verificada en Kotlin 2.x
@@ -112,7 +112,8 @@ Tags anotados: `baseline-1.9.22` (curso v1 de proyecto único), `monorepo-1.9.22
 | `77120bb` Close B0 and record the review decisions | B0 cerrado con la revisión; preguntas 1 a 3 respondidas; órdenes con generador |
 | `c1c4e5b` Add the order generator to datagen | `orderStream`: comandos `Place`/`Cancel` con semilla, sin archivo; 157 pruebas |
 | `b6e9b60` Number the tutorials | `tutorials/01-install` … `05-debug`; 136 comprobaciones en verde |
-| Propose study guides with theory and sources | Sección 13 del plan y la guía de `basics` como muestra |
+| `6247429` Propose study guides with theory and sources | Sección 13 del plan y la guía de `basics` como muestra |
+| Adopt the study guide format | Reglas, plantilla y `scripts/check-guide-links.sh` |
 
 **Remoto:** `origin` en GitHub desde el 13 de noviembre de 2026. Antes de cada push se repite el escaneo de
 referencias externas sobre `git log -p --all`, y se suben los tags con `git push origin main --follow-tags`.
@@ -133,7 +134,7 @@ temario ya está escrito (tandas 1 y 2 de B0), y así el código deja antes el d
 6. **B2–B10** según la [sección 8](#8-fase-b-generar-el-resto).
 
 **Preguntas abiertas:** las de la [sección 10](#10-para-decidir-en-la-revisión) quedaron respondidas el 22 de noviembre de 2026;
-queda revisar la propuesta de guías de estudio ([sección 13](#13-guías-de-estudio-teoría-y-fuentes-propuesta)).
+la propuesta de guías de estudio ([sección 13](#13-guías-de-estudio-teoría-y-fuentes-propuesta)) quedó aprobada.
 
 ---
 
@@ -592,7 +593,10 @@ pantalla y media.
 
 ## 13. Guías de estudio: teoría y fuentes (propuesta)
 
-**Propuesta del 22 de noviembre de 2026, pendiente de revisión.** Muestra escrita:
+**Propuesta del 22 de noviembre de 2026, aprobada el mismo día** con estos ajustes: más profundidad en la teoría y en la
+comparación con Java donde el modelo cambia de verdad (`oop`, `io`, corrutinas, reactivo); fuentes en inglés y en
+español, con prioridad al inglés; las 11 guías del código que ya existe en una primera tanda, y desde B2 cada lección
+nace con código y guía juntos. Muestra escrita:
 [`docs/lessons/01-language/01-basics.md`](docs/lessons/01-language/01-basics.md).
 
 ### Qué cambia
@@ -630,18 +634,16 @@ La guía pasa de una pantalla y media a unas cuatro o cinco. El temario sigue si
 
 ### Cómo se hace
 
-- **Por tandas**, como B0: las 12 guías actuales en tres tandas de cuatro (`basics`–`oop`, `io`–`json`,
-  `datetime`–`exceptions` y `jdbc`, `jpa`), cada una con su investigación (búsqueda de las páginas oficiales de cada
-  tema, charlas y artículos) y su commit.
+- **Primera tanda:** las 11 guías del código hecho (la de `basics` ya está), en tres entregas con su investigación
+  (páginas oficiales de cada tema, charlas y artículos) y su commit.
 - **Desde ahí, cada lección nueva de B2 a B10 nace con su guía completa**, igual que hoy nace con su mapa.
-- **Un script de enlaces** (`scripts/check-guide-links.sh`) que recorra las guías y reporte los enlaces que no
-  responden, separando los 403 de sitios con protección contra bots. Se corre al cerrar cada tanda y, de vez en
-  cuando, para detectar enlaces muertos.
+- **Script de enlaces** `scripts/check-guide-links.sh` (hecho): recorre las guías, separa los 401/403/429 de sitios que
+  bloquean clientes automáticos (se revisan a mano) y sale con error si hay enlaces rotos.
 - Cambian con la aprobación: la plantilla `docs/lessons/_template.md`, las reglas de `docs/lessons/README.md` (la de
   "máximo una pantalla y media") y la regla de sincronía de CLAUDE.md.
 
 ### Para decidir
 
-1. ¿El formato de la muestra (`01-basics.md`) sirve, o cambia algo (largo, apartados, cantidad de enlaces)?
-2. ¿Videos solo en inglés, o buscar también en español?
-3. ¿Se hacen las 12 guías antes de B2, o se reescribe cada guía cuando B2 toque su lección?
+1. ~~¿El formato de la muestra sirve?~~ Sí; con más profundidad donde el tema lo pide.
+2. ~~¿Videos solo en inglés?~~ Inglés y español, con prioridad al inglés.
+3. ~~¿Las 12 guías antes de B2?~~ Las del código hecho en una primera tanda; las nuevas, con su código.

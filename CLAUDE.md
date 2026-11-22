@@ -40,7 +40,8 @@ next; its order is in `Plan-Migracion-Monorepo.md`.
 - New section with a build → root `settings.gradle.kts` `includeBuild` list (unless it is a legacy track or Android).
 - New lesson → new guide in `docs/lessons/<section>/` and its row in `docs/lessons/README.md`; a file added, renamed
   or removed in a lesson, or a cited symbol or test that changes → that lesson's guide (cite symbols, never line
-  numbers).
+  numbers). A guide is a study guide: theory (deeper where the model differs from Java), code map, and checked
+  sources (official first; English first, Spanish marked *(es)*); run `scripts/check-guide-links.sh` after editing.
 
 ## Language rules
 

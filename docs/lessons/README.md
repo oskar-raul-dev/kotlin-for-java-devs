@@ -1,13 +1,15 @@
 # Guías de lección
 
-Una guía por lección **con código**: es el mapa de la lección. Dice qué archivo leer primero, qué muestra cada uno,
-qué prueba lo demuestra, cómo correrlo y qué está hecho y qué falta. No repite el temario.
+Una guía por lección **con código**: la guía de estudio de la lección. Explica la teoría que hay detrás (para quien
+viene de Java), dice qué archivo leer primero, qué muestra cada uno, qué prueba lo demuestra y cómo correrlo, y
+junta las fuentes para profundizar: documentación oficial, lecturas y videos. El temario es el resumen; la guía es lo
+que se lee para aprender.
 
 | Documento | Responde |
 |---|---|
 | [`docs/Temario.md`](../Temario.md) | **Qué** se aprende: mapeo Java → Kotlin, trampas, caso, 🎤 y ⚡ |
 | `<lección>/Exercises.md` | **Qué** se practica: enunciados graduados |
-| `docs/lessons/…` (esto) | **Dónde** está y **por dónde** leerlo: archivos, símbolos, pruebas, comandos, estado |
+| `docs/lessons/…` (esto) | **Por qué** funciona así (teoría), **dónde** está y **por dónde** leerlo, y **qué leer o ver** después |
 | [`CHECKLIST.md`](../../CHECKLIST.md) | **Cuánto** falta, en una tabla para todo el curso |
 
 ## Reglas
@@ -16,6 +18,13 @@ qué prueba lo demuestra, cómo correrlo y qué está hecho y qué falta. No rep
 - **Un archivo por lección, `NN-<subpaquete>.md`**, con `NN` en el orden del temario dentro de la sección. El número
   solo vive en `docs/`: paquetes, directorios de código y nombres de prueba no cambian.
 - Se citan **símbolos, no números de línea**, y cada fila del mapa apunta a una prueba que existe.
+- **Partes:** qué vas a aprender, teoría (de 4 a 8 apartados), cómo correrla, recorrido, mapa del código, para
+  profundizar y estado. La profundidad depende del tema: más teoría y más comparación con Java donde el modelo cambia
+  de verdad (`oop`, `io`, corrutinas, reactivo, JPA), menos donde Kotlin solo cambia la sintaxis.
+- **Fuentes:** primero la documentación oficial (en la versión fijada), luego lecturas y videos reconocidos. Inglés
+  primero; español cuando hay material de la misma calidad, marcado *(es)*. Cada enlace se comprueba con
+  `scripts/check-guide-links.sh` y la guía dice la fecha de revisión. Lo que la teoría afirma y no está en las
+  fuentes, se mide antes de escribirlo.
 - La guía nace con el código, no con el temario: una lección sin código no tiene guía. Los tutoriales tampoco: su
   `README.md` ya es el recorrido.
 - Cuando cambia el código de una lección (archivo nuevo, renombrado o borrado, símbolos que cambian), su guía se
