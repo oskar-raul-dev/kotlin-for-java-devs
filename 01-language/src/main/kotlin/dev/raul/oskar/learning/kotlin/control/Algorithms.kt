@@ -29,7 +29,7 @@ fun fibonacci(n: Int): Long {
     return a
 }
 
-/** Búsqueda binaria sobre IntArray ordenado. Devuelve el índice o -1. */
+/** Búsqueda binaria sobre IntArray ordenado (por ejemplo, precios en centavos de un libro). Devuelve el índice o -1. */
 fun binarySearch(sorted: IntArray, target: Int): Int {
     var lo = 0
     var hi = sorted.size - 1

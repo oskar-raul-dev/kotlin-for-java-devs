@@ -2,14 +2,14 @@ package dev.raul.oskar.learning.kotlin.strings
 
 // String es java.lang.String; Kotlin le agrega muchas funciones de extensión.
 
-fun greeting(name: String, items: Int): String =
-    "Hola, $name: tienes $items ${if (items == 1) "artículo" else "artículos"}"   // plantillas
+fun greeting(name: String, openOrders: Int): String =
+    "Hola, $name: tienes $openOrders ${if (openOrders == 1) "orden abierta" else "órdenes abiertas"}"   // plantillas
 
 /** Raw string: sin escapes, multilínea. trimIndent quita la sangría común. */
-fun report(name: String, total: Int): String = """
+fun report(ticker: String, volume: Int): String = """
     Reporte
-      cliente: $name
-      total:   $total
+      ticker:  $ticker
+      volumen: $volume
 """.trimIndent()
 
 /** padStart/padEnd para alinear columnas. */
@@ -45,7 +45,8 @@ fun sameIgnoringCase(a: String, b: String): Boolean = a.equals(b, ignoreCase = t
 /**
  * TRAMPA para ojos de Java: en Kotlin, split(String) es LITERAL, no regex.
  * "03/14/1985".split("\\/") busca el texto \/ y no lo encuentra: devuelve la cadena entera.
- * En Java, "03/14/1985".split("\\/") sí parte, porque Java siempre usa regex.
+ * En Java, "03/14/1985".split("\\/") sí parte, porque Java siempre usa regex. Lo mismo con un mensaje estilo FIX:
+ * "35=D|55=ACME".split("\\|") no parte; split("|") sí.
  */
 fun splitLiteral(text: String, delimiter: String): List<String> = text.split(delimiter)
 fun splitRegex(text: String, pattern: String): List<String> = text.split(Regex(pattern))

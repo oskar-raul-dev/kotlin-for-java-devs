@@ -38,23 +38,24 @@ fun parseAll(raw: List<String>): Pair<List<Int>, List<String>> {
     return ok to errors
 }
 
-/** Scope functions: let, run, with, apply, also. Cuál devuelve qué. */
-data class Order(var id: String = "", var items: MutableList<String> = mutableListOf(), var paid: Boolean = false)
+/** Scope functions: let, run, with, apply, also. Cuál devuelve qué. Un boleto de orden mutable, como un builder. */
+data class OrderTicket(var id: String = "", var ticker: String = "", var quantity: Long = 0, var submitted: Boolean = false)
 
-fun scopeFunctions(log: MutableList<String>): Order =
-    Order().apply {                       // apply: this = objeto, devuelve el objeto (configurar)
-        id = "o-1"
-        items += "libro"
+fun scopeFunctions(log: MutableList<String>): OrderTicket =
+    OrderTicket().apply {                 // apply: this = objeto, devuelve el objeto (configurar)
+        id = "ORD-1"
+        ticker = "ACME"
+        quantity = 10
     }.also {                              // also: it = objeto, devuelve el objeto (efecto lateral)
         log += "creada ${it.id}"
-    }.let { order ->                      // let: it = objeto, devuelve el resultado de la lambda
-        order.copy(items = (order.items + "lápiz").toMutableList())
+    }.let { ticket ->                     // let: it = objeto, devuelve el resultado de la lambda
+        ticket.copy(quantity = ticket.quantity + 5)
     }.run {                               // run: this = objeto, devuelve el resultado
-        paid = items.size > 1
+        submitted = quantity > 0
         this
     }
 
-fun summary(order: Order): String = with(order) { "$id: ${items.joinToString()} pagada=$paid" }
+fun summary(ticket: OrderTicket): String = with(ticket) { "$id: $quantity $ticker enviada=$submitted" }
 
 /** Recursión de cola funcional: suma de dígitos. */
 tailrec fun digitSum(n: Long, acc: Long = 0): Long = if (n == 0L) acc else digitSum(n / 10, acc + n % 10)

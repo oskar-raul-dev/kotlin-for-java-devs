@@ -39,7 +39,7 @@ qué prueba lo demuestra, cómo correrlo y qué está hecho y qué falta. No rep
 | 03 | [`strings`](01-language/03-strings.md) — Plantillas, extensiones de `String`, regex | Ambos | 7 | 24 |
 | 04 | [`oop`](01-language/04-oop.md) — Clases, herencia, `sealed`, enums, objetos | Ambos | 10 | 24 |
 | 05 | [`io`](01-language/05-io.md) — Archivos, recursos, consola, logging | Banco | 10 | 23 |
-| 06 | [`collections`](01-language/06-collections.md) — Solo lectura frente a mutable, estructuras | Mercado | 8 | 24 |
+| 06 | [`collections`](01-language/06-collections.md) — Solo lectura frente a mutable, estructuras | Mercado | 9 | 24 |
 | 07 | [`functional`](01-language/07-functional.md) — Funciones, lambdas, scope functions, pipelines | Mercado | 9 | 24 |
 | 08 | [`json`](01-language/08-json.md) — kotlinx-serialization | Mercado | 9 | 24 |
 | 09 | [`datetime`](01-language/09-datetime.md) — `java.time` correcto | Ambos | 8 | 24 |

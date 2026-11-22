@@ -1,15 +1,20 @@
 package dev.raul.oskar.learning.kotlin.control
 
+import java.math.BigDecimal
+
 // if y when son EXPRESIONES: devuelven valor. Por eso Kotlin no tiene operador ternario.
 
 fun sign(n: Int): String = if (n > 0) "positive" else if (n < 0) "negative" else "zero"
 
-/** when con rangos e in: el switch de Java pero sin fall-through ni break. */
-fun ageGroup(age: Int): String = when (age) {
-    in Int.MIN_VALUE..-1 -> throw IllegalArgumentException("age < 0: $age")
-    in 0..17 -> "minor"
-    in 18..64 -> "adult"
-    else -> "senior"
+/**
+ * when con rangos e in: el switch de Java pero sin fall-through ni break.
+ * Tramos de comisión del Mercado según los títulos operados en el mes: a más volumen, menor tasa.
+ */
+fun commissionRate(monthlyShares: Long): BigDecimal = when (monthlyShares) {
+    in Long.MIN_VALUE..-1 -> throw IllegalArgumentException("volumen negativo: $monthlyShares")
+    in 0L..<10_000L -> BigDecimal("0.0010")           // ..< es el rango semiabierto (Kotlin 1.9)
+    in 10_000L..<100_000L -> BigDecimal("0.0005")
+    else -> BigDecimal("0.0002")
 }
 
 /** Varios valores en una rama, separados por coma. */

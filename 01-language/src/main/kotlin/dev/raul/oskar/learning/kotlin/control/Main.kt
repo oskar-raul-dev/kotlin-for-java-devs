@@ -3,7 +3,7 @@ package dev.raul.oskar.learning.kotlin.control
 fun main() {
     println("== Condicionales ==")
     println(listOf(-3, 0, 5).map(::sign))
-    println(listOf(10, 30, 70).map(::ageGroup))
+    println(listOf(500L, 25_000L, 250_000L).map { "$it títulos -> ${commissionRate(it)}" })
     println((1..15).joinToString(" ") { fizzBuzz(it) })
     println("firstWordLength(\"  hola mundo\") = ${firstWordLength("  hola mundo")}")
     println("firstWordLength(null)         = ${firstWordLength(null)}")
@@ -21,9 +21,9 @@ fun main() {
     println("gcd(84, 36)         = ${gcd(84, 36)}")
     println("primos < 30         = ${(1..30).filter(::isPrime)}")
     println("fibonacci(0..10)    = ${(0..10).map(::fibonacci)}")
-    val sorted = insertionSort(intArrayOf(5, 2, 9, 1, 7))
+    val sorted = insertionSort(intArrayOf(10_020, 9_950, 10_050, 9_980, 10_000))   // precios en centavos
     println("insertionSort       = ${sorted.contentToString()}")
-    println("binarySearch(7)     = ${binarySearch(sorted, 7)}")
+    println("binarySearch(10020) = ${binarySearch(sorted, 10_020)}")
     println("twoSum([2,7,11,15],9) = ${twoSum(intArrayOf(2, 7, 11, 15), 9)}")
     println("balanced(\"{[()]}\")  = ${balanced("{[()]}")}, balanced(\"(]\") = ${balanced("(]")}")
 }

@@ -1,8 +1,10 @@
 package dev.raul.oskar.learning.kotlin.functional
 
+import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class FunctionalTest {
@@ -39,11 +41,11 @@ class FunctionalTest {
     @Test
     fun `scope functions`() {
         val log = mutableListOf<String>()
-        val order = scopeFunctions(log)
-        assertEquals(listOf("creada o-1"), log)
-        assertEquals(listOf("libro", "lápiz"), order.items)
-        assertTrue(order.paid)
-        assertEquals("o-1: libro, lápiz pagada=true", summary(order))
+        val ticket = scopeFunctions(log)
+        assertEquals(listOf("creada ORD-1"), log)
+        assertEquals(15, ticket.quantity)
+        assertTrue(ticket.submitted)
+        assertEquals("ORD-1: 15 ACME enviada=true", summary(ticket))
     }
 
     @Test
@@ -57,19 +59,23 @@ class FunctionalTest {
 
     @Test
     fun `grouping pipelines`() {
-        assertEquals(mapOf("ana" to 1100, "bob" to 180, "eva" to 300), totalByUser(sampleTxns))
-        assertEquals(3, countByState(sampleTxns)["NY"])
-        assertEquals(900, maxTxnByUser(sampleTxns).getValue("ana").amount)
-        val (large, small) = splitLarge(sampleTxns, 200)
-        assertEquals(2, large.size)
-        assertEquals(5, small.size)
-        assertEquals(setOf("CA", "TX"), distinctStatesPerUser(sampleTxns)["ana"])
+        assertEquals(mapOf("ACME" to 1_400L, "ORBX" to 2_200L, "NUBE" to 5_000L), volumeByTicker(sampleTicks))
+        assertEquals(4, ticksPerTicker(sampleTicks)["ACME"])
+        assertEquals(BigDecimal("101.10"), highestByTicker(sampleTicks).getValue("ACME").price)
+        val (large, small) = splitLarge(sampleTicks, 1_000)
+        assertEquals(3, large.size)
+        assertEquals(4, small.size)
+        assertEquals(setOf(1, 2), daysPerTicker(sampleTicks)["ACME"])
     }
 
     @Test
-    fun `suspicious users rule`() {
-        // ana: dos estados; bob: tres transacciones el mismo día; eva: normal
-        assertEquals(listOf("ana", "bob"), suspiciousUsers(sampleTxns))
+    fun `a candle in one pass with fold`() {
+        val day1 = sampleTicks.filter { it.ticker == "ACME" && it.day == 1 }
+        assertEquals(
+            Candle(BigDecimal("100.00"), BigDecimal("100.40"), BigDecimal("99.80"), BigDecimal("99.80"), 1_000),
+            candleOf(day1),
+        )
+        assertNull(candleOf(emptyList()))
     }
 
     @Test

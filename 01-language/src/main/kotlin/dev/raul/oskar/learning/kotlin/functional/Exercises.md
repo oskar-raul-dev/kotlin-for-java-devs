@@ -8,49 +8,53 @@
 
 **Prioritarios (🎯):** 01, 02, 08, 09, 10, 16.
 
-> Varios ejercicios usan `Txn` y `sampleTxns` de `Pipelines.kt`, o los `OrderEvent` de la lección `json`.
+> Varios ejercicios usan `Tick` y `sampleTicks` de `Pipelines.kt` (ticks ya limpios del Mercado), o el feed
+> `ticks.json` que lee la lección `json`.
 > Regla para todos: **sin `var` ni bucles** salvo que el enunciado lo pida.
 
 ## 🟢 Fáciles
 
-**01 🟢 🎯 `map`, `filter`, `sumOf`.** El total de montos de un usuario mayores que un umbral, en una sola expresión.
-- Firma: `fun bigTotal(txns: List<Txn>, user: String, threshold: Int): Int`
+**01 🟢 🎯 `map`, `filter`, `sumOf`.** El volumen total de un ticker en los ticks con precio mayor que un umbral, en una sola
+expresión.
+- Firma: `fun bigVolume(ticks: List<Tick>, ticker: String, minPrice: BigDecimal): Long`
 
-**02 🟢 🎯 `mapNotNull`.** De `List<String?>` con fechas `MM/dd/yyyy` a la lista de años válidos, descartando nulos y basura.
-- Firma: `fun years(dobs: List<String?>): List<Int>`
+**02 🟢 🎯 `mapNotNull`.** De `List<String?>` con fechas de liquidación `MM/dd/yyyy` a la lista de años válidos, descartando
+nulos y basura.
+- Firma: `fun years(dates: List<String?>): List<Int>`
 
-**03 🟢 Referencias a funciones.** Reescribir tres lambdas como referencias (`::isPrime`, `String::length`, `Txn::amount`).
+**03 🟢 Referencias a funciones.** Reescribir tres lambdas como referencias (`::isPrime`, `String::length`, `Tick::volume`).
 
-**04 🟢 `any`, `all`, `none`, `count`.** ¿Algún monto negativo? ¿Todos del mismo estado? ¿Cuántos el día 1?
+**04 🟢 `any`, `all`, `none`, `count`.** ¿Algún volumen cero? ¿Todos del mismo ticker? ¿Cuántos el día 1?
 
-**05 🟢 `associateBy` y `associateWith`.** Txn por id; cada usuario con su total.
+**05 🟢 `associateBy` y `associateWith`.** El último tick de cada ticker; cada ticker con su volumen total.
 
-**06 🟢 `zip` y `zipWithNext`.** Pares (día, monto) y la diferencia entre montos consecutivos de un usuario.
+**06 🟢 `zip` y `zipWithNext`.** Pares (día, precio) y la diferencia entre precios consecutivos de un ticker.
 
 **07 🟢 Scope functions.** Reescribir un bloque con variables temporales usando `apply`, `also` y `let`, y explicar en un comentario cuál devuelve qué.
 
 ## 🟡 Medios
 
-**08 🟡 🎯 `groupBy` + `mapValues`.** Promedio de monto por estado, redondeado a 2 decimales con `BigDecimal`.
-- Firma: `fun averageByState(txns: List<Txn>): Map<String, BigDecimal>`
+**08 🟡 🎯 `groupBy` + `mapValues`.** Precio promedio por ticker, redondeado a 2 decimales con `BigDecimal` (`HALF_EVEN`).
+- Firma: `fun averagePriceByTicker(ticks: List<Tick>): Map<String, BigDecimal>`
 
-**09 🟡 🎯 `flatMap`.** Cada evento genera varias categorías (`"state:CA"`, `"type:auto"`, `"age:26-35"`); producir todos los pares
-(categoría, día) y contarlos.
-- Firma: `fun categoryDayCounts(events: List<Ev>): Map<Pair<String, Int>, Int>`
+**09 🟡 🎯 `flatMap`.** Cada tick genera varias etiquetas (`"ticker:ACME"`, `"size:large"` o `"size:small"` según el volumen,
+`"band:100-110"` según el precio en tramos de 10); producir todos los pares (etiqueta, día) y contarlos.
+- Firma: `fun tagDayCounts(ticks: List<Tick>): Map<Pair<String, Int>, Int>`
 
 **10 🟡 🎯 `fold` con acumulador rico.** En una sola pasada: mínimo, máximo, suma y cantidad (`data class Stats`).
 - Firma: `fun stats(xs: List<Int>): Stats?` (lista vacía → `null`)
 
 **11 🟡 Composición.** `compose(vararg fs: (String) -> String)` que aplica `trim`, `lowercase` y quita tildes en orden; prueba el orden.
 
-**12 🟡 Currying y aplicación parcial.** Una regla `(threshold: Int) -> (Txn) -> Boolean` y una lista de reglas configuradas.
+**12 🟡 Currying y aplicación parcial.** Una regla `(minVolume: Long) -> (Tick) -> Boolean` y una lista de reglas configuradas.
 
 **13 🟡 Memoización recursiva.** Fibonacci memoizado con un `HashMap` capturado; compara llamadas reales contra la versión ingenua.
 
-**14 🟡 `Result` encadenado.** Parsear, validar y convertir una línea en un `Txn` con `runCatching`, `mapCatching` y `recover`;
+**14 🟡 `Result` encadenado.** Parsear, validar y convertir una línea `ticker,day,price,volume` en un `Tick` con `runCatching`,
+`mapCatching` y `recover`;
 devolver la lista de buenos y el mensaje de cada malo.
 
-**15 🟡 Secuencias.** Encontrar el primer día con más de `k` transacciones en una secuencia infinita de días generada; demostrar con
+**15 🟡 Secuencias.** Encontrar el primer día con más de `k` ticks en una secuencia infinita de días generada; demostrar con
 un contador que no se evaluó de más.
 
 ## 🟠 Difíciles
@@ -61,13 +65,13 @@ guardar la lista ni restar números grandes.
 - Casos: vacía, un elemento (desviación 0), `[2, 4, 4, 4, 5, 5, 7, 9]` → media 5 y desviación 2, y valores `1e9 + x` sin la
   pérdida de precisión de la fórmula ingenua.
 
-**17 🟠 Días atípicos.** Con lo anterior: para cada estado, marca los días cuyas ventas se alejan más de `k` desviaciones
-de la media de los 30 días anteriores. Todo con `groupBy`, `windowed` o mapas, sin `var`.
-- Firma: `fun outliers(sales: Map<String, Map<LocalDate, Int>>, k: Double): List<Outlier>`
+**17 🟠 Días atípicos.** Con lo anterior: para cada ticker, marca los días cuyo volumen se aleja más de `k` desviaciones
+de la media de los 5 días de mercado anteriores. Todo con `groupBy`, `windowed` o mapas, sin `var`.
+- Firma: `fun outliers(volumes: Map<String, Map<LocalDate, Long>>, k: Double): List<Outlier>`
 
 **18 🟠 Pipeline perezoso con efectos.** Reescribir el 17 con `asSequence()` y medir (con contadores) cuántos cálculos ahorra cuando se pide solo la primera alerta.
 
-**19 🟠 `fun interface` combinables.** `Rule` con `and`, `or`, `not` como funciones infix y un DSL: `rule { amountAbove(1000) and not(stateIn("CA")) }`.
+**19 🟠 `fun interface` combinables.** `Rule` con `and`, `or`, `not` como funciones infix y un DSL: `rule { volumeAbove(1_000) and not(tickerIn("NUBE")) }`.
 
 **20 🟠 Transductor manual.** Escribe tu propia versión de `map`, `filter` y `take` como extensiones `inline` sobre `Iterable` y como extensiones
 sobre `Sequence` (con `sequence { yield(…) }`). Prueba que la versión `Sequence` es perezosa.
@@ -75,7 +79,7 @@ sobre `Sequence` (con `sequence { yield(…) }`). Prueba que la versión `Sequen
 ## 🔴 Muy difíciles
 
 **21 🔴 Either propio.** `sealed class Either<out L, out R>` con `map`, `flatMap`, `fold` y un `either { }` que permita escribir validaciones
-encadenadas sin anidar. Úsalo para validar un `OrderEvent` acumulando el primer error.
+encadenadas sin anidar. Úsalo para validar un tick crudo del feed (`ticks.json`) cortando en el primer error.
 
 **22 🔴 Validación aplicativa.** Como el anterior pero acumulando **todos** los errores (`Validated`), y compara con `Either` en el mismo caso.
 

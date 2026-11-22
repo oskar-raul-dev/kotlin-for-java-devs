@@ -51,7 +51,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | A6 · Track `22-legacy-kotlin19` | ✅ | Wrapper propio 9.2.1, Kotlin 1.9.22, 4 pruebas de humo; fuera del composite |
 | A8 · Contenedores legacy | ✅ | `./scripts/legacy.sh 19` = nativo (4 pruebas); `arm64` nativo |
 | A9 · Documentación | ✅ | README con índice de secciones, CLAUDE.md reescrito; tag `phase-a` |
-| B0′ · Casos Banco y Mercado | 🟡 | Diseño en `docs/Casos.md` ✅; tandas 1 (datos), 2 (`json`, `io`) y 3 (`basics`, `oop`, `exceptions`) ✅; tandas 4 a 6 ⬜️ |
+| B0′ · Casos Banco y Mercado | 🟡 | Diseño en `docs/Casos.md` ✅; tandas 1 a 4 ✅ (código de `01-language` en los casos); tandas 5 (`04-data`) y 6 (enunciados) ⬜️ |
 | B0″ · Guías de lección | ✅ | 12 guías en `docs/lessons/`, símbolos y pruebas citados comprobados contra el código |
 
 ## Secciones
@@ -365,3 +365,12 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   `exceptions`: `BankException` sellada (las cinco de `Casos.md` más `FxUnavailable` para envolver la causa),
   `TransferService` con `require`/`check`, `checkBalanced`, `httpStatusFor` y `TransferRequest` validada acumulando
   errores. `json`: `MoneyAsString` y `Fee`. Guías `01`, `04`, `08` y `10` al día. 140 pruebas (102 + 38), 0 `SKIPPED`.
+- **2026-11-22** · **B0′, tanda 4 (`control`, `strings`, `collections`, `functional`, `datetime`):** `control` con
+  tramos de comisión (`commissionRate`, `..<` sobre `Long`) y búsqueda binaria sobre precios en centavos; `strings`
+  con la forma de las cuentas `ACC-…` (grupos con nombre, `findAll`, lookbehind) y `parseFix`, y la trampa de `split`
+  también con FIX; `collections` con `OrderBook` (`TreeMap` + `ArrayDeque`, sin emparejar) y cierres por fecha;
+  `functional` con `Tick`, `OrderTicket` y `candleOf` (`fold`), y sus enunciados pasados de `Txn` a `Tick` (también el
+  02 y el 09, que conservaban el sabor del caso viejo); `datetime` con el calendario del Mercado de Nueva York
+  (`marketDateOf`, `sessionBounds`, `isMarketOpen`, feriados ficticios, `isOpenNow` con `Clock`, `monthClose`).
+  Con esto el código de `01-language` ya no usa pedidos; faltan `04-data` (tanda 5) y los enunciados y la ruta 🎯
+  (tanda 6). Guías `02`, `03`, `06`, `07` y `09` al día. 141 pruebas (103 + 38), 0 `SKIPPED`.

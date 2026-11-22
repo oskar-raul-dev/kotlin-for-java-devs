@@ -1,5 +1,7 @@
 package dev.raul.oskar.learning.kotlin.collections
 
+import java.math.BigDecimal
+import java.time.LocalDate
 import java.util.PriorityQueue
 import java.util.TreeMap
 
@@ -49,9 +51,11 @@ fun indexByFirstLetter(words: List<String>): Map<Char, MutableList<String>> {
 
 fun describeMap(m: Map<String, Int>): List<String> = m.map { (k, v) -> "$k=$v" }
 
-/** TreeMap: ordenado por clave, con consultas de rango (headMap, floorKey...). */
-fun eventsBefore(events: TreeMap<Long, String>, ts: Long): List<String> = events.headMap(ts).values.toList()
-fun lastEventAtOrBefore(events: TreeMap<Long, String>, ts: Long): String? = events.floorEntry(ts)?.value
+/** TreeMap: ordenado por clave, con consultas de rango (headMap, floorEntry...). Cierres diarios por fecha. */
+fun closesBefore(closes: TreeMap<LocalDate, BigDecimal>, day: LocalDate): List<BigDecimal> = closes.headMap(day).values.toList()
+
+/** El último cierre conocido en o antes de un día: un sábado o un feriado devuelve el del último día hábil. */
+fun closeAtOrBefore(closes: TreeMap<LocalDate, BigDecimal>, day: LocalDate): BigDecimal? = closes.floorEntry(day)?.value
 
 /** ArrayDeque de Kotlin: sirve de cola (FIFO) y de pila (LIFO). */
 fun queueAndStack(items: List<Int>): Pair<List<Int>, List<Int>> {

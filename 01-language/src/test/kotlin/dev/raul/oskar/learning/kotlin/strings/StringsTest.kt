@@ -1,6 +1,5 @@
 package dev.raul.oskar.learning.kotlin.strings
 
-import java.time.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -11,9 +10,10 @@ class StringsTest {
 
     @Test
     fun `templates and raw strings`() {
-        assertEquals("Hola, Ana: tienes 1 artículo", greeting("Ana", 1))
-        assertEquals("Reporte\n  cliente: X\n  total:   7", report("X", 7))
-        assertEquals("peras.....  1234", row("peras", 1234))
+        assertEquals("Hola, Ana: tienes 1 orden abierta", greeting("Ana", 1))
+        assertEquals("Hola, Ana: tienes 2 órdenes abiertas", greeting("Ana", 2))
+        assertEquals("Reporte\n  ticker:  ACME\n  volumen: 7", report("ACME", 7))
+        assertEquals("NUBE......  1234", row("NUBE", 1234))
     }
 
     @Test
@@ -38,29 +38,33 @@ class StringsTest {
         assertEquals(listOf("03/14/1985"), splitLiteral("03/14/1985", "\\/"))
         assertEquals(listOf("03", "14", "1985"), splitLiteral("03/14/1985", "/"))
         assertEquals(listOf("03", "14", "1985"), splitRegex("03/14/1985", "\\/"))
+        assertEquals(listOf("35=D|55=ACME"), splitLiteral("35=D|55=ACME", "\\|"))   // FIX: la misma trampa
+        assertEquals(listOf("35=D", "55=ACME"), splitLiteral("35=D|55=ACME", "|"))
     }
 
     @Test
     fun `regex validation and extraction`() {
         assertTrue(isEmail("a.b+c@mail.example.com"))
         assertFalse(isEmail("no-es@email"))
-        assertTrue(hasZip("Austin TX 73301"))
-        assertEquals(listOf("33101", "73301"), allZips("Miami FL 33101, Austin TX 73301, ref 123456"))
+        assertTrue(isAccountFormat("ACC-00001234-82"))
+        assertFalse(isAccountFormat("ACC-1234-82"))
+        assertFalse(isAccountFormat("cuenta ACC-00001234-82"))        // matches: toda la cadena
+        assertTrue(mentionsAccount("cuenta ACC-00001234-82"))         // containsMatchIn: en cualquier parte
+        assertEquals(listOf("ACC-00001234-82", "ACC-00005678-39"), allAccounts("de ACC-00001234-82 a ACC-00005678-39, ref ACC-12"))
     }
 
     @Test
     fun `named groups and destructuring`() {
-        assertEquals(LocalDate.of(1985, 3, 14), parseUsDate("03/14/1985"))
-        assertNull(parseUsDate("02/30/2020"))   // fecha imposible
-        assertNull(parseUsDate("1985-03-14"))   // formato equivocado
-        assertEquals(1985, yearByName("03/14/1985"))
+        assertEquals("00001234" to "82", accountParts("ACC-00001234-82"))
+        assertNull(accountParts("ACC-00001234"))                      // formato equivocado
+        assertEquals("00005678", accountNumber("ACC-00005678-39"))
     }
 
     @Test
     fun `replace with regex`() {
         assertEquals("tel ###-####", maskDigits("tel 555-1234"))
-        assertEquals("************1234", maskCard("4111 1111 1111 1234"))
+        assertEquals("ACC-****1234-82", maskAccount("ACC-00001234-82"))
         assertEquals("a b c", normalizeSpaces("  a   b    c "))
-        assertEquals(mapOf("host" to "db", "port" to "5432", "user" to "app"), parseKeyValues("host=db; port=5432; user = app"))
+        assertEquals(mapOf(35 to "D", 55 to "ACME", 54 to "1", 38 to "10", 44 to "100.00"), parseFix("35=D|55=ACME|54=1|38=10|44=100.00"))
     }
 }

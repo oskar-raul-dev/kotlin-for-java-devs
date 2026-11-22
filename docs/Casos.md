@@ -221,7 +221,9 @@ Por tandas, cada una con las pruebas en verde (con PostgreSQL y MySQL arriba) y 
 2. ✅ **`json` e `io`:** modelo `Tick`/`MarketEvent`, conciliación exacta del extracto contra `ledger-movements.csv`.
 3. ✅ **`basics`, `oop` y `exceptions`:** `Money`, `Order` sellado, `BankException`, `TransferService` (y el
    serializador de `Money` en `json`).
-4. **`strings`, `collections`, `functional`, `datetime`, `control`:** los ejemplos y pruebas que mencionan pedidos.
+4. ✅ **`strings`, `collections`, `functional`, `datetime`, `control`:** cuentas `ACC-…` y FIX, libro de órdenes y
+   cierres, pipelines y velas sobre ticks, calendario del Mercado, tramos de comisión. Con esto, el código de
+   `01-language` ya no usa el dominio de pedidos; quedan sus enunciados (tanda 6) y `04-data` (tanda 5).
 5. **`04-data`:** `LedgerRepository` con su contrato en los tres motores; entidades JPA del ledger.
 6. **Ejercicios y ruta 🎯:** reescribir los enunciados afectados (hoy mencionan pedidos sobre todo `oop`, `json` y
    `jdbc`), rehacer la ruta del README y borrar `orders.json` y `sales.csv`.

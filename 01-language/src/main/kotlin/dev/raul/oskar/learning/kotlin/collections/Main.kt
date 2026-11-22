@@ -1,5 +1,7 @@
 package dev.raul.oskar.learning.kotlin.collections
 
+import java.math.BigDecimal
+import java.time.LocalDate
 import java.util.TreeMap
 
 fun main() {
@@ -8,14 +10,28 @@ fun main() {
 
     listBasics(listOf(5, 3, 8, 3, 1)).forEach { (k, v) -> println("%-9s %s".format(k, v)) }
 
-    val (u, i, d) = setOps(setOf("CA", "TX", "FL"), setOf("TX", "NY"))
+    val (u, i, d) = setOps(setOf("ACME", "ORBX", "LUMA"), setOf("ORBX", "NUBE"))
     println("union=$u intersect=$i subtract=$d")
 
     println("wordCount = ${wordCount("el perro y el gato, y el loro")}")
-    println("index     = ${indexByFirstLetter(listOf("ana", "bea", "alba", "carlos", "beto"))}")
+    println("index     = ${indexByFirstLetter(listOf("ACME", "ORBX", "AURA", "KAPA", "OLMO"))}")
 
-    val events = TreeMap(mapOf(300L to "c", 100L to "a", 200L to "b"))
-    println("TreeMap ordenado = $events, antes de 250 = ${eventsBefore(events, 250)}, floor(250) = ${lastEventAtOrBefore(events, 250)}")
+    val closes = TreeMap(mapOf(
+        LocalDate.of(2026, 10, 30) to BigDecimal("101.20"),
+        LocalDate.of(2026, 10, 28) to BigDecimal("100.10"),
+        LocalDate.of(2026, 10, 29) to BigDecimal("100.80"),
+    ))
+    val saturday = LocalDate.of(2026, 10, 31)
+    println("TreeMap ordenado = $closes")
+    println("antes del 30 = ${closesBefore(closes, LocalDate.of(2026, 10, 30))}, cierre al sábado 31 = ${closeAtOrBefore(closes, saturday)}")
+
+    val book = OrderBook()
+    book.addBid(10_000, RestingOrder("ORD-1", 10))
+    book.addBid(10_000, RestingOrder("ORD-2", 5))
+    book.addBid(9_990, RestingOrder("ORD-3", 20))
+    book.addAsk(10_010, RestingOrder("ORD-4", 7))
+    println("libro: mejor compra=${book.bestBid()} mejor venta=${book.bestAsk()} cruzado=${book.isCrossed()}")
+    println("profundidad = ${book.depth(2)}, primera en 10000 = ${book.firstAt(10_000)}")
 
     val (fifo, lifo) = queueAndStack(listOf(1, 2, 3))
     println("cola=$fifo pila=$lifo")

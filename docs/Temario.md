@@ -177,10 +177,11 @@ más los bordes (cero, negativos, divisor cero con `ArithmeticException`).
 
 **Objetivo:** escribir el control de flujo como expresiones, recorrer rangos sin `for (;;)` y resolver los
 algoritmos de pizarra (búsqueda binaria, two-sum, ordenamientos) en Kotlin idiomático.
-**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** existe (pasa a los casos en B0′)
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** existe (en los casos desde B0′, tanda 4)
 
-> **Hoy → B0′:** los tramos de monto y de edad pasan a tramos de comisión por volumen; la búsqueda binaria busca un
-> precio en un libro ordenado. Los algoritmos de pizarra se quedan.
+> **B0′, tanda 4 (hecho):** los tramos de edad pasaron a tramos de comisión por volumen (`commissionRate`, con `..<`
+> sobre `Long`) y la búsqueda binaria se prueba sobre precios en centavos. Los algoritmos de pizarra se quedan. Guía:
+> [`02-control.md`](lessons/01-language/02-control.md).
 
 | Java | Kotlin | Nota |
 |---|---|---|
@@ -219,10 +220,11 @@ queda cruzado.
 
 **Objetivo:** reemplazar `String.format`, `StringBuilder`, `StringUtils` y `Pattern` por la stdlib de Kotlin, y
 parsear texto con regex sin caer en las diferencias con Java.
-**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** existe (pasa a los casos en B0′)
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** existe (en los casos desde B0′, tanda 4)
 
-> **Hoy → B0′:** la fecha MM/dd/yyyy, el zip y el código de estado pasan a validar cuentas `ACC-…` con mod 97 y a
-> parsear mensajes estilo FIX. La trampa de `split("\\/")` se queda tal cual.
+> **B0′, tanda 4 (hecho):** la fecha con grupos, el zip y la tarjeta pasaron a la forma de las cuentas `ACC-…`
+> (`isAccountFormat`, `accountParts`, `maskAccount`) y a `parseFix`; los dígitos de control mod 97 quedan como
+> ejercicio. La trampa de `split("\\/")` se queda, ahora también con FIX. Guía: [`03-strings.md`](lessons/01-language/03-strings.md).
 
 | Java | Kotlin | Nota |
 |---|---|---|
@@ -345,10 +347,11 @@ sintético de un millón de líneas que corre con el heap limitado (lectura por 
 
 **Objetivo:** elegir la colección correcta (lista, mapa ordenado, cola, montículo, arreglo primitivo), entender qué
 significa "solo lectura" en Kotlin y usar las estructuras del JDK sin perder la ergonomía de la stdlib.
-**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** existe (pasa al Mercado en B0′)
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** existe (en el Mercado desde B0′, tanda 4)
 
-> **Hoy → B0′:** los conteos por categoría y día y el historial por usuario pasan a volumen por ticker y día, al
-> libro de órdenes y a la ventana de cierres. `TreeMap`, `ArrayDeque` y `PriorityQueue` ya están en la lección.
+> **B0′, tanda 4 (hecho):** `OrderBook` (`TreeMap` por precio + `ArrayDeque` FIFO, sin emparejar) y cierres por fecha
+> en un `TreeMap` (`closesBefore`, `closeAtOrBefore`); los ejemplos usan tickers. Guía:
+> [`06-collections.md`](lessons/01-language/06-collections.md).
 
 | Java | Kotlin | Nota |
 |---|---|---|
@@ -390,10 +393,11 @@ JDK.
 
 **Objetivo:** reemplazar `Function<>`, Streams y `Collectors` por tipos función y operaciones de colección, saber
 cuándo conviene `Sequence`, y usar las scope functions sin anidarlas.
-**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** existe (pasa al Mercado en B0′)
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** existe (en el Mercado desde B0′, tanda 4)
 
-> **Hoy → B0′:** `Txn` y el `Order` mutable de las scope functions pasan a `Tick`, `Candle` y `Execution`; el
-> `groupBy` de transacciones pasa a velas, VWAP y P&L.
+> **B0′, tanda 4 (hecho):** `Txn` y el `Order` mutable pasaron a `Tick` limpio y `OrderTicket`; los pipelines agrupan
+> por ticker y `candleOf` arma una vela OHLC con `fold`. Los enunciados ya usan `Tick`. Guía:
+> [`07-functional.md`](lessons/01-language/07-functional.md).
 
 | Java | Kotlin | Nota |
 |---|---|---|
@@ -477,10 +481,11 @@ que mide que `ticks.json` en binario ocupa menos que en JSON.
 
 **Objetivo:** usar `java.time` sin los errores clásicos (zonas, horario de verano, formatos estrictos, "ahora" sin
 inyectar) y saber qué aporta la stdlib de Kotlin (`kotlin.time`).
-**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** existe (pasa a los casos en B0′)
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** existe (en los casos desde B0′, tanda 4)
 
-> **Hoy → B0′:** la edad, el epoch y las ventanas de días pasan al horario del mercado de Nueva York, a los días
-> hábiles con feriados y al cierre de mes del Banco. Aquí casi no hay mapeo de lenguaje: es `java.time` usado bien.
+> **B0′, tanda 4 (hecho):** la edad, el epoch y la ventana de 90 días pasaron al calendario del Mercado de Nueva York
+> (`marketDateOf`, `sessionBounds`, `isMarketOpen`, `HOLIDAYS_2026` ficticios), `Clock` inyectado (`isOpenNow`), ventana
+> de 7 días y cierre de mes (`monthClose`). Guía: [`09-datetime.md`](lessons/01-language/09-datetime.md).
 
 | Java | Kotlin | Nota |
 |---|---|---|

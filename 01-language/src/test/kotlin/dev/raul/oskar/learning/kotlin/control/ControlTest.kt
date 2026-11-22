@@ -1,5 +1,6 @@
 package dev.raul.oskar.learning.kotlin.control
 
+import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -12,10 +13,10 @@ class ControlTest {
 
     @Test
     fun `when with ranges`() {
-        assertEquals("minor", ageGroup(17))
-        assertEquals("adult", ageGroup(18))
-        assertEquals("senior", ageGroup(65))
-        assertFailsWith<IllegalArgumentException> { ageGroup(-1) }
+        assertEquals(BigDecimal("0.0010"), commissionRate(9_999))
+        assertEquals(BigDecimal("0.0005"), commissionRate(10_000))   // ..< excluye el borde superior del tramo
+        assertEquals(BigDecimal("0.0002"), commissionRate(100_000))
+        assertFailsWith<IllegalArgumentException> { commissionRate(-1) }
     }
 
     @Test
@@ -57,9 +58,10 @@ class ControlTest {
         assertEquals(listOf(2, 3, 5, 7, 11, 13), (1..13).filter(::isPrime))
         assertEquals(55L, fibonacci(10))
         assertEquals(12586269025L, fibonacci(50))
-        assertContentEquals(intArrayOf(1, 2, 5, 7, 9), insertionSort(intArrayOf(5, 2, 9, 1, 7)))
-        assertEquals(3, binarySearch(intArrayOf(1, 2, 5, 7, 9), 7))
-        assertEquals(-1, binarySearch(intArrayOf(1, 2, 5, 7, 9), 4))
+        val prices = intArrayOf(9_950, 9_980, 10_000, 10_020, 10_050)          // centavos
+        assertContentEquals(prices, insertionSort(intArrayOf(10_020, 9_950, 10_050, 9_980, 10_000)))
+        assertEquals(3, binarySearch(prices, 10_020))
+        assertEquals(-1, binarySearch(prices, 10_010))
         assertEquals(0 to 1, twoSum(intArrayOf(2, 7, 11, 15), 9))
         assertTrue(balanced("{[()()]}"))
         assertFalse(balanced("(]"))

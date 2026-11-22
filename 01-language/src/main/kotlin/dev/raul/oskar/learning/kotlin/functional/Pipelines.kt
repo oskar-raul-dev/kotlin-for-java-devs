@@ -1,45 +1,54 @@
 package dev.raul.oskar.learning.kotlin.functional
 
+import java.math.BigDecimal
+
 // Pipelines sobre colecciones: el "Stream API" de Kotlin, pero directo sobre List.
 // Ojo: List.map/filter son ANSIOSOS (crean lista intermedia en cada paso).
 // asSequence() los vuelve perezosos, como un Stream de Java.
 
-data class Txn(val user: String, val state: String, val amount: Int, val day: Int)
+/** Un tick ya limpio del Mercado (la lección json lee el feed crudo). `day` es el día de mercado, 1 a 10. */
+data class Tick(val ticker: String, val day: Int, val price: BigDecimal, val volume: Long)
 
-val sampleTxns = listOf(
-    Txn("ana", "CA", 120, 1), Txn("ana", "CA", 80, 2), Txn("ana", "TX", 900, 3),
-    Txn("bob", "NY", 50, 1), Txn("bob", "NY", 60, 1), Txn("bob", "NY", 70, 1),
-    Txn("eva", "FL", 300, 2),
+val sampleTicks = listOf(
+    Tick("ACME", 1, BigDecimal("100.00"), 300), Tick("ACME", 1, BigDecimal("100.40"), 200),
+    Tick("ACME", 1, BigDecimal("99.80"), 500), Tick("ACME", 2, BigDecimal("101.10"), 400),
+    Tick("ORBX", 1, BigDecimal("42.50"), 1_000), Tick("ORBX", 2, BigDecimal("42.10"), 1_200),
+    Tick("NUBE", 2, BigDecimal("7.35"), 5_000),
 )
 
-/** groupBy + mapValues: el Collectors.groupingBy(..., summingInt) de Java. */
-fun totalByUser(txns: List<Txn>): Map<String, Int> =
-    txns.groupBy { it.user }.mapValues { (_, list) -> list.sumOf { it.amount } }
+/** groupBy + mapValues: el Collectors.groupingBy(..., summingLong) de Java. sumOf con Long: no desborda como Int. */
+fun volumeByTicker(ticks: List<Tick>): Map<String, Long> =
+    ticks.groupBy { it.ticker }.mapValues { (_, list) -> list.sumOf { it.volume } }
 
-/** groupingBy + eachCount: conteo por clave. */
-fun countByState(txns: List<Txn>): Map<String, Int> = txns.groupingBy { it.state }.eachCount()
+/** groupingBy + eachCount: conteo por clave, sin materializar las listas de cada grupo. */
+fun ticksPerTicker(ticks: List<Tick>): Map<String, Int> = ticks.groupingBy { it.ticker }.eachCount()
 
-/** associate / associateBy / associateWith: listas a mapas. */
-fun maxTxnByUser(txns: List<Txn>): Map<String, Txn> =
-    txns.groupBy { it.user }.mapValues { (_, l) -> l.maxBy { it.amount } }
+/** maxBy dentro de cada grupo. */
+fun highestByTicker(ticks: List<Tick>): Map<String, Tick> =
+    ticks.groupBy { it.ticker }.mapValues { (_, l) -> l.maxBy { it.price } }
 
 /** partition: dos listas en una pasada. */
-fun splitLarge(txns: List<Txn>, threshold: Int): Pair<List<Txn>, List<Txn>> = txns.partition { it.amount >= threshold }
+fun splitLarge(ticks: List<Tick>, minVolume: Long): Pair<List<Tick>, List<Tick>> = ticks.partition { it.volume >= minVolume }
 
-/** flatMap: de usuario a sus estados distintos, aplanado. */
-fun distinctStatesPerUser(txns: List<Txn>): Map<String, Set<String>> =
-    txns.groupBy({ it.user }, { it.state }).mapValues { it.value.toSet() }
+/** groupBy con selector de clave y de valor: los días en que operó cada ticker. */
+fun daysPerTicker(ticks: List<Tick>): Map<String, Set<Int>> =
+    ticks.groupBy({ it.ticker }, { it.day }).mapValues { it.value.toSet() }
 
-/** Usuarios "sospechosos": muchas transacciones el mismo día o en más de un estado. */
-fun suspiciousUsers(txns: List<Txn>, maxPerDay: Int = 2): List<String> =
-    txns.groupBy { it.user }
-        .filter { (_, list) ->
-            list.groupingBy { it.day }.eachCount().values.any { it > maxPerDay } ||
-                list.map { it.state }.distinct().size > 1
-        }
-        .keys.sorted()
+/** Vela OHLC: apertura, máximo, mínimo, cierre y volumen. */
+data class Candle(val open: BigDecimal, val high: BigDecimal, val low: BigDecimal, val close: BigDecimal, val volume: Long)
 
-/** zipWithNext: diferencias entre elementos consecutivos. */
+/**
+ * Una vela en UNA pasada con fold: el acumulador lleva todo el estado. Supone los ticks en orden de llegada.
+ * Velas por día o por minuto (groupBy + esto) son ejercicios de la lección.
+ */
+fun candleOf(ticks: List<Tick>): Candle? {
+    val first = ticks.firstOrNull() ?: return null
+    return ticks.drop(1).fold(Candle(first.price, first.price, first.price, first.price, first.volume)) { c, t ->
+        Candle(c.open, c.high.max(t.price), c.low.min(t.price), t.price, c.volume + t.volume)
+    }
+}
+
+/** zipWithNext: diferencias entre elementos consecutivos (cambio de precio tick a tick). */
 fun deltas(values: List<Int>): List<Int> = values.zipWithNext { a, b -> b - a }
 
 /** Secuencia perezosa e infinita: solo se calcula lo que take pide. */
