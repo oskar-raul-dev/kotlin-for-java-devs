@@ -100,6 +100,7 @@ El número del directorio es el orden de estudio. El nivel indica qué tan compl
 | [`10-ktor/`](10-ktor/) | Ktor | 2.4 | 3 | `server`, `client`, `ktortesting` | Fase B6 |
 | [`11-multiplatform/`](11-multiplatform/) | Kotlin Multiplatform y Compose | 2.4 | 4 | `kmp`, `composemp`, `shared`, `web` | Fase B7 |
 | [`12-android/`](12-android/) | Android | 2.4 | 4 (fuera del composite) | `android`, `compose`, `architecture`, `androiddata`, `di`, `background`, `androidtesting` | Fase B7 |
+| [`13-spring-api/`](13-spring-api/) | API Spring de punta a punta (MVC y reactiva) | 2.4 | 3 | `mvc`, `reactive` (sabores opcionales) | Fase B6′ |
 | [`20-legacy-kotlin14/`](20-legacy-kotlin14/) | Legacy: Android clásico y Boot 2.3–2.4 | 1.4.32 | 6 | `language14`, `coroutines14`, `android14`, `migration14` | Fase B5 |
 | [`21-legacy-kotlin16/`](21-legacy-kotlin16/) | Legacy: Spring Boot 2.7 con `javax` | 1.6.21 | 6 | `language16`, `boot27`, `migration16` | Fase B5 |
 | [`22-legacy-kotlin19/`](22-legacy-kotlin19/) | Legacy: el último K1 y la migración a K2 | 1.9.22 | 6 | `language19`, `k2migration`, `compat` | 🟡 build, humo y notas |

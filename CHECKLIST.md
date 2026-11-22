@@ -68,13 +68,14 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | B3 · Corrutinas y reactivo | `02-coroutines` y `03-reactive`, con su build (y en el `includeBuild` del composite) | 14 | B0 | kotlinx-coroutines (y `-test`), Turbine, atomicfu, Reactor, RxJava 3, `kotlinx-coroutines-reactor`/`-rx3` | ⬜️ |
 | B4 · `01-language` nuevas | `generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2` | 6 | B0 | Ninguna (`interop` agrega Java al módulo; JSpecify) | ⬜️ |
 | B5 · Tracks legacy | `20` y `21` creados y corriendo en sus contenedores; contenido de `22` | 10 | A8 | Gradle de los tracks 14 (6.8.x) y 16 (7.6.x), JUnit 4 o 5 en 1.4, Spring Boot 2.7 | ⬜️ |
-| B6 · Backend web | `09-spring` (con WebFlux) y `10-ktor` | 7 | B3 | Spring Boot, SpringMockK, Ktor | ⬜️ |
+| B6 · Backend web | `04 · r2dbc` (adelantado), `09-spring` (con WebFlux) y `10-ktor` | 8 | B3 | R2DBC, Spring Boot, SpringMockK, Ktor | ⬜️ |
+| B6′ · API Spring (`13-spring-api`) | La API de transferencias del Banco en dos sabores opcionales, `mvc` y `reactive`, con el mismo contrato de pruebas ([detalle](#13-spring-api)) | 2 proyectos | B6 | Spring Boot (y Security, Actuator, Data Redis), springdoc-openapi, Flyway, EhCache 3, Caffeine, Resilience4j o Spring Retry, Valkey (imagen Docker), Testcontainers | ⬜️ |
 | B7 · Móvil | `11-multiplatform` y `12-android` (con iOS: Android SDK y Xcode instalados) | 11 | B3 | AGP, Compose Multiplatform, kotlinx-datetime, AndroidX (Room, Navigation, WorkManager), Hilt, Koin | ⬜️ |
-| B8 · Datos, pruebas y compilador | `04-data` nuevas, `05-testing`, `06-compiler` | 12 | B3 (`r2dbc`) | Exposed, jOOQ, R2DBC, SQLDelight, Kotest, MockK, AssertK, Testcontainers, KSP | ⬜️ |
+| B8 · Datos, pruebas y compilador | `04-data` nuevas (`exposed`, `jooq`, `sqldelight`), `05-testing`, `06-compiler` | 11 | — | Exposed, jOOQ, SQLDelight, Kotest, MockK, AssertK, Testcontainers, KSP | ⬜️ |
 | B9 · Diseño, build y entrevistas | `07-design`, `08-build`, `25-interview` y `docs/EffectiveKotlin.md` | 10 | — | Arrow, detekt, ktlint, Kover, Dokka, Shadow, GraalVM Native Build Tools | ⬜️ |
 | B10 · Cierre | Los dos 🐉 y `26-kotlin-next` cuando Kotlin 2.5 salga estable | 1 + 2 🐉 | B2–B9 | Kotlin 2.5 | ⬜️ |
 
-**Total:** 12 lecciones que rehacer (B2) y 71 nuevas (B3–B10), más los dos 🐉. Las versiones se fijan en
+**Total:** 12 lecciones que rehacer (B2), 71 nuevas (B3–B10) y los dos sabores de `13-spring-api`, más los dos 🐉. Las versiones se fijan en
 [`docs/Versions.md`](docs/Versions.md) al empezar cada fase, sin subir nada que ya esté fijado.
 
 ### Cuándo una lección está lista (B2 en adelante)
@@ -126,6 +127,7 @@ Los ⚡ son los del temario.
 | [`10-ktor`](#10-ktor) | ✅ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
 | [`11-multiplatform`](#11-multiplatform) | ✅ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
 | [`12-android`](#12-android) | ✅ | ⬜️ AGP | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
+| [`13-spring-api`](#13-spring-api) | ✅ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
 | [`20-legacy-kotlin14`](#20-legacy-kotlin14) | ✅ | ⬜️ Gradle 6.8 | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
 | [`21-legacy-kotlin16`](#21-legacy-kotlin16) | ✅ | ⬜️ Gradle 7.6 | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
 | [`22-legacy-kotlin19`](#22-legacy-kotlin19) | ✅ | ✅ Gradle 9.2.1 (1.9.22) | 🟡 humo | 🟡 4 | ⬜️ | 🟡 `k2-notes.md` | `EN CREACIÓN` |
@@ -200,7 +202,7 @@ ejercicios a la escala nueva (B2). La columna **Fase** dice en qué fase nace o 
 | 13 | `jpa` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
 | — | `exposed` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
 | — | `jooq` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
-| — | `r2dbc` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
+| — | `r2dbc` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B6 | `PENDIENTE` |
 | — | `sqldelight` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
 
 ### 05-testing
@@ -276,6 +278,20 @@ ejercicios a la escala nueva (B2). La columna **Fase** dice en qué fase nace o 
 | — | `di` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B7 | `PENDIENTE` |
 | — | `background` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B7 | `PENDIENTE` |
 | — | `androidtesting` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B7 | `PENDIENTE` |
+
+### 13-spring-api
+
+La API de transferencias del Banco como proyecto guiado, en dos sabores con el mismo contrato de pruebas. Cada sabor es
+opcional: se puede hacer uno, los dos o saltar la sección.
+
+| # | Sabor | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `mvc` (Spring MVC, JPA o JDBC, EhCache 3 + Valkey) | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B6′ | `PENDIENTE` |
+| — | `reactive` (WebFlux, corrutinas, R2DBC, Caffeine + Valkey) | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B6′ | `PENDIENTE` |
+
+Los dos llevan Spring Security, springdoc-openapi, Actuator, `@ConfigurationProperties`, beans, reintentos contra el
+cliente de tipos de cambio y Testcontainers (PostgreSQL y Valkey). Antes del código: sus entradas en `docs/Temario.md`
+y el ⚡ de `09 · webflux` achicado (la API completa y la prueba de carga pasan aquí).
 
 ### 20-legacy-kotlin14
 
@@ -548,3 +564,7 @@ ejercicios a la escala nueva (B2). La columna **Fase** dice en qué fase nace o 
   cada fase, cuántas lecciones, de qué depende, qué versiones hay que fijar antes de empezar y su estado), la definición
   de "lección lista" que vale para B2 en adelante, y el detalle de B2 lección por lección con sus ⚡. Las tablas de
   lecciones suman las columnas **Guía** y **Fase**. Antes: commit, tag `phase-b0` y push de lo avanzado.
+- **2026-11-22** · **Plan: sección `13-spring-api`.** La API de transferencias del Banco como proyecto guiado en dos
+  sabores opcionales, `mvc` y `reactive`, con el mismo contrato de pruebas (Security, OpenAPI, Actuator, propiedades,
+  beans, reintentos, caché, Testcontainers). Caché: EhCache 3 por JCache en `mvc`, Caffeine asíncrona en `reactive`,
+  Valkey en los dos. Fase nueva B6′; `04 · r2dbc` se adelanta de B8 a B6.

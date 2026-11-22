@@ -19,8 +19,8 @@ Redactado el **10 de noviembre de 2026**. Lo marcado con ⚠️ se verifica al e
 
 ## Estado y próximos pasos
 
-Actualizado el **22 de noviembre de 2026**. La fase A está cerrada y la fase B va en curso: **B1 cerrado, B0 y B0′ a
-medias**. El avance por sección y lección está en [`CHECKLIST.md`](CHECKLIST.md).
+Actualizado el **22 de noviembre de 2026**. La fase A está cerrada y la fase B va en curso: **B0, B0′, B0″ y B1 cerrados**
+(tag `phase-b0`); sigue B2. El avance por sección y lección está en [`CHECKLIST.md`](CHECKLIST.md).
 
 ### Dónde vamos
 
@@ -118,7 +118,9 @@ Tags anotados: `baseline-1.9.22` (curso v1 de proyecto único), `monorepo-1.9.22
 | `b32d9cc` Move the database ports to the 20000 range | PostgreSQL 25432 y MySQL 23306 |
 | `1696458` Write study guides 2: io, collections, functional, json | Guías de estudio de `io`, `collections`, `functional` y `json` |
 | `8f2942f` Write study guides 3: datetime, exceptions, jdbc, jpa | Las 12 guías con teoría; fuentes solo en inglés o español |
-| Deepen the io, collections and functional guides | 12 apartados de teoría en cada una, con lo medido |
+| `d7ef94b` Deepen the io, collections and functional guides | 12 apartados de teoría en cada una, con lo medido; tag `phase-b0` y push |
+| `0a42f76` Reorganize the checklist for phase B | Sección "Fase B" del CHECKLIST: fases, dependencias, versiones a fijar, "lección lista" y detalle de B2 |
+| Plan the Spring API section | Sección `13-spring-api` (MVC y reactivo), caché EhCache/Caffeine + Valkey, `r2dbc` adelantado a B6 |
 
 **Remoto:** `origin` en GitHub desde el 13 de noviembre de 2026. Antes de cada push se repite el escaneo de
 referencias externas sobre `git log -p --all`, y se suben los tags con `git push origin main --follow-tags`.
@@ -157,6 +159,9 @@ la propuesta de guías de estudio ([sección 13](#13-guías-de-estudio-teoría-y
 | 8 | **Código en inglés, comentarios y documentos en español**, como en `java-champion-review` | ✅ revisado en el curso v1 |
 | 9 | Git con `user.name` y `user.email` locales del repo; mensajes de commit en inglés | ✅ hecho |
 | 10 | `kotlin-for-java-devs.code-workspace` copiado de `java-champion-review` e ignorado por git (ajustes personales de VS Code) | ✅ hecho |
+| 12 | Nueva sección **`13-spring-api`**: la API de transferencias del Banco como proyecto guiado en **dos sabores**, `mvc` (Spring MVC, bloqueante) y `reactive` (WebFlux + corrutinas + R2DBC), con el mismo contrato de pruebas. Se puede hacer uno, los dos o ninguno. Cubre Spring Security, springdoc-openapi, Actuator, `@ConfigurationProperties`, beans, reintentos, caché y Testcontainers | ✅ acordado el 22 nov 2026 |
+| 13 | Caché: **EhCache 3 por JCache** (con nivel *off-heap*) en `mvc` y **Caffeine asíncrona** en `reactive` (la caché de Spring con `suspend`/`Mono` necesita una caché asíncrona); **Valkey** como caché distribuida en los dos (Spring Data Redis con Lettuce, Docker en el puerto 26379) | ✅ acordado el 22 nov 2026 |
+| 14 | `04 · r2dbc` se adelanta de B8 a **B6**, porque `13-spring-api/reactive` lo usa | ✅ acordado el 22 nov 2026 |
 | 11 | El caso de punta a punta pasa a **dos casos de finanzas con un puente**: Banco (ledger de doble partida, transferencias, conciliación) y Mercado (feed de precios, velas, libro de órdenes, P&L); cada ejecución se liquida en el ledger. USD como base, sin derivados ni cortos | ✅ acordado el 13 nov 2026; diseño en [`docs/Casos.md`](docs/Casos.md) |
 
 El punto 7 importa: si mover y actualizar van juntos, cuando algo falle no se sabe si fue el movimiento o la
@@ -310,12 +315,13 @@ concepto) va en `docs/Temario.md`, que se reescribe en el paso B0.
 | `06-compiler` | 🆕 `bytecode` (lambdas, `companion`, `value class`, propiedades), `reflection` (`KClass`, `KProperty`, `kotlin-reflect` y su costo), `ksp` (KSP frente a kapt), `compilerplugins` (all-open, no-arg, serialization, power-assert, uno propio con FIR) | `ksp`: generador de builders y mappers con errores de compilación propios |
 | `07-design` | 🆕 `idioms` (Effective Kotlin), `gof` (qué patrones desaparecen en Kotlin), `fp` (Arrow: `Either`, `Raise`, optics), `architecture` (hexagonal + DDD) | Rescate de legado: una clase dios portada de Java, con pruebas de caracterización y refactor idiomático |
 | `08-build` | 🆕 `gradle` (Kotlin DSL, version catalogs, convention plugins en `build-logic`), `quality` (detekt, ktlint, Kover), `docs` (Dokka), `packaging` (fat jar, jlink, GraalVM native image) | Convention plugin del repo que genera el índice de lecciones y ejercicios del README |
-| `09-spring` | 🆕 `boot` (plugin `kotlin-spring`, constructor injection, `@ConfigurationProperties`, validación), `springdata`, `webflux` (corrutinas, `Flow`, `coRouter`, `WebClient`), `springtesting` (MockMvc DSL, `WebTestClient`, SpringMockK) | API reactiva de punta a punta con WebFlux + R2DBC + corrutinas, con prueba de carga frente a la versión MVC |
+| `09-spring` | 🆕 `boot` (plugin `kotlin-spring`, constructor injection, `@ConfigurationProperties`, validación), `springdata`, `webflux` (corrutinas, `Flow`, `coRouter`, `WebClient`), `springtesting` (MockMvc DSL, `WebTestClient`, SpringMockK) Endpoints con corrutinas y `Flow` (la API completa y la prueba de carga frente a MVC pasan a `13-spring-api`) |
 | `10-ktor` | 🆕 `server` (routing, plugins, auth, WebSockets), `client`, `ktortesting` | Chat con `Flow` sobre WebSockets |
 | `11-multiplatform` | 🆕 `kmp` (`expect`/`actual`, source sets, targets), `composemp` (desktop, wasm, iOS), `shared` (Ktor client + SQLDelight + kotlinx-datetime), `web` (Kotlin/JS y Wasm) | Módulo compartido con la lógica de negocio, consumido desde desktop y web |
 | `12-android` | 🆕 `android` (Activity, ciclo de vida), `compose`, `architecture` (ViewModel, `StateFlow`, navegación), `androiddata` (Room, DataStore), `di` (Hilt frente a Koin), `background` (WorkManager), `androidtesting` (pruebas de Compose, Robolectric) | App offline-first con sincronización |
+| `13-spring-api` | 🆕 proyecto guiado en dos sabores opcionales: `mvc` (Spring MVC, Spring Data JPA o JDBC, Flyway, Spring Security con JWT, springdoc-openapi, Actuator, `@ConfigurationProperties`, beans condicionales, `@Retryable` o Resilience4j contra el cliente de tipos de cambio, EhCache 3 por JCache, Valkey, MockMvc DSL y Testcontainers) y `reactive` (lo mismo con WebFlux, `suspend` y `Flow`, `coRouter`, R2DBC, `SecurityWebFilterChain`, Caffeine asíncrona, Valkey con Lettuce reactivo y `WebTestClient`) | `mvc`: API de transferencias con idempotencia, seguridad y caché, en verde con el contrato · `reactive`: la misma API con el mismo contrato y una prueba de carga frente a `mvc` |
 | `20-legacy-kotlin14` | 🆕 `language14` (lo que no existía todavía), `coroutines14` (`BroadcastChannel`, `ConflatedBroadcastChannel`), `android14` (synthetics y kapt, solo lectura y demo JVM), `migration14` (de 1.4 a 1.6) | Migrar una mini app 1.4 a 2.x paso a paso, con un commit por salto de versión |
-| `21-legacy-kotlin16` | 🆕 `language16`, `boot27` (Spring Boot 2.7 con `javax`, WebFlux + corrutinas de la época), `migration16` (Boot 2.7 → 3, `javax` → `jakarta`) | La API de `09-spring` portada a Boot 2.7 y de vuelta |
+| `21-legacy-kotlin16` | 🆕 `language16`, `boot27` (Spring Boot 2.7 con `javax`, WebFlux + corrutinas de la época), `migration16` (Boot 2.7 → 3, `javax` → `jakarta`) | La API de `13-spring-api/mvc` portada a Boot 2.7 y de vuelta |
 | `22-legacy-kotlin19` | 🆕 `language19`, `k2migration` (lo que se rompió en A7 y por qué), `compat` (`apiVersion`, `languageVersion`, compatibilidad binaria y `@Metadata`) | Matriz de compatibilidad: una librería compilada en 1.9 consumida desde 2.4, y al revés |
 | `25-interview` | 🆕 `livecoding` (simulacros en Kotlin), `prreview` (leer un PR: `!!`, `lateinit` abusado, scope functions anidadas, `data class` mutables, `runCatching` que se traga la cancelación) | Cinco simulacros cronometrados de 35 minutos |
 | `26-kotlin-next` | 🆕 `kotlin25` (lo nuevo de 2.5 cuando salga estable) | — |
@@ -411,9 +417,10 @@ transversal.
 | **B3** | `02-coroutines` (10 lecciones) y `03-reactive` (4) | Código, pruebas, `Exercises.md` |
 | **B4** | Lecciones nuevas de `01-language` (`generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2`) | |
 | **B5** | Tracks `20` y `21` en contenedor; contenido de `22` con las notas de A7 | Los tres tracks corriendo con `scripts/legacy.sh` |
-| **B6** | `09-spring` (con WebFlux) y `10-ktor` | |
+| **B6** | `04 · r2dbc` (adelantado de B8), `09-spring` (con WebFlux) y `10-ktor` | |
+| **B6′** | `13-spring-api`: los sabores `mvc` y `reactive` (temario de la sección, `docker/valkey`, contrato de pruebas compartido) | Dos proyectos con el mismo contrato en verde |
 | **B7** | `11-multiplatform` y `12-android` | Requiere Android SDK; iOS requiere Xcode |
-| **B8** | `04-data` nuevo (Exposed, jOOQ, R2DBC, SQLDelight), `05-testing`, `06-compiler` | |
+| **B8** | `04-data` nuevo (Exposed, jOOQ, SQLDelight), `05-testing`, `06-compiler` | |
 | **B9** | `07-design`, `08-build`, `25-interview`, `docs/EffectiveKotlin.md` | |
 | **B10** | Los dos 🐉 y `26-kotlin-next` cuando 2.5 salga estable | |
 
@@ -433,6 +440,10 @@ lección. Es parecido a `java-champion-review` (79 lecciones). Por eso va por fa
 - **Android** necesita Android SDK y emulador, y su AGP fija la versión de Gradle (AGP 9.0 exige Gradle 9.1+).
   **iOS** necesita Xcode; sin él, KMP se hace con targets desktop y wasm.
 - ~~**Hibernate 6 → 7** en A7 puede romper la lección `jpa`.~~ Se hizo como subpaso A7.4 y no rompió nada.
+- ⚠️ **Versiones de `13-spring-api` sin fijar**: línea de Spring Boot (se espera la 4, sobre Spring Framework 7), si
+  `@Retryable` ya está en el núcleo de Spring 7 o hace falta Spring Retry, y las versiones de springdoc, EhCache,
+  Caffeine, Resilience4j y la imagen de Valkey. Se fijan al empezar B6′, y se confirma que EhCache por JCache no sirve
+  para la caché asíncrona.
 - **El composite usa el Gradle de la raíz** para todas las secciones incluidas. Si una sección necesita otro Gradle,
   sale del composite (como `12-android`).
 
@@ -441,7 +452,7 @@ lección. Es parecido a `java-champion-review` (79 lecciones). Por eso va por fa
 ## 10. Para decidir en la revisión
 
 1. ~~¿Los tres tracks legacy (**1.4.32**, **1.6.21** con Boot 2.7, **1.9.22**) o prefieres otro corte?~~ Los tres (22 de noviembre de 2026).
-2. ~~¿Numeración y nombres de secciones como están arriba?~~ Como están, con los huecos 13–19 (22 de noviembre de 2026).
+2. ~~¿Numeración y nombres de secciones como están arriba?~~ Como están, con los huecos 13–19 (22 de noviembre de 2026); el `13` lo toma después `13-spring-api` (decisión 12).
 3. ~~¿`io`, `datetime` y `json` se quedan en `01-language`, como `02-language` del repo de Java, o van a una sección
    `02-stdlib` aparte?~~ Se quedan en `01-language` (22 de noviembre de 2026).
 4. ~~¿Tienes Android SDK y Xcode instalados? Define el alcance de B7.~~ Sí (medido el 22 de noviembre de 2026: Android
