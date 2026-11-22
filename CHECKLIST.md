@@ -25,7 +25,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
 | `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, casos de finanzas, guías de lección (propuesta); estado al 2026-11-22 |
 | `docs/lessons/` (guías de lección) | ✅ | `LISTO` | Índice, plantilla y 12 guías (10 de `01-language`, `jdbc`, `jpa`), en `docs/lessons/<sección>/NN-<lección>.md` (B0″) |
-| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tandas 0 a 9 escritas (las 88 entradas y los dos 🐉); falta la tanda 10 (cierre y revisión juntos). El anterior, en `docs/archive/Temario-v1.md` |
+| `docs/Temario.md` | 🟡 | `EN REVISIÓN` | Las 88 entradas, los dos 🐉 y la trazabilidad escritos (tandas 0 a 10); falta la revisión juntos que cierra B0. El anterior, en `docs/archive/Temario-v1.md` |
 | `docs/Temario-Plan.md` y `docs/prompts/temario-tanda.md` | ✅ | `LISTO` | Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
 | `docs/LegacyKotlin.md` | ✅ | `LISTO` | Versiones 1.0 → 2.x, los tres tracks, cómo correrlos y trampas |
@@ -436,3 +436,7 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   metadata se lee una versión hacia adelante), y 2.4.21 usa librerías de 1.9.22; `BroadcastChannel` y
   `ConflatedBroadcastChannel` están deprecados con error en kotlinx-coroutines 1.11.0. Con esto están escritas las 88
   entradas; queda la tanda 10.
+- **2026-11-22** · **B0, tanda 10 (parte mecánica):** matriz de trazabilidad (lección → caso → estado → ⚡ → ejercicios)
+  al final del temario, y revisión de consistencia con scripts: las 83 lecciones tienen todas las partes de la
+  plantilla, cada etiqueta `[x.y]` existe en la referencia medida y todos los enlaces y anclas resuelven. Cabecera del
+  temario, README y plan al día. Falta la revisión juntos, que cierra B0.

@@ -4,9 +4,9 @@ Qué enseña el curso, lección por lección: el **mapeo Java → Kotlin**, las 
 construcción, el **caso** (Banco o Mercado) y el **⚡** que la cierra. Cubre las 18 secciones del
 [plan](../Plan-Migracion-Monorepo.md#5-secciones-y-lecciones): 5 tutoriales y 83 lecciones.
 
-> **Estado:** en construcción por tandas, según [`Temario-Plan.md`](Temario-Plan.md) (paso B0). Cada lección marcada
-> **⬜️ pendiente** se completa en la tanda que indica. El temario anterior de las 14 lecciones originales está en
-> [`archive/Temario-v1.md`](archive/Temario-v1.md).
+> **Estado:** escrito completo (tandas 0 a 9 y la parte mecánica de la 10, según [`Temario-Plan.md`](Temario-Plan.md));
+> falta la revisión juntos con la que cierra el paso B0. La [trazabilidad](#trazabilidad) resume cada lección. El temario
+> anterior de las 14 lecciones originales está en [`archive/Temario-v1.md`](archive/Temario-v1.md).
 
 - Fuente de verdad de conteos y de la ruta prioritaria: [`README.md`](../README.md). Casos: [`Casos.md`](Casos.md).
   Versiones fijadas: [`Versions.md`](Versions.md).
@@ -3224,5 +3224,181 @@ Lo transversal, en una sola tabla (Java 21 a la izquierda). El detalle está en 
 
 ## Trazabilidad
 
-> ⬜️ **Pendiente (tanda 10).** Matriz lección → caso → ⚡ → ejercicios, y revisión de consistencia (etiquetas contra
-> la referencia medida, enlaces).
+Escrita en la tanda 10 (22 de noviembre de 2026) a partir de las entradas de arriba. **Estado** dice si la lección
+ya tiene código; **Ejercicios** es la cantidad actual de su `Exercises.md` (las nuevas los reciben en B2 y siguientes,
+con la escala de 25 a 40 de la sección 6 del plan). Los tutoriales tienen 72 ejercicios entre los cinco, en sus `README.md`.
+
+**Revisión de consistencia (tanda 10):** las 83 lecciones tienen objetivo, sección, tabla, trampas, caso, 🎤 y ⚡;
+cada etiqueta `[x.y]` del temario existe en la [referencia medida](Temario-Plan.md#referencia-de-versiones-medida); todos
+los enlaces relativos y anclas resuelven. Comprobado con scripts, no a ojo.
+
+
+**`01-language`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `basics` | Banco | existe | Calculadora de precisión arbitraria | 25 |
+| `control` | Ambos | existe | Matcher por búsqueda binaria | 24 |
+| `strings` | Ambos | existe | Códec estilo FIX | 24 |
+| `oop` | Ambos | existe | Evaluador de expresiones con `sealed` | 24 |
+| `io` | Banco | existe | Conciliador de extracto | 23 |
+| `collections` | Mercado | existe | `HashMap` propio | 24 |
+| `functional` | Mercado | existe | Librería de operadores de `Sequence` | 24 |
+| `json` | Mercado | existe | Serializador para un formato binario | 24 |
+| `datetime` | Ambos | existe | Velas por sesión | 24 |
+| `exceptions` | Banco | existe | `TransferService` completo | 24 |
+| `generics` | Mercado | nueva | Colecciones persistentes covariantes | B2+ |
+| `inline` | Banco | nueva | Utilidades sin asignaciones | B2+ |
+| `interop` | Banco | nueva | Módulo mixto Java + Kotlin | B2+ |
+| `delegation` | Banco | nueva | Configuración tipada con delegados | B2+ |
+| `dsl` | Ambos | nueva | DSL de HTML type-safe | B2+ |
+| `kotlin2` | Ambos | nueva | Catálogo ejecutable de 2.x | B2+ |
+
+**`02-coroutines`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `fundamentals` | Ambos | nueva | Fan-out de cotizaciones | B2+ |
+| `cancellation` | Ambos | nueva | Transferencia con tiempo límite y compensación | B2+ |
+| `dispatchers` | Ambos | nueva | Dimensionar dispatchers | B2+ |
+| `channels` | Mercado | nueva | Motor de emparejamiento como actor | B2+ |
+| `flow` | Mercado | nueva | Operadores propios con backpressure | B2+ |
+| `hotflows` | Ambos | nueva | Tablero de precios en vivo | B2+ |
+| `sync` | Banco | nueva | Transferencias concurrentes sin perder saldo | B2+ |
+| `internals` | Mercado | nueva | Scheduler de corrutinas propio sobre `createCoroutine` | B2+ |
+| `testing` | Ambos | nueva | Una sesión de mercado en un segundo | B2+ |
+| `loom` | Mercado | nueva | Servidor de difusión con tres modelos | B2+ |
+
+**`03-reactive`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `reactor` | Mercado | nueva | Pipeline del feed en Reactor | B2+ |
+| `rxjava` | Mercado | nueva | Migración incremental | B2+ |
+| `bridges` | Mercado | nueva | Puente con cancelación y contexto | B2+ |
+| `backpressure` | Mercado | nueva | El mismo pipeline en tres modelos | B2+ |
+
+**`04-data`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `jdbc` | Banco | existe | Ledger concurrente en tres motores | 25 |
+| `jpa` | Banco | existe | Ledger en JPA con concurrencia | 24 |
+| `exposed` | Banco | nueva | El ledger en Exposed | B2+ |
+| `jooq` | Ambos | nueva | Analítica del Mercado en SQL | B2+ |
+| `r2dbc` | Banco | nueva | La misma app en cinco accesos | B2+ |
+| `sqldelight` | Ambos | nueva | Capa local compartida | B2+ |
+
+**`05-testing`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `kotest` | Ambos | nueva | Propiedades del motor de emparejamiento | B2+ |
+| `mockk` | Banco | nueva | Mini MockK | B2+ |
+| `assertions` | Ambos | nueva | Mensajes de falla comparados | B2+ |
+| `testcontainers` | Banco | nueva | El contrato del ledger con contenedores | B2+ |
+
+**`06-compiler`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `bytecode` | — | nueva | Catálogo de bytecode con archivos dorados | B2+ |
+| `reflection` | — | nueva | Mapper por reflexión frente a uno escrito a mano | B2+ |
+| `ksp` | — | nueva | Generador de builders y mappers | B2+ |
+| `compilerplugins` | — | nueva | Plugin propio con FIR | B2+ |
+
+**`07-design`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `idioms` | Ambos | nueva | Rescate de legado | B2+ |
+| `gof` | Ambos | nueva | Catálogo antes y después | B2+ |
+| `fp` | Banco | nueva | `TransferService` funcional | B2+ |
+| `architecture` | Ambos | nueva | Núcleo hexagonal con ledger DDD | B2+ |
+
+**`08-build`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `gradle` | — | nueva | Plugin de convención que genera el índice del README | B2+ |
+| `quality` | — | nueva | Calidad del repo en el build | B2+ |
+| `docs` | — | nueva | Sitio de documentación del curso | B2+ |
+| `packaging` | Banco | nueva | La misma CLI en cuatro paquetes | B2+ |
+
+**`09-spring`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `boot` | Banco | nueva | API de transferencias con idempotencia | B2+ |
+| `springdata` | Banco | nueva | Ledger con Spring Data | B2+ |
+| `webflux` | Ambos | nueva | API reactiva de punta a punta | B2+ |
+| `springtesting` | Banco | nueva | Pirámide de pruebas de la API | B2+ |
+
+**`10-ktor`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `server` | Mercado | nueva | Precios y alertas por WebSocket | B2+ |
+| `client` | Ambos | nueva | Cliente resistente de cotizaciones | B2+ |
+| `ktortesting` | Mercado | nueva | Contrato servidor-cliente | B2+ |
+
+**`11-multiplatform`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `kmp` | Ambos | nueva | Dominio común en cuatro plataformas | B2+ |
+| `composemp` | Mercado | nueva | Tablero de portafolio en tres plataformas | B2+ |
+| `shared` | Ambos | nueva | Módulo compartido consumido desde escritorio y web | B2+ |
+| `web` | Mercado | nueva | Calculadora de comisiones en el navegador | B2+ |
+
+**`12-android`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `android` | Ambos | nueva | Pantalla a prueba de rotación | B2+ |
+| `compose` | Mercado | nueva | Pantalla de precios en Compose | B2+ |
+| `architecture` | Banco | nueva | Flujo de transferencia con UDF | B2+ |
+| `androiddata` | Banco | nueva | App offline-first con sincronización | B2+ |
+| `di` | Banco | nueva | La misma app con Hilt y con Koin | B2+ |
+| `background` | Banco | nueva | Sincronización periódica confiable | B2+ |
+| `androidtesting` | Ambos | nueva | Pirámide de pruebas de la app | B2+ |
+
+**`20-legacy-kotlin14`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `language14` | — | nueva | Inventario de lo que no existía | B2+ |
+| `coroutines14` | Mercado | nueva | Migración del feed de la época | B2+ |
+| `android14` | — | nueva | Guía de migración de una pantalla | B2+ |
+| `migration14` | — | nueva | Migración paso a paso | B2+ |
+
+**`21-legacy-kotlin16`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `language16` | — | nueva | Inventario de 1.6 | B2+ |
+| `boot27` | Banco | nueva | La API de transferencias en Boot 2.7 | B2+ |
+| `migration16` | Banco | nueva | Ida y vuelta de la API | B2+ |
+
+**`22-legacy-kotlin19`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `language19` | — | existe | Lo de 2.x que 1.9 no compila | B2+ |
+| `k2migration` | — | nueva | Bitácora de migración de otro proyecto | B2+ |
+| `compat` | — | nueva | Matriz de compatibilidad | B2+ |
+
+**`25-interview`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `livecoding` | Ambos | nueva | Cinco simulacros cronometrados | B2+ |
+| `prreview` | Ambos | nueva | Diez PRs para revisar | B2+ |
+
+**`26-kotlin-next`**
+
+| Lección | Caso | Estado | ⚡ | Ejercicios |
+|---|---|---|---|---|
+| `kotlin25` | — | nueva | — | B2+ |
+
+**🐉 Jefes finales:** mini `kotlinx.coroutines` (`02` + `06`) y producto full-stack (`04` + `09`/`10` + `11`/`12` + `08`).
