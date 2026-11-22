@@ -1960,19 +1960,133 @@ Gradle, calidad, docs y empaquetado. **Build:** 5 · **Caso:** —.
 
 ### 08 · `gradle` — Kotlin DSL, version catalogs, convention plugins en `build-logic`
 
-> ⬜️ **Pendiente (tanda 7).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** leer y escribir builds de Gradle en Kotlin DSL, centralizar versiones con un catálogo y compartir
+configuración entre módulos con plugins de convención en vez de copiar bloques.
+**Sección:** `08-build` · **Build:** nivel 5 · **Caso:** — · **Estado:** nueva
+
+| Java 21 (Maven / Gradle Groovy) | Kotlin DSL (Gradle 9.9.1) | Nota |
+|---|---|---|
+| `build.gradle` en Groovy | `build.gradle.kts` | Tipado: el IDE completa y el compilador avisa |
+| `<dependencyManagement>`, propiedades de versión | `gradle/libs.versions.toml` + `libs.kotlinx.coroutines.core` | Catálogo de versiones: un solo lugar, accesores tipados |
+| POM padre, `allprojects { }` | Plugins de convención en `build-logic` (`kotlin-dsl`) | `id("course.kotlin-library")` en cada módulo |
+| `buildSrc` | `includeBuild("build-logic")` en `pluginManagement` | Un build incluido no invalida todo al cambiar |
+| `JAVA_HOME` del que corre | `kotlin { jvmToolchain(21) }` | El JDK del proyecto, independiente del de Gradle |
+| Perfiles de Maven | Propiedades (`-Plesson=…`) y tareas propias | Este repo elige el `Main` con `-Plesson` |
+
+**Trampas:**
+- `./gradlew --version` muestra el Kotlin **embebido** de Gradle (el de los scripts), no el del proyecto: el del
+  proyecto es el del plugin `kotlin("jvm")`.
+- El plugin de Kotlin y Gradle tienen compatibilidad cruzada: el plugin de Kotlin 1.9.22 usa APIs que Gradle 10
+  quita, por eso el track 19 de este repo se queda en Gradle 9.
+- `allprojects { }` y `subprojects { }` acoplan los módulos y rompen la *configuration cache*; la configuración
+  compartida va en plugins de convención.
+- Los accesores tipados (`libs.…`, `implementation(…)` de un plugin) solo existen para lo que se aplica en
+  `plugins { }`; con `apply(plugin = …)` no se generan.
+- Un nombre del catálogo con guiones (`kotlinx-coroutines-core`) se usa con puntos (`libs.kotlinx.coroutines.core`).
+
+**Caso:** el propio repo: hoy cada sección repite sus versiones a propósito; esta lección muestra cómo sería con un
+catálogo y plugins de convención, y qué se gana y qué se pierde.
+
+**🎤 Entrevista:** ¿`buildSrc` o `build-logic`? · ¿Qué es un version catalog? · ¿Qué es la *configuration cache* y qué
+la rompe?
+
+**⚡ Plugin de convención que genera el índice del README:** un plugin en `build-logic` que recorre las lecciones y
+sus `Exercises.md` y genera la tabla de lecciones y los conteos del README · **Se verifica con:** pruebas del plugin
+con Gradle TestKit, y una tarea `check` que falla si el README no coincide con lo generado.
 
 ### 08 · `quality` — detekt, ktlint, Kover
 
-> ⬜️ **Pendiente (tanda 7).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** automatizar el análisis estático, el formato y la cobertura de un proyecto Kotlin, y hacer que fallen
+el build y no la revisión de código.
+**Sección:** `08-build` · **Build:** nivel 5 · **Caso:** — · **Estado:** nueva
+
+| Java 21 | Kotlin (detekt, ktlint, Kover ⚠️ se fijan al escribir la sección) | Nota |
+|---|---|---|
+| Checkstyle, PMD, SpotBugs | detekt | Reglas pensadas para Kotlin (complejidad, `!!`, estilo) |
+| google-java-format, Spotless | ktlint (solo o con Spotless) | Formato según `.editorconfig` |
+| JaCoCo | Kover | Cobertura que entiende funciones `inline`, `data class` y corrutinas |
+| Umbral de cobertura en el plugin | `kover { verify { rule { minBound(80) } } }` | Falla `check` si baja |
+| Supresión con anotaciones | `@Suppress("MagicNumber")`, archivo *baseline* | La baseline congela la deuda vieja |
+
+**Trampas:**
+- detekt trae su propio compilador de Kotlin: una versión de detekt que no conoce el Kotlin del proyecto falla o no
+  analiza bien.
+- Una *baseline* generada una vez y olvidada esconde los problemas para siempre.
+- El formato de ktlint y el del IDE se pelean si no comparten `.editorconfig`: commits que solo cambian espacios.
+- La cobertura de líneas alta no dice si las pruebas comprueban algo (una prueba sin aserciones cubre igual).
+- Algunas reglas de detekt necesitan resolución de tipos (`detektMain`); con la tarea simple no se aplican.
+
+**Caso:** el código del curso (`01-language`, `04-data`) bajo detekt, ktlint y Kover, con las reglas ajustadas a lo
+que la lección muestra a propósito (las trampas que se demuestran no son errores).
+
+**🎤 Entrevista:** ¿qué mira detekt que no mire el compilador? · ¿Qué umbral de cobertura pondrías y por qué? · ¿Qué
+problema tiene una baseline?
+
+**⚡ Calidad del repo en el build:** detekt, ktlint y Kover configurados con un plugin de convención y aplicados a las
+secciones · **Se verifica con:** `./gradlew check` en verde con la baseline vacía, y tres errores sembrados (un `!!`,
+un archivo mal formateado y una función sin pruebas) que hacen fallar `check` cada uno con su mensaje.
 
 ### 08 · `docs` — Dokka
 
-> ⬜️ **Pendiente (tanda 7).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** documentar APIs con KDoc y generar la documentación con Dokka, incluidos ejemplos que compilan.
+**Sección:** `08-build` · **Build:** nivel 5 · **Caso:** — · **Estado:** nueva
+
+| Java 21 | Kotlin (Dokka ⚠️) | Nota |
+|---|---|---|
+| Javadoc con HTML | KDoc con Markdown | `**negrita**`, listas y bloques de código |
+| `{@link Money#of}` | `[Money.of]` | Enlaces con corchetes |
+| `@param`, `@return`, `@throws` | Los mismos (`@throws` para quien llama desde Java) | |
+| Ejemplo copiado en el comentario | `@sample dev.….MoneySamples.ofCents` | El ejemplo es código que compila |
+| `javadoc` | Dokka (HTML, y Javadoc para publicar en Maven Central) | Un formato por salida |
+
+**Trampas:**
+- KDoc no interpreta etiquetas HTML como Javadoc: `<p>` sale tal cual.
+- Un `@sample` que apunta a una función que no existe solo da un aviso: el ejemplo desaparece sin romper el build
+  (salvo que los avisos fallen).
+- Las declaraciones `internal` y `private` no aparecen: lo que se documenta es la API pública.
+- Publicar en Maven Central exige un jar de Javadoc: hace falta el formato Javadoc de Dokka, no el HTML.
+- La documentación del módulo y de los paquetes va en un archivo Markdown aparte (`Module.md`), no en el código.
+
+**Caso:** la API de `Money`, `LedgerRepository` y el feed documentados, con ejemplos que son pruebas del curso.
+
+**🎤 Entrevista:** KDoc frente a Javadoc · ¿Cómo mantienes los ejemplos de la documentación al día? · ¿Qué hace falta
+para publicar una librería Kotlin?
+
+**⚡ Sitio de documentación del curso:** Dokka sobre `01-language` y `04-data`, con `Module.md` por sección y ejemplos
+con `@sample` · **Se verifica con:** la generación sin avisos con `failOnWarning`, todos los `@sample` resueltos, y una
+prueba de que cada declaración pública de `basics` y `jdbc` tiene KDoc.
 
 ### 08 · `packaging` — Fat jar, jlink, GraalVM native image
 
-> ⬜️ **Pendiente (tanda 7).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** empaquetar una aplicación Kotlin para distribuirla (jar con dependencias, runtime propio con jlink,
+binario nativo con GraalVM) y medir qué cambia en tamaño y arranque.
+**Sección:** `08-build` · **Build:** nivel 5 · **Caso:** Banco · **Estado:** nueva
+
+| Java 21 | Kotlin (plugins ⚠️ se fijan al escribir la sección) | Nota |
+|---|---|---|
+| `maven-shade-plugin` | Plugin Shadow (fat jar) | La stdlib de Kotlin va adentro |
+| `maven-assembly`, scripts de arranque | Plugin `application` (`installDist`, `distZip`) | Lo que usa este repo para `run` |
+| `jlink` | `jlink` con los módulos que hacen falta | Un JRE recortado junto a la app |
+| `jpackage` | `jpackage` | Instalador por sistema operativo |
+| GraalVM `native-image` | Plugin de GraalVM Native Build Tools | Arranque en milisegundos, sin JIT |
+
+**Trampas:**
+- Un fat jar que junta varias librerías pisa los archivos de `META-INF/services`: hay que fusionarlos o el
+  `ServiceLoader` (por ejemplo, los drivers JDBC) no encuentra nada.
+- `jlink` no acepta módulos automáticos: una dependencia sin `module-info` obliga a otra estrategia.
+- `native-image` necesita conocer de antemano la reflexión: `kotlin-reflect` y librerías basadas en reflexión piden
+  configuración; kotlinx-serialization no, porque genera el código al compilar.
+- Un binario nativo arranca rápido pero puede rendir menos en un proceso largo (sin JIT): depende de la carga.
+- El binario nativo es por plataforma: hay que construirlo en cada sistema operativo y arquitectura.
+
+**Caso:** el conciliador de extracto del Banco (el ⚡ de `io`) como herramienta de línea de comandos.
+
+**🎤 Entrevista:** fat jar, jlink o native image: ¿cuándo cada uno? · ¿Qué complica GraalVM en una app Kotlin? · ¿Por
+qué kotlinx-serialization es amigable con native image?
+
+**⚡ La misma CLI en cuatro paquetes:** el conciliador como fat jar, distribución de `application`, imagen de jlink y
+binario nativo · **Se verifica con:** una prueba de humo que corre cada artefacto sobre `bank-statement.csv` y compara
+la salida con el archivo dorado, y una tabla de tamaño y tiempo de arranque de cada uno.
 
 ---
 
@@ -1982,19 +2096,136 @@ Spring Boot y WebFlux. **Build:** 3 · **Caso:** Banco.
 
 ### 09 · `boot` — Plugin `kotlin-spring`, constructor injection, `@ConfigurationProperties`, validación
 
-> ⬜️ **Pendiente (tanda 7).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** escribir una aplicación Spring Boot en Kotlin idiomático, sabiendo qué hacen los plugins del compilador
+y dónde se rompe la validación y la nulabilidad.
+**Sección:** `09-spring` · **Build:** nivel 3 · **Caso:** Banco · **Estado:** nueva
+
+| Java 21 | Kotlin (Spring Boot ⚠️ se fija al escribir la sección) | Nota |
+|---|---|---|
+| `public static void main` + `SpringApplication.run` | `runApplication<BankApp>(*args)` | Función con `reified` |
+| `@Autowired` en campos | Constructor primario: `class TransferService(private val repo: Ledger)` | Inyección por constructor sin anotación |
+| Clases no `final` para los proxies | Plugin `kotlin-spring` (all-open para `@Component`, `@Transactional`…) | Sin él, Spring no puede crear el proxy |
+| `@ConfigurationProperties` con setters | `data class BankProperties(val maxTransfer: BigDecimal)` | Enlace por constructor |
+| `@NotBlank` en un campo | `@field:NotBlank val alias: String` | El *use-site target* decide dónde va la anotación |
+| Jackson con constructor vacío | `jackson-module-kotlin` | Entiende constructores con parámetros y nulabilidad |
+
+**Trampas:**
+- `@NotBlank` en un parámetro del constructor sin `@field:` (o `@param:` según la versión) queda donde Bean
+  Validation no mira: la validación no corre y no hay error.
+- Sin `kotlin-spring`, un `@Service` con `@Transactional` es `final`: Spring falla al crear el proxy, o la anotación
+  no tiene efecto.
+- Sin `jackson-module-kotlin`, deserializar una `data class` falla por falta de constructor vacío.
+- `lateinit var` con `@Value` falla en runtime, no al compilar, si la propiedad no existe.
+- Las APIs de Spring anotadas con nulabilidad se ven como tipos de Kotlin; si están anotadas con JSpecify, desde Kotlin
+  2.1 un mal uso es error de compilación (medido en `01 · interop`).
+
+**Caso:** la API REST de transferencias del Banco: `POST /transfers` con validación, límites en
+`@ConfigurationProperties` y `BankException` traducida a `ProblemDetail`.
+
+**🎤 Entrevista:** ¿por qué existe `kotlin-spring`? · ¿Cómo se valida un `data class` con Bean Validation? · Inyección
+por constructor en Kotlin.
+
+**⚡ API de transferencias con idempotencia:** `POST /transfers` con cabecera `Idempotency-Key`, validación que
+acumula errores y errores de dominio a HTTP · **Se verifica con:** pruebas MockMvc de que la misma clave devuelve la
+misma respuesta sin duplicar el asiento, de que una solicitud inválida devuelve todos sus errores en un 400, y de que
+sin fondos da 422 con `ProblemDetail`.
 
 ### 09 · `springdata` — Spring Data desde Kotlin
 
-> ⬜️ **Pendiente (tanda 7).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** usar Spring Data (JPA, JDBC y R2DBC con corrutinas) desde Kotlin sin `Optional` ni sorpresas de
+transacciones.
+**Sección:** `09-spring` · **Build:** nivel 3 · **Caso:** Banco · **Estado:** nueva
+
+| Java 21 | Kotlin (Spring Data ⚠️) | Nota |
+|---|---|---|
+| `repo.findById(id).orElse(null)` | `repo.findByIdOrNull(id)` | Extensión de Spring Data para Kotlin |
+| `interface AccountRepository extends JpaRepository<…>` | `interface AccountRepository : JpaRepository<Account, Long>` | Las reglas de entidades de `04 · jpa` siguen valiendo |
+| `ReactiveCrudRepository` con `Mono`/`Flux` | `CoroutineCrudRepository` con `suspend` y `Flow` | Spring Data R2DBC |
+| `JdbcTemplate` | `JdbcClient` / Spring Data JDBC | Sin contexto de persistencia |
+| `@Transactional` en el servicio | Igual (con `kotlin-spring` para abrir la clase) | No aplica a métodos privados ni llamados desde la misma clase |
+
+**Trampas:**
+- `@Transactional` en un método llamado desde la misma clase no pasa por el proxy: no hay transacción.
+- *Open session in view* viene activado por defecto en Spring Boot: la carga perezosa "funciona" en el controlador y
+  esconde el N+1 hasta producción.
+- Un método de consulta derivada con un nombre mal escrito falla al arrancar la aplicación, no al compilar.
+- `save()` sobre una entidad con id asignado (no generado) hace un `merge` con un `SELECT` previo.
+- Mezclar Spring Data JPA y R2DBC en una aplicación duplica la configuración y las transacciones no se cruzan.
+
+**Caso:** el ledger del Banco con Spring Data JPA (cuentas con `@Version`, asientos) y la consulta de movimientos con
+proyecciones.
+
+**🎤 Entrevista:** ¿por qué falla `@Transactional` en una llamada interna? · ¿Qué es *open session in view* y por qué
+desactivarlo? · Spring Data JPA frente a JDBC.
+
+**⚡ Ledger con Spring Data:** repositorios del ledger, reintento ante `OptimisticLockingFailureException` y consultas
+sin N+1 · **Se verifica con:** pruebas con Testcontainers donde cada endpoint ejecuta un número fijo de sentencias
+(contadas), una transferencia concurrente que se reintenta y no pierde saldo, y *open session in view* desactivado.
 
 ### 09 · `webflux` — Corrutinas, `Flow`, `coRouter`, `WebClient`
 
-> ⬜️ **Pendiente (tanda 7).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** escribir un backend reactivo con Spring WebFlux usando corrutinas (`suspend` y `Flow`) en vez de
+`Mono`/`Flux`, y saber cuándo conviene frente a Spring MVC.
+**Sección:** `09-spring` · **Build:** nivel 3 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin (Spring WebFlux ⚠️) | Nota |
+|---|---|---|
+| Controlador que devuelve `Mono<Account>` | `suspend fun account(id: String): Account` | Spring hace el puente (`03 · bridges`) |
+| `Flux<Tick>` en el controlador | `fun ticks(): Flow<Tick>` | *Streaming* (por ejemplo, SSE) |
+| `RouterFunctions.route()` | `coRouter { GET("/accounts/{id}", handler::get) }` | DSL de rutas con corrutinas |
+| `WebClient …retrieve().bodyToMono()` | `webClient.get().uri(…).retrieve().awaitBody<Quote>()` | Extensiones para corrutinas |
+| Spring MVC sobre hilos (o hilos virtuales) | WebFlux sobre Netty | Comparar con medición |
+
+**Trampas:**
+- Una llamada bloqueante (JDBC, `Thread.sleep`) en un handler de WebFlux ocupa un hilo del *event loop* y frena todo
+  el servidor.
+- Tener los dos starters (MVC y WebFlux) hace que gane MVC: la aplicación no es reactiva aunque se escriba como tal.
+- El contexto (seguridad, MDC) solo viaja si se usan los puentes de corrutinas; un `launch` aparte lo pierde.
+- Un `Flow` devuelto sin `content-type` de *streaming* se junta entero antes de responder.
+- Con hilos virtuales, Spring MVC bloqueante ya escala bien: WebFlux gana en *streaming* y con muchas conexiones
+  lentas, no siempre.
+
+**Caso:** la API de transferencias del Banco y el feed de precios del Mercado como `Flow` con SSE.
+
+**🎤 Entrevista:** WebFlux con corrutinas frente a MVC con hilos virtuales · ¿Qué pasa si bloqueas en WebFlux? ·
+¿Cómo devuelves un *stream* de precios?
+
+**⚡ API reactiva de punta a punta:** WebFlux + R2DBC + corrutinas para el ledger y el feed, y la misma API en MVC
+con JDBC · **Se verifica con:** el mismo conjunto de pruebas de contrato en las dos versiones, y una prueba de carga
+(1 000 clientes concurrentes, latencia de base simulada) con una tabla de throughput, p99 y hilos usados.
 
 ### 09 · `springtesting` — MockMvc DSL, `WebTestClient`, SpringMockK
 
-> ⬜️ **Pendiente (tanda 7).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** probar una aplicación Spring en Kotlin a cada nivel (unidad, *slice*, aplicación completa) con los DSL
+de Kotlin y sin que la suite tarde minutos.
+**Sección:** `09-spring` · **Build:** nivel 3 · **Caso:** Banco · **Estado:** nueva
+
+| Java 21 | Kotlin (Spring Boot Test, SpringMockK ⚠️) | Nota |
+|---|---|---|
+| `mockMvc.perform(get("/x")).andExpect(status().isOk())` | `mockMvc.get("/x").andExpect { status { isOk() } }` | DSL de Kotlin de MockMvc |
+| `webTestClient…expectBody(Account.class)` | `expectBody<Account>()` | Extensión con `reified` |
+| `@MockBean` / `@MockitoBean` | `@MockkBean` (SpringMockK) | MockK en vez de Mockito (`05 · mockk`) |
+| `@SpringBootTest` para todo | *Slices*: `@WebMvcTest`, `@DataJpaTest`, `@WebFluxTest` | Contextos chicos y rápidos |
+| Base de pruebas a mano | Testcontainers con `@ServiceConnection` | La conexión la arma Spring |
+
+**Trampas:**
+- Cada combinación distinta de beans mockeados crea otro contexto de Spring: la caché de contextos deja de servir y la
+  suite se vuelve lenta.
+- Una prueba `@Transactional` revierte al final y nunca hace *flush*: errores de constraints que en producción
+  saltan al commit aquí no aparecen.
+- `@SpringBootTest` sin `webEnvironment` no levanta servidor: un `WebTestClient` contra un puerto real falla.
+- Un *slice* no carga todo: un bean que falta da un error de contexto que parece del código y no de la prueba.
+- `any()` de Mockito en parámetros no nullables de Kotlin lanza NPE: otra razón para SpringMockK.
+
+**Caso:** la API de transferencias del Banco probada en tres niveles, con la base en Testcontainers.
+
+**🎤 Entrevista:** ¿cuándo `@SpringBootTest` y cuándo un *slice*? · ¿Qué rompe la caché de contextos? · ¿Por qué una
+prueba `@Transactional` puede esconder un bug?
+
+**⚡ Pirámide de pruebas de la API:** pruebas de unidad, *slices* y aplicación completa con Testcontainers para la API
+de transferencias · **Se verifica con:** la cantidad de contextos de Spring creados (registrada y acotada), el tiempo
+de cada nivel en una tabla, y tres errores sembrados (validación, consulta, configuración) que atrapa cada uno el
+nivel que corresponde.
 
 ---
 
@@ -2004,15 +2235,97 @@ Ktor. **Build:** 3 · **Caso:** Mercado.
 
 ### 10 · `server` — Routing, plugins, auth, WebSockets
 
-> ⬜️ **Pendiente (tanda 7).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** escribir un servidor HTTP y WebSocket con Ktor: rutas con DSL, plugins, autenticación y streaming con
+corrutinas, sin la magia de Spring.
+**Sección:** `10-ktor` · **Build:** nivel 3 · **Caso:** Mercado · **Estado:** nueva
+
+| Java 21 | Kotlin (Ktor ⚠️ se fija al escribir la sección) | Nota |
+|---|---|---|
+| Javalin, Spark, Servlets | `embeddedServer(Netty) { routing { get("/quotes/{ticker}") { … } } }` | Todo es código: sin escaneo de clases |
+| Filtros, interceptores | Plugins: `install(ContentNegotiation) { json() }` | `StatusPages`, `CallLogging`, `Authentication` |
+| `@RequestBody` | `call.receive<OrderRequest>()` | Con kotlinx-serialization |
+| Spring Security con JWT | `install(Authentication) { jwt { … } }` + `authenticate { }` | Rutas protegidas por bloque |
+| WebSocket de Jakarta | `webSocket("/prices") { … }` | Una sesión es una corrutina |
+| `application.properties` | `application.conf` / YAML o configuración en código | `EngineMain` frente a `embeddedServer` |
+
+**Trampas:**
+- Un handler que bloquea (JDBC sin `withContext(Dispatchers.IO)`) frena a todos los que comparten el hilo.
+- `call.receive` se puede llamar una sola vez: el cuerpo ya se consumió en la segunda.
+- Sin `StatusPages`, una excepción en una ruta sale como 500 sin cuerpo útil.
+- El orden en que se instalan los plugins importa (por ejemplo, autenticación antes de las rutas que la usan).
+- Una sesión de WebSocket que termina deja corriendo las corrutinas que lanzó si no se lanzaron en su scope.
+
+**Caso:** el servidor de precios del Mercado: REST para cotizaciones y un WebSocket donde cada cliente se suscribe a
+tickers y recibe precios y alertas.
+
+**🎤 Entrevista:** Ktor frente a Spring Boot · ¿Cómo funciona un plugin de Ktor? · ¿Cómo manejas un cliente WebSocket
+lento?
+
+**⚡ Precios y alertas por WebSocket:** el "chat" del plan con los datos del caso: suscripción por ticker, difusión con
+`SharedFlow` y alertas de precio · **Se verifica con:** pruebas con `testApplication` de que cada cliente recibe solo
+sus tickers, de que un cliente lento no frena a los demás (último valor) y de que al desconectarse no quedan
+corrutinas vivas.
 
 ### 10 · `client` — Cliente HTTP de Ktor
 
-> ⬜️ **Pendiente (tanda 7).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** consumir APIs HTTP con el cliente de Ktor (en la JVM y en multiplataforma), con serialización,
+reintentos y tiempos límite.
+**Sección:** `10-ktor` · **Build:** nivel 3 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin (Ktor client ⚠️) | Nota |
+|---|---|---|
+| `java.net.http.HttpClient` | `HttpClient(CIO)` (o `Java`, `OkHttp`, `Darwin` en iOS) | El motor cambia por plataforma |
+| `HttpResponse.BodyHandlers` + Jackson | `client.get(url).body<Quote>()` | `ContentNegotiation` con kotlinx-serialization |
+| Reintentos a mano, Resilience4j | `install(HttpRequestRetry) { retryOnServerErrors(3); exponentialDelay() }` | |
+| `HttpRequest.timeout` | `install(HttpTimeout) { requestTimeoutMillis = … }` | |
+| Excepción en 4xx/5xx según la librería | `expectSuccess = true` | Por defecto **no** lanza en errores HTTP |
+
+**Trampas:**
+- Crear un `HttpClient` por pedido abre conexiones y hilos que no se reutilizan: se crea uno y se cierra al final.
+- Por defecto un 404 o un 500 no lanza: sin `expectSuccess` o sin mirar el estado, se deserializa un cuerpo de error.
+- Reintentar un `POST` sin clave de idempotencia puede duplicar una transferencia.
+- Cada motor soporta cosas distintas (WebSockets, HTTP/2, proxies): el que funciona en la JVM puede no estar en iOS.
+- Un tiempo límite muy alto con reintentos multiplica la espera total.
+
+**Caso:** el cliente de cotizaciones del Mercado contra el servidor de `server`, y un cliente de la API de
+transferencias del Banco con clave de idempotencia en los reintentos.
+
+**🎤 Entrevista:** ¿por qué se reutiliza el `HttpClient`? · ¿Qué reintentarías y qué no? · ¿Cómo elige Ktor el motor
+en multiplataforma?
+
+**⚡ Cliente resistente de cotizaciones:** reintentos con espera exponencial, tiempo límite y un corte tras N fallas
+seguidas · **Se verifica con:** pruebas con `MockEngine` que cuentan los intentos, verifican que el tiempo límite salta
+y que un `POST` reintentado lleva siempre la misma clave de idempotencia.
 
 ### 10 · `ktortesting` — Pruebas de Ktor
 
-> ⬜️ **Pendiente (tanda 7).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** probar un servidor Ktor sin abrir puertos y un cliente sin red, de forma rápida y determinista.
+**Sección:** `10-ktor` · **Build:** nivel 3 · **Caso:** Mercado · **Estado:** nueva
+
+| Java 21 | Kotlin (ktor-server-test-host ⚠️) | Nota |
+|---|---|---|
+| Levantar el servidor en un puerto y llamarlo | `testApplication { client.get("/quotes/ACME") }` | Sin red: el cliente habla en memoria |
+| WireMock para el cliente | `MockEngine { request -> respond(…) }` | Respuestas por pedido, sin servidor |
+| Pruebas de WebSocket a mano | `client.webSocket("/prices") { … }` dentro de `testApplication` | |
+| Configuración de pruebas | `environment { config = … }` en `testApplication` | |
+
+**Trampas:**
+- `testApplication` carga la configuración del módulo: si el módulo lee `application.conf`, la prueba también.
+- Un cliente de la prueba sin `ContentNegotiation` recibe el JSON como texto y la aserción compara mal.
+- Las pruebas de WebSocket que no cierran la sesión dejan la prueba colgada.
+- `MockEngine` responde lo que se le dice: no prueba que el servidor real responda así (eso lo cubre una prueba de
+  contrato).
+- Mezclar tiempo real (`delay` del servidor) en `testApplication` hace lentas las pruebas.
+
+**Caso:** el servidor de precios y su cliente del Mercado probados entre sí.
+
+**🎤 Entrevista:** ¿cómo pruebas un servidor Ktor sin abrir un puerto? · `MockEngine` frente a WireMock · ¿Cómo pruebas
+un WebSocket?
+
+**⚡ Contrato servidor-cliente:** el servidor de `server` y el cliente de `client` probados juntos en
+`testApplication`, con el modelo serializable compartido · **Se verifica con:** la suite completa sin red ni puertos,
+en menos de unos segundos, y una prueba que rompe el contrato a propósito (un campo renombrado) y falla en los dos
+lados.
 
 ---
 

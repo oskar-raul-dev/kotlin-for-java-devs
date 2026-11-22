@@ -25,7 +25,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
 | `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, casos de finanzas, guías de lección (propuesta); estado al 2026-11-22 |
 | `docs/lessons/` (guías de lección) | ✅ | `LISTO` | Índice, plantilla y 12 guías (10 de `01-language`, `jdbc`, `jpa`), en `docs/lessons/<sección>/NN-<lección>.md` (B0″) |
-| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tandas 1 a 6 escritas (53 entradas); faltan las tandas 7 a 10. El anterior, en `docs/archive/Temario-v1.md` |
+| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tandas 1 a 7 escritas (64 entradas); faltan las tandas 8 a 10. El anterior, en `docs/archive/Temario-v1.md` |
 | `docs/Temario-Plan.md` y `docs/prompts/temario-tanda.md` | ✅ | `LISTO` | Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
 | `docs/LegacyKotlin.md` | ✅ | `LISTO` | Versiones 1.0 → 2.x, los tres tracks, cómo correrlos y trampas |
@@ -418,3 +418,9 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   03 a fecha de liquidación T+2 y 14 a antigüedad de la cuenta). Ruta prioritaria del README rehecha (43 🎯, 15 ★, los
   mismos ejercicios con los títulos nuevos), presentación y estado del README al día, y `orders.json` y `sales.csv`
   borrados. 153 pruebas (103 + 50), 0 `SKIPPED`.
+- **2026-11-22** · **B0, tanda 7 (`08-build`, `09-spring`, `10-ktor`):** 11 entradas: `gradle` (catálogo de
+  versiones, `build-logic`, y la trampa de `--version` que muestra el Kotlin embebido), `quality`, `docs`,
+  `packaging` (el conciliador como fat jar, jlink y binario nativo), `boot` (`@field:` en la validación, JSpecify),
+  `springdata`, `webflux`, `springtesting`, `server` (precios y alertas por WebSocket), `client` y `ktortesting`, con la
+  API de transferencias del Banco y el feed del Mercado. Librerías sin versión fijada quedan ⚠️. Quedan 24 de 88
+  entradas.
