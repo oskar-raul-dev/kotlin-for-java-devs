@@ -216,7 +216,7 @@ Por tandas, cada una con las pruebas en verde (con PostgreSQL y MySQL arriba) y 
 
 1. ✅ **Datos y generador:** `ticks.json`, `bank-statement.csv`, `ledger-movements.csv`, `fx-rates.json` y el
    paquete `datagen` (22 de noviembre de 2026).
-2. **`json` e `io`:** modelo `Tick`/`MarketEvent`, conciliación del extracto.
+2. ✅ **`json` e `io`:** modelo `Tick`/`MarketEvent`, conciliación exacta del extracto contra `ledger-movements.csv`.
 3. **`basics`, `oop` y `exceptions`:** `Money`, `Order` sellado, `BankException`, `TransferService`.
 4. **`strings`, `collections`, `functional`, `datetime`, `control`:** los ejemplos y pruebas que mencionan pedidos.
 5. **`04-data`:** `LedgerRepository` con su contrato en los tres motores; entidades JPA del ledger.

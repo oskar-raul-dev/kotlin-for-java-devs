@@ -24,9 +24,10 @@ object LocalDateIso : KSerializer<LocalDate> {
     override fun deserialize(decoder: Decoder): LocalDate = LocalDate.parse(decoder.decodeString())
 }
 
+/** Cierre diario de un ticker: dos tipos de Java (LocalDate y BigDecimal), cada uno con su serializador. */
 @Serializable
-data class Invoice(
-    val number: String,
-    @Serializable(with = LocalDateIso::class) val issued: LocalDate,
-    @Serializable(with = BigDecimalAsString::class) val total: BigDecimal,
+data class DailyClose(
+    val ticker: String,
+    @Serializable(with = LocalDateIso::class) val date: LocalDate,
+    @Serializable(with = BigDecimalAsString::class) val close: BigDecimal,
 )

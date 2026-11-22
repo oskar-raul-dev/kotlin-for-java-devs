@@ -20,10 +20,10 @@ fun sumNumbers(input: BufferedReader, out: Appendable): Int {
     return total
 }
 
-/** Una tabla alineada con format (String.format de Java). */
-fun formatTable(sales: List<Sale>): String = buildString {
-    appendLine("%-10s %-8s %-9s %4s %10s".format("fecha", "ciudad", "producto", "cant", "total"))
-    sales.forEach {
-        appendLine("%-10s %-8s %-9s %4d %10.2f".format(it.date, it.city, it.product, it.quantity, it.total))
+/** Una tabla alineada con format (String.format de Java). La descripción se recorta para no romper columnas. */
+fun formatTable(lines: List<StatementLine>): String = buildString {
+    appendLine("%-10s %-32s %10s %-9s".format("fecha", "descripción", "monto", "ref"))
+    lines.forEach {
+        appendLine("%-10s %-32s %10s %-9s".format(it.date, it.description.take(32), it.amount.toPlainString(), it.reference))
     }
 }

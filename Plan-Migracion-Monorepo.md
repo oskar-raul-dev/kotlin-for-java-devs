@@ -29,7 +29,7 @@ medias**. El avance por sección y lección está en [`CHECKLIST.md`](CHECKLIST.
 | Fase A (A0–A9) | ✅ tag `phase-a` | — |
 | B1 · Tutoriales | ✅ | — (5 tutoriales, 72 ejercicios, 136 comprobaciones en sus `check.sh`) |
 | B0 · Temario | 🟡 tandas 0, 1 y 2 de 10 | Tandas 3 a 10: 73 de las 88 entradas ([`docs/Temario-Plan.md`](docs/Temario-Plan.md#estado)) |
-| B0′ · Casos Banco y Mercado | 🟡 diseño y tanda 1 | Tandas 2 a 6 del reemplazo del dominio de pedidos ([`docs/Casos.md`](docs/Casos.md#plan-de-reemplazo)) |
+| B0′ · Casos Banco y Mercado | 🟡 diseño y tandas 1–2 | Tandas 3 a 6 del reemplazo del dominio de pedidos ([`docs/Casos.md`](docs/Casos.md#plan-de-reemplazo)) |
 | B0″ · Guías de lección | ✅ | — (índice, plantilla y 12 guías en [`docs/lessons/`](docs/lessons/README.md); se mantienen con cada cambio de código) |
 | B2–B10 | ⬜️ | Todo |
 
@@ -95,7 +95,8 @@ Tags anotados: `baseline-1.9.22` (curso v1 de proyecto único), `monorepo-1.9.22
 | `984b5d0` Write syllabus batch 2 | B0, tanda 2: `collections`, `functional`, `json`, `datetime`, `exceptions` |
 | `edc5e49` Review phase B status and propose lesson guides (B0″) | Revisión de estado; tag `b0-status-review` |
 | `cdfd9b2` Add lesson guides (B0″) | B0″: `docs/lessons/` con índice, plantilla y 12 guías; regla de sincronía en CLAUDE.md y README |
-| Generate the case data (B0′ batch 1) | B0′, tanda 1: paquete `datagen` y los cuatro archivos de datos; 130 pruebas |
+| `237c387` Generate the case data (B0′ batch 1) | B0′, tanda 1: paquete `datagen` y los cuatro archivos de datos; 130 pruebas |
+| Move json and io to the cases (B0′ batch 2) | B0′, tanda 2: `json` sobre `ticks.json` (`Tick`, `MarketEvent`), `io` sobre el extracto con conciliación exacta; 134 pruebas |
 
 **Remoto:** `origin` en GitHub desde el 13 de noviembre de 2026. Antes de cada push se repite el escaneo de
 referencias externas sobre `git log -p --all`, y se suben los tags con `git push origin main --follow-tags`.
@@ -106,7 +107,7 @@ Orden decidido el 22 de noviembre de 2026: B0′ se adelanta, porque sus tandas 
 temario ya está escrito (tandas 1 y 2 de B0), y así el código deja antes el dominio de pedidos.
 
 1. ~~**B0″ · Guías de lección**~~ ✅ (22 de noviembre de 2026): índice, plantilla y 12 guías en `docs/lessons/`.
-2. **B0′ · tandas 1 a 4:** ~~datos y generador~~ ✅, `json`/`io`, `basics`/`oop`/`exceptions` y el resto de `01-language`.
+2. **B0′ · tandas 1 a 4:** ~~datos y generador~~ ✅, ~~`json`/`io`~~ ✅, `basics`/`oop`/`exceptions` y el resto de `01-language`.
    Cada una con sus pruebas en verde con las dos bases arriba y actualizando las guías que toque.
 3. **B0 · tandas 3, 4 y 6** (no dependen de otras) y luego la **5** (espera a la 4).
 4. **B0′ · tandas 5 y 6:** `04-data` con el ledger (se apoya en la tanda 5 de B0); ejercicios, ruta 🎯 y borrado de

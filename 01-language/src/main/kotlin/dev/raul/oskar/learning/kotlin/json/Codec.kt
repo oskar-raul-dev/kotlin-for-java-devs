@@ -6,15 +6,15 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.add
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.int
-import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.longOrNull
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
-import kotlinx.serialization.json.add
 
 // Json es inmutable y caro de construir: se crea una vez y se reutiliza.
 
@@ -31,29 +31,30 @@ val lenientJson = Json {
 
 val prettyJson = Json(from = lenientJson) { prettyPrint = true }
 
-fun loadOrderEvents(text: String): List<OrderEvent> = lenientJson.decodeFromString(text)
+/** El feed real trae claves que el modelo no conoce ("venue") y campos que faltan: hace falta el tolerante. */
+fun loadTicks(text: String): List<Tick> = lenientJson.decodeFromString(text)
 
 fun toJson(settings: Settings, json: Json = strictJson): String = json.encodeToString(settings)
 fun settingsFrom(text: String, json: Json = strictJson): Settings = json.decodeFromString(text)
 
-fun encodePayments(payments: List<Payment>): String = strictJson.encodeToString(payments)
-fun decodePayments(text: String): List<Payment> = strictJson.decodeFromString(text)
+fun encodeEvents(events: List<MarketEvent>): String = strictJson.encodeToString(events)
+fun decodeEvents(text: String): List<MarketEvent> = strictJson.decodeFromString(text)
 
-/** Árbol JSON sin clases: útil cuando el esquema es variable. */
-fun sumOrderTotals(text: String): Int =
+/** Árbol JSON sin clases: útil cuando el esquema es variable o solo interesa un campo. */
+fun totalVolume(text: String): Long =
     Json.parseToJsonElement(text).jsonArray
-        .mapNotNull { it.jsonObject["order-total"]?.jsonPrimitive?.intOrNull }
+        .mapNotNull { it.jsonObject["volume"]?.jsonPrimitive?.longOrNull }
         .sum()
 
-fun statesIn(text: String): Set<String> =
+fun tickersIn(text: String): Set<String> =
     Json.parseToJsonElement(text).jsonArray
-        .mapNotNull { (it.jsonObject["address"] as? JsonObject)?.get("state")?.jsonPrimitive?.content }
+        .mapNotNull { it.jsonObject["ticker"]?.jsonPrimitive?.content }
         .toSet()
 
 /** Construir JSON a mano con el DSL. */
-fun buildSummary(count: Int, states: Set<String>): JsonObject = buildJsonObject {
+fun buildSummary(count: Int, tickers: Set<String>): JsonObject = buildJsonObject {
     put("count", count)
-    putJsonArray("states") { states.sorted().forEach { add(it) } }
+    putJsonArray("tickers") { tickers.sorted().forEach { add(it) } }
 }
 
 fun countOf(summary: JsonObject): Int = summary["count"]!!.jsonPrimitive.int

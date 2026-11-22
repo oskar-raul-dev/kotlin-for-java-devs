@@ -6,35 +6,41 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 fun main() {
-    val text = object {}.javaClass.getResource("/data/orders.json")!!.readText()
+    val text = object {}.javaClass.getResource("/data/ticks.json")!!.readText()
 
-    println("== Deserializar (tolerante) ==")
-    loadOrderEvents(text).forEach(::println)
+    println("== Deserializar el feed (tolerante) ==")
+    val ticks = loadTicks(text)
+    println("${ticks.size} ticks; los primeros:")
+    ticks.take(3).forEach(::println)
+    println("sin precio: ${ticks.count { it.price == null }}, sin volumen: ${ticks.count { it.volume == null }}")
 
-    println("\n== Estricto falla con la clave desconocida \"channel\" ==")
+    println("\n== Estricto falla con la clave desconocida \"venue\" ==")
     try {
-        strictJson.decodeFromString<List<OrderEvent>>(text)
+        strictJson.decodeFromString<List<Tick>>(text)
     } catch (e: SerializationException) {
         println("${e::class.simpleName}: ${e.message?.lineSequence()?.first()}")
     }
 
     println("\n== Defaults ==")
-    println("strict  : ${toJson(Settings("app"))}")
-    println("lenient : ${toJson(Settings("app"), lenientJson)}")
-    println("leído   : ${settingsFrom("""{"name":"app","retries":null}""", lenientJson)}")
+    println("strict  : ${toJson(Settings("feed"))}")
+    println("lenient : ${toJson(Settings("feed"), lenientJson)}")
+    println("leído   : ${settingsFrom("""{"name":"feed","retries":null}""", lenientJson)}")
 
     println("\n== Polimorfismo sellado ==")
-    val payments = listOf(CardPayment(1000, "4242"), TransferPayment(5000, "ES12"))
-    val encoded = encodePayments(payments)
+    val events = listOf(
+        Trade("ACME", 1793021495500, BigDecimal("99.84"), 420),
+        Quote("ACME", 1793021495600, BigDecimal("99.83"), BigDecimal("99.85")),
+        Halt("LUMA", 1793030000000, "volatilidad"),
+    )
+    val encoded = encodeEvents(events)
     println(encoded)
-    println(decodePayments(encoded))
+    println(decodeEvents(encoded))
 
     println("\n== Serializadores propios ==")
-    val invoice = Invoice("F-1", LocalDate.of(2026, 11, 3), BigDecimal("1234.50"))
-    println(prettyJson.encodeToString(invoice))
+    println(prettyJson.encodeToString(DailyClose("ACME", LocalDate.of(2026, 10, 26), BigDecimal("100.42"))))
 
     println("\n== Árbol JSON ==")
-    println("suma order-total = ${sumOrderTotals(text)}")
-    println("estados          = ${statesIn(text)}")
-    println("resumen          = ${buildSummary(3, statesIn(text))}")
+    println("volumen total = ${totalVolume(text)}")
+    println("tickers       = ${tickersIn(text)}")
+    println("resumen       = ${buildSummary(ticks.size, tickersIn(text))}")
 }

@@ -1,6 +1,6 @@
 # 08 · `json` — kotlinx-serialization
 
-**Sección:** `01-language` · **Paquete:** `dev.raul.oskar.learning.kotlin.json` · **Caso:** pedidos (provisional) → Mercado
+**Sección:** `01-language` · **Paquete:** `dev.raul.oskar.learning.kotlin.json` · **Caso:** Mercado
 **Enlaces:** [temario](../../Temario.md#01--json--kotlinx-serialization) · [ejercicios](../../../01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/json/Exercises.md) · [código](../../../01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/json/) · [pruebas](../../../01-language/src/test/kotlin/dev/raul/oskar/learning/kotlin/json/JsonTest.kt)
 
 ## Cómo correrla
@@ -12,23 +12,28 @@
 
 ## Recorrido sugerido
 
-1. `Model.kt`: `@SerialName` para claves con guiones, nullable sin default (`OrderEvent`, `Address`), valores por
-   defecto (`Settings`) y jerarquía sellada con discriminador (`Payment`).
+1. `Model.kt`: `Tick` con `@SerialName` para `ts`, `bid-price` y `ask-price`, nullables sin default (obligatorios
+   salvo con `explicitNulls = false`) y precios `BigDecimal` con serializador; valores por defecto (`Settings`);
+   jerarquía sellada con discriminador `"type"` (`MarketEvent`: `Trade`, `Quote`, `Halt`).
 2. `Codec.kt`: un `Json` estricto, uno tolerante (`ignoreUnknownKeys`, `explicitNulls = false`, `encodeDefaults`,
-   `coerceInputValues`) y uno con `prettyPrint`; árbol `JsonElement` y el DSL `buildJsonObject`.
-3. `Serializers.kt`: `KSerializer` propios para `BigDecimal` y `LocalDate` (`Invoice`).
-4. `JsonTest.kt` y `Main.kt` (leen `data/orders.json`).
+   `coerceInputValues`) y uno con `prettyPrint`; `loadTicks` sobre el feed; árbol `JsonElement` (`totalVolume`,
+   `tickersIn`) y el DSL `buildJsonObject`.
+3. `Serializers.kt`: `KSerializer` propios para `BigDecimal` (como cadena, nunca como número) y `LocalDate`
+   (`DailyClose`).
+4. `JsonTest.kt` (una muestra de tres ticks con cada imperfección, y el feed completo) y `Main.kt`.
 
 ## Mapa del código
 
 | Archivo | Qué muestra | Símbolos | Lo prueba |
 |---|---|---|---|
-| `Model.kt` | Modelo serializable | `OrderEvent`, `Address`, `Settings`, `Payment`, `CardPayment`, `TransferPayment` | `JsonTest` (`lenient json reads order events`, `missing nullable key…`, `sealed polymorphism round trip`) |
-| `Codec.kt` | Configuraciones de `Json` y árbol | `strictJson`, `lenientJson`, `prettyJson`, `loadOrderEvents`, `toJson`, `settingsFrom`, `encodePayments`, `decodePayments`, `sumOrderTotals`, `statesIn`, `buildSummary`, `countOf` | `JsonTest` (`strict json rejects unknown keys`, `defaults are skipped…`, `json tree navigation`) |
-| `Serializers.kt` | Serializadores para tipos de Java | `BigDecimalAsString`, `LocalDateIso`, `Invoice` | `JsonTest` (`custom serializers for java types`) |
+| `Model.kt` | Modelo serializable | `Tick`, `Settings`, `MarketEvent`, `Trade`, `Quote`, `Halt` | `JsonTest` (`lenient json reads ticks with gaps`, `missing nullable key…`, `sealed polymorphism round trip`) |
+| `Codec.kt` | Configuraciones de `Json` y árbol | `strictJson`, `lenientJson`, `prettyJson`, `loadTicks`, `toJson`, `settingsFrom`, `encodeEvents`, `decodeEvents`, `totalVolume`, `tickersIn`, `buildSummary`, `countOf` | `JsonTest` (`strict json rejects unknown keys`, `defaults are skipped…`, `json tree navigation`, `the generated feed only loads…`) |
+| `Serializers.kt` | Serializadores para tipos de Java | `BigDecimalAsString`, `LocalDateIso`, `DailyClose` | `JsonTest` (`custom serializers for java types`) |
+
+Datos: `data/ticks.json`, generado por `datagen` (ver [`Casos.md`](../../Casos.md#datos)).
 
 ## Estado
 
-- **Hecho:** código y 7 pruebas; 24 ejercicios (4 🎯); 0 resueltos en `practice/`.
-- **Falta:** B0′ tanda 2 (`OrderEvent`, `Address`, `Payment` → `Tick` y `MarketEvent` sobre `ticks.json`) y tanda 3
-  (serializador de `Money`); B2 (⚡ serializador binario).
+- **Hecho:** código en el caso Mercado (B0′ tanda 2) y 8 pruebas; 24 ejercicios (4 🎯); 0 resueltos en `practice/`.
+- **Falta:** B0′ tanda 3 (serializador de `Money`) y tanda 6 (reescribir los enunciados que todavía hablan de
+  pedidos); B2 (⚡ serializador binario).

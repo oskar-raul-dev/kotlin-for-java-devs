@@ -74,7 +74,7 @@ cd 22-legacy-kotlin19 && ./gradlew test                         # track legacy K
 - `--args` pasa argumentos al `main(args)`.
 - `--console=plain` quita la barra de progreso de Gradle, que se mezcla con lo que se escribe en la consola.
 
-Estado actual: **130 pruebas** en la base (92 en `01-language` y 38 en `04-data`), todas en verde, más **4 de humo**
+Estado actual: **134 pruebas** en la base (96 en `01-language` y 38 en `04-data`), todas en verde, más **4 de humo**
 en `22-legacy-kotlin19`. Las 18 de PostgreSQL y MySQL salen `SKIPPED` si sus contenedores no están arriba.
 
 ## Índice de secciones
@@ -138,10 +138,10 @@ genera el paquete `datagen` con semilla fija: `./gradlew -p 01-language run -Ple
 | 2 | `control` | `if`/`when` como expresiones, rangos (`..`, `until`, `downTo`, `step`), bucles, etiquetas `break@`, algoritmos de pizarra (gcd, primos, búsqueda binaria, two-sum, paréntesis) | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/control/Exercises.md) | 4 |
 | 3 | `strings` | Plantillas, raw strings, `buildString`, `substringBefore/After`, regex con grupos con nombre, `replace` con lambda. **La trampa de `split("\\/")`** | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/strings/Exercises.md) | 3 |
 | 4 | `oop` | Constructores, `init`, setters privados, `open`/`abstract`, interfaces con default, `sealed` + `when` exhaustivo, enums con `companion` y `of`, `object`, `data class`, `value class`, operadores, delegación `by`, `lazy` | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/oop/Exercises.md) | 4 |
-| 5 | `io` | `Path` + `kotlin.io.path`, `useLines`, `use {}`, recursos del classpath, consola testeable, Kermit | [23](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/io/Exercises.md) | 3 |
+| 5 | `io` | `Path` + `kotlin.io.path`, `useLines`, `use {}`, recursos del classpath, CSV con comillas, conciliación exacta del extracto bancario, consola testeable, Kermit | [23](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/io/Exercises.md) | 3 |
 | 6 | `collections` | Solo lectura frente a mutable, listas, sets, mapas (`getOrPut`), `TreeMap`, `ArrayDeque`, `PriorityQueue`, arrays | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/collections/Exercises.md) | 5 |
 | 7 | `functional` | Tipos función, closures, composición, lambdas con receptor, `reified`, `Result`, scope functions, `fun interface`, pipelines (`groupBy`, `groupingBy`, `partition`), secuencias perezosas | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/functional/Exercises.md) | 6 |
-| 8 | `json` | kotlinx-serialization: `@SerialName`, `explicitNulls`, `ignoreUnknownKeys`, defaults, sealed polimórfico, serializadores para `BigDecimal`/`LocalDate`, árbol `JsonElement` | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/json/Exercises.md) | 4 |
+| 8 | `json` | kotlinx-serialization sobre el feed `ticks.json`: `@SerialName`, `explicitNulls`, `ignoreUnknownKeys`, defaults, `MarketEvent` sellado, serializadores para `BigDecimal`/`LocalDate`, árbol `JsonElement` | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/json/Exercises.md) | 4 |
 | 9 | `datetime` | `java.time`: parseo estricto `MM/dd/uuuu`, edad con `Period`, `Clock` inyectado, epoch millis y zonas, ventanas de días, horario de verano | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/datetime/Exercises.md) | 5 |
 | 10 | `jdbc.sqlite` | Repositorio JDBC común + dialecto SQLite (sin servidor) | [25, compartidos](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jdbc/Exercises.md) | — |
 | 11 | `jdbc.postgres` | Mismo repositorio en PostgreSQL + `RETURNING`, `= ANY(array)`, `jsonb` | ↑ | — |

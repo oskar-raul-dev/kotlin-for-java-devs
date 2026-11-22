@@ -31,9 +31,9 @@ Pruébalo, luego con `explicitNulls = false`, luego con `= null` como default. D
 
 ## 🟡 Medios
 
-**08 🟡 🎯 Cargar con tolerancia.** Leer `orders.json` y devolver los eventos buenos y, para cada uno malo, el índice y el error.
+**08 🟡 🎯 Cargar con tolerancia.** Leer `ticks.json` y devolver los ticks buenos y, para cada uno malo, el índice y el error.
 Pista: parsear primero a `JsonArray` y decodificar cada elemento con `decodeFromJsonElement`.
-- Firma: `fun loadTolerant(text: String): Pair<List<OrderEvent>, List<Pair<Int, String>>>`
+- Firma: `fun loadTolerant(text: String): Pair<List<Tick>, List<Pair<Int, String>>>`
 
 **09 🟡 Defaults y `encodeDefaults`.** Una clase con defaults: ¿qué se escribe con y sin `encodeDefaults`? ¿Y con `@EncodeDefault`?
 

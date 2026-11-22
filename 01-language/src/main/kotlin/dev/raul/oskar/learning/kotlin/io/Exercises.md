@@ -33,13 +33,14 @@ de caracteres; si el recurso no existe, `requireNotNull` con un mensaje claro.
 - Firma: `fun menu(input: BufferedReader, out: Appendable)`
 - Casos: opción válida, inválida, EOF sin `"salir"`.
 
-**07 🟢 🎯 Kermit.** Configurar un `Logger.withTag("orders")` y una prueba que capture los mensajes con un `LogWriter` propio
+**07 🟢 🎯 Kermit.** Configurar un `Logger.withTag("statement")` y una prueba que capture los mensajes con un `LogWriter` propio
 (guarda en una lista) para comprobar que se registró un aviso.
 
 ## 🟡 Medios
 
-**08 🟡 🎯 CSV a objetos.** Leer `data/sales.csv`, descartar líneas malas **contándolas**, y devolver ventas y errores.
-- Firma: `fun loadSales(path: Path): Pair<List<Sale>, List<String>>`
+**08 🟡 🎯 CSV a objetos.** Leer `data/bank-statement.csv`, descartar líneas malas **contándolas**, y devolver las líneas
+y los errores.
+- Firma: `fun loadStatement(path: Path): Pair<List<StatementLine>, List<String>>`
 
 **09 🟡 Archivo grande perezoso.** Generar un archivo de 1 000 000 de líneas en la prueba y sumar una columna con `useLines`
 sin cargarlo entero. Mide memoria con `Runtime` antes y después.

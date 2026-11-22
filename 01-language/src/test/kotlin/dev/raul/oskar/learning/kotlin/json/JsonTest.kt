@@ -13,56 +13,77 @@ import kotlin.test.assertTrue
 
 class JsonTest {
 
-    private val text = javaClass.getResource("/data/orders.json")!!.readText()
+    /** Tres ticks con las imperfecciones del feed: cotización y clave desconocida, precio nulo, volumen ausente. */
+    private val sample = """
+        [
+          {"seq":1,"ticker":"ACME","ts":1793021495500,"price":"99.84","volume":420,"bid-price":"99.83","ask-price":"99.85","venue":"SIM-1"},
+          {"seq":2,"ticker":"ORBX","ts":1793021496000,"price":null,"volume":310},
+          {"seq":3,"ticker":"ACME","ts":1793021497000,"price":"99.86"}
+        ]
+    """.trimIndent()
 
     @Test
-    fun `lenient json reads order events`() {
-        val events = loadOrderEvents(text)
-        assertEquals(3, events.size)
-        assertEquals("CO", events[0].address?.state)
-        assertNull(events[1].address)
-        assertNull(events[2].orderTotal)        // la clave falta y explicitNulls = false
+    fun `lenient json reads ticks with gaps`() {
+        val ticks = loadTicks(sample)
+        assertEquals(3, ticks.size)
+        assertEquals(BigDecimal("99.83"), ticks[0].bidPrice)      // "bid-price" con @SerialName
+        assertNull(ticks[1].price)                                // null explícito
+        assertNull(ticks[2].volume)                               // la clave falta y explicitNulls = false
+        assertNull(ticks[2].askPrice)
     }
 
     @Test
     fun `strict json rejects unknown keys`() {
-        assertFailsWith<SerializationException> { strictJson.decodeFromString<List<OrderEvent>>(text) }
+        assertFailsWith<SerializationException> { strictJson.decodeFromString<List<Tick>>(sample) }
     }
 
     @Test
     fun `missing nullable key is an error without explicitNulls false`() {
-        assertFailsWith<SerializationException> {
-            strictJson.decodeFromString<Address>("""{"city":"Denver","state":"CO"}""")
-        }
+        val noVolume = """{"seq":3,"ticker":"ACME","ts":1,"price":"99.86","bid-price":null,"ask-price":null}"""
+        assertFailsWith<SerializationException> { strictJson.decodeFromString<Tick>(noVolume) }
     }
 
     @Test
     fun `defaults are skipped unless encodeDefaults`() {
-        assertEquals("""{"name":"app"}""", toJson(Settings("app")))
-        assertEquals("""{"name":"app","retries":3,"tags":[]}""", toJson(Settings("app"), lenientJson))
-        assertEquals(Settings("app", retries = 3), settingsFrom("""{"name":"app","retries":null}""", lenientJson))
+        assertEquals("""{"name":"feed"}""", toJson(Settings("feed")))
+        assertEquals("""{"name":"feed","retries":3,"tags":[]}""", toJson(Settings("feed"), lenientJson))
+        assertEquals(Settings("feed", retries = 3), settingsFrom("""{"name":"feed","retries":null}""", lenientJson))
     }
 
     @Test
     fun `sealed polymorphism round trip`() {
-        val payments = listOf(CardPayment(1000, "4242"), TransferPayment(5000, "ES12"))
-        val encoded = encodePayments(payments)
-        assertTrue(""""type":"card"""" in encoded)
-        assertEquals(payments, decodePayments(encoded))
+        val events = listOf(
+            Trade("ACME", 1, BigDecimal("99.84"), 420),
+            Quote("ACME", 2, BigDecimal("99.83"), BigDecimal("99.85")),
+            Halt("LUMA", 3, "volatilidad"),
+        )
+        val encoded = encodeEvents(events)
+        assertTrue(""""type":"trade"""" in encoded)
+        assertTrue(""""price":"99.84"""" in encoded)             // el dinero viaja como cadena
+        assertEquals(events, decodeEvents(encoded))
     }
 
     @Test
     fun `custom serializers for java types`() {
-        val invoice = Invoice("F-1", LocalDate.of(2026, 11, 3), BigDecimal("1234.50"))
-        val encoded = strictJson.encodeToString(invoice)
-        assertEquals("""{"number":"F-1","issued":"2026-11-03","total":"1234.50"}""", encoded)
-        assertEquals(invoice, strictJson.decodeFromString<Invoice>(encoded))
+        val close = DailyClose("ACME", LocalDate.of(2026, 10, 26), BigDecimal("100.40"))
+        val encoded = strictJson.encodeToString(close)
+        assertEquals("""{"ticker":"ACME","date":"2026-10-26","close":"100.40"}""", encoded)
+        assertEquals(close, strictJson.decodeFromString<DailyClose>(encoded))
     }
 
     @Test
     fun `json tree navigation`() {
-        assertEquals(570, sumOrderTotals(text))
-        assertEquals(setOf("CO", "WA"), statesIn(text))
-        assertEquals(2, countOf(buildSummary(2, setOf("CO"))))
+        assertEquals(730, totalVolume(sample))
+        assertEquals(setOf("ACME", "ORBX"), tickersIn(sample))
+        assertEquals(2, countOf(buildSummary(2, setOf("ACME"))))
+    }
+
+    @Test
+    fun `the generated feed only loads with the lenient configuration`() {
+        val text = javaClass.getResource("/data/ticks.json")!!.readText()
+        val ticks = loadTicks(text)
+        assertEquals(setOf("ACME", "ORBX", "LUMA", "KAPA", "NUBE"), ticks.map { it.ticker }.toSet())
+        assertTrue(ticks.any { it.price == null } && ticks.any { it.volume == null })
+        assertFailsWith<SerializationException> { strictJson.decodeFromString<List<Tick>>(text) }
     }
 }

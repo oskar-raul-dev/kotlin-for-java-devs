@@ -301,10 +301,11 @@ texto → AST → texto, y una prueba que documenta que agregar un nodo sin su r
 
 **Objetivo:** leer y escribir archivos con `kotlin.io.path` sin ceremonia, procesar archivos grandes de forma
 perezosa, cargar recursos del classpath y escribir código de consola que se pueda probar.
-**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Banco · **Estado:** existe (pasa al Banco en B0′)
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Banco · **Estado:** existe (en el Banco desde B0′, tanda 2)
 
-> **Hoy → B0′:** `sales.csv` y `Sale` pasan a `bank-statement.csv` y `StatementLine`; el reporte de ventas pasa a
-> reporte de conciliación.
+> **B0′, tanda 2 (hecho):** `sales.csv` y `Sale` pasaron a `bank-statement.csv` y `StatementLine`, con
+> `ledger-movements.csv` como contraparte y una conciliación exacta (`reconcileExact`); las tolerancias son el ⚡.
+> Guía: [`05-io.md`](lessons/01-language/05-io.md).
 
 | Java | Kotlin | Nota |
 |---|---|---|
@@ -433,11 +434,11 @@ secuencia infinita que funciona con `take`.
 
 **Objetivo:** leer y escribir JSON sin Jackson ni reflexión, con la configuración tolerante que pide un feed real,
 jerarquías selladas y serializadores propios.
-**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** existe (pasa al Mercado en B0′)
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** existe (en el Mercado desde B0′, tanda 2)
 
-> **Hoy → B0′:** `OrderEvent`, `Address` y `Payment` pasan a `Tick` y a `MarketEvent` sellado (`Trade`, `Quote`,
-> `Halt`), leídos de `ticks.json`; el `BigDecimalAsString` pasa a un serializador de `Money`. Versión:
-> kotlinx-serialization **1.13.0** ([`Versions.md`](Versions.md)).
+> **B0′, tanda 2 (hecho):** `OrderEvent`, `Address` y `Payment` pasaron a `Tick` y a `MarketEvent` sellado (`Trade`,
+> `Quote`, `Halt`), leídos de `ticks.json`; falta el serializador de `Money` (tanda 3). Versión: kotlinx-serialization
+> **1.13.0** ([`Versions.md`](Versions.md)). Guía: [`08-json.md`](lessons/01-language/08-json.md).
 
 | Java (Jackson) | Kotlin (kotlinx-serialization 1.13.0) | Nota |
 |---|---|---|

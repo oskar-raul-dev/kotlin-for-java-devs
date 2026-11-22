@@ -51,7 +51,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | A6 · Track `22-legacy-kotlin19` | ✅ | Wrapper propio 9.2.1, Kotlin 1.9.22, 4 pruebas de humo; fuera del composite |
 | A8 · Contenedores legacy | ✅ | `./scripts/legacy.sh 19` = nativo (4 pruebas); `arm64` nativo |
 | A9 · Documentación | ✅ | README con índice de secciones, CLAUDE.md reescrito; tag `phase-a` |
-| B0′ · Casos Banco y Mercado | 🟡 | Diseño en `docs/Casos.md` ✅; tanda 1 (datos y generador) ✅; tandas 2 a 6 ⬜️ |
+| B0′ · Casos Banco y Mercado | 🟡 | Diseño en `docs/Casos.md` ✅; tandas 1 (datos) y 2 (`json`, `io`) ✅; tandas 3 a 6 ⬜️ |
 | B0″ · Guías de lección | ✅ | 12 guías en `docs/lessons/`, símbolos y pruebas citados comprobados contra el código |
 
 ## Secciones
@@ -350,3 +350,10 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   `ledger-movements.csv` (nuevo: hace falta para conciliar), y `fx-rates.json` (con un día sin tasa). `DatagenTest`
   (7 pruebas) comprueba determinismo, que los recursos coinciden byte a byte con el generador y cada imperfección.
   `orders.json` y `sales.csv` siguen hasta la tanda 6. 130 pruebas (92 + 38), 0 `SKIPPED`.
+- **2026-11-22** · **B0′, tanda 2 (`json` e `io`):** `json` lee `ticks.json` como `Tick` (`@SerialName` para `ts`,
+  `bid-price`, `ask-price`; precios `BigDecimal` como cadena; `explicitNulls` para los campos que faltan) y
+  `MarketEvent` sellado (`Trade`, `Quote`, `Halt`) reemplaza a `Payment`; `DailyClose` reemplaza a `Invoice`.
+  `io` lee `bank-statement.csv` y `ledger-movements.csv` con un CSV que respeta comillas (`splitCsvLine`, porque
+  `split(",")` parte las descripciones) y concilia exacto (`reconcileExact`: 21 conciliadas, 6 y 6 sin pareja, que es
+  lo que resuelve el ⚡ con tolerancias). Ejercicios `json` 08 e `io` 07 y 08 apuntan a los datos nuevos (el resto de
+  los enunciados, en la tanda 6). Guías `05-io` y `08-json` reescritas. 134 pruebas (96 + 38), 0 `SKIPPED`.
