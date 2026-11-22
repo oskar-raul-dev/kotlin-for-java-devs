@@ -150,6 +150,7 @@ estable en la versión anterior medida"; `[≤ 1.4]` = ya estable en la versión
 | `$$"…"` (plantillas con varios `$`) | no | no | no | no | no | no | exp | exp | ok | ok | ok | `[2.2]` |
 | `kotlin.io.encoding.Base64` | no | no | no | no | exp | exp | exp | exp | ok | ok | ok | `[2.2]` |
 | `HexFormat` (`toHexString()`) | no | no | no | no | no | exp | exp | exp | ok | ok | ok | `[2.2]` |
+| Clases `expect`/`actual` (multiplataforma) | — | — | — | — | — | aviso | aviso | — | aviso | — | aviso | Beta en 2.4 (medido a mano con `-Xmulti-platform -Xcommon-sources`: aviso "are in Beta", se calla con `-Xexpect-actual-classes`); las funciones `expect` no avisan |
 | Plugins `power-assert` y `compose-compiler` en `kotlinc/lib` | — | — | — | — | — | no | sí | sí | sí | sí | sí | `[2.0]` (medido listando `lib/`; `allopen`, `noarg`, `serialization`, `lombok`, `assignment` y `sam-with-receiver` ya estaban en 1.9). power-assert probado en 2.4.21 sobre un `require` |
 | Método con cuerpo en una interfaz → `default` de Java | — | — | — | — | — | abstracto | abstracto | abstracto | default | default | default | `[2.2]` (medido a mano con `javap`; `DefaultImpls` se sigue generando) |
 | Alias de tipo anidados | no | no | no | no | no | no | no | no | exp | ok | ok | `[2.3]` |
@@ -206,6 +207,6 @@ suspension point is inside a critical section"); `withContext` dentro de `flow {
 | 5 | ✅ | 2026-11-22 | `03-reactive` (4) y `04-data` (6). `jdbc` y `jpa` conservan lo del temario anterior, pasado a la plantilla y al ledger del Banco, con una nota "Hoy → B0′" (tanda 5 del reemplazo). Reactor, RxJava, Exposed, jOOQ, R2DBC y SQLDelight sin versión fijada (⚠️). El ⚡ de la sección del plan (la misma app con cinco accesos) va en `r2dbc`; los demás son nuevos |
 | 6 | ✅ | 2026-11-22 | `05-testing` (4), `06-compiler` (4), `07-design` (4). Kotest, MockK, AssertK, Testcontainers, KSP y Arrow sin versión fijada (⚠️ hasta B8/B9). Medido: qué plugins trae `kotlinc/lib` por versión (power-assert y Compose desde 2.0), power-assert funcionando en 2.4.21, y qué reflexión anda sin `kotlin-reflect`. ⚡ del plan: Mini MockK (`mockk`), generador KSP (`ksp`), rescate de legado (`idioms`); el resto, nuevos |
 | 7 | ✅ | 2026-11-22 | `08-build` (4), `09-spring` (4), `10-ktor` (3). Solo Gradle tiene versión fijada (9.9.1); Spring Boot, Ktor, detekt, ktlint, Kover, Dokka y los plugins de empaquetado quedan ⚠️ hasta B9/B10. ⚡ del plan: el plugin de convención que genera el índice del README (`gradle`), la API reactiva frente a MVC (`webflux`) y el chat por WebSockets, aquí precios y alertas (`server`); el resto, nuevos |
-| 8 | ⬜️ | | |
+| 8 | ✅ | 2026-11-22 | `11-multiplatform` (4) y `12-android` (7). Medido: Android SDK (con emulador) y Xcode 27.2 instalados, así que el alcance incluye iOS; las clases `expect`/`actual` siguen en Beta en 2.4.21. AGP, Compose Multiplatform, kotlinx-datetime y las librerías de AndroidX quedan ⚠️. ⚡ del plan: módulo compartido (`shared`) y app offline-first con sincronización (`androiddata`); el resto, nuevos |
 | 9 | ⬜️ | | |
 | 10 | ⬜️ | | |

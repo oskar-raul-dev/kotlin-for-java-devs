@@ -2335,19 +2335,131 @@ Kotlin Multiplatform y Compose. **Build:** 4 · **Caso:** Ambos.
 
 ### 11 · `kmp` — `expect`/`actual`, source sets, targets
 
-> ⬜️ **Pendiente (tanda 8).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** compartir código Kotlin entre JVM, Android, iOS y web con Kotlin Multiplatform: *source sets*,
+`expect`/`actual` y qué de la JVM no existe en el código común.
+**Sección:** `11-multiplatform` · **Build:** nivel 4 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin Multiplatform (plugin `kotlin("multiplatform")` 2.4.21) | Nota |
+|---|---|---|
+| Un módulo por plataforma con interfaces | *Source sets*: `commonMain`, `jvmMain`, `iosMain`, `wasmJsMain` | La jerarquía por defecto los arma sola |
+| `ServiceLoader` para la implementación por plataforma | `expect fun platformName(): String` + `actual` en cada plataforma | Las funciones `expect` son estables |
+| Clase abstracta con una implementación por plataforma | `expect class` / `actual class` | Medido: en Beta todavía en 2.4.21 (aviso; `-Xexpect-actual-classes`) |
+| `java.math.BigDecimal`, `java.time` | No existen en `commonMain` | Montos en centavos `Long` o una librería decimal multiplataforma ⚠️ |
+| `java.time.Instant` | `kotlin.time.Instant` `[2.3]`, kotlinx-datetime ⚠️ | |
+| Librería Java para iOS (no hay) | Framework de Kotlin/Native para Swift | `suspend` llega como *completion handler* o `async` |
+
+**Trampas:**
+- El `Money` de `01-language` usa `java.math.BigDecimal`: no compila en `commonMain`. El dominio común necesita otra
+  representación (centavos `Long`) o una librería.
+- Preferir interfaces e inyección a `expect class`: las clases `expect` siguen en Beta y atan la API a cada plataforma.
+- Desde Swift, una `sealed class` de Kotlin no es un `enum` exhaustivo, y los genéricos se pierden en parte.
+- Una prueba en `commonTest` corre en cada target: puede pasar en la JVM y fallar en iOS por una diferencia de
+  plataforma (formato de números, zona horaria).
+- La sincronización de Gradle de un proyecto multiplataforma es lenta: conviene compilar solo los targets que se usan.
+
+**Caso:** el dominio común del Banco y el Mercado (`Tick`, `OrderBook`, montos en centavos, validación de cuentas
+`ACC-…`) en `commonMain`, usado por las apps de `composemp` y de `12-android`.
+
+**🎤 Entrevista:** ¿qué comparte KMP y qué no? · `expect`/`actual` frente a interfaces · ¿Cómo se ve una función
+`suspend` desde Swift?
+
+**⚡ Dominio común en cuatro plataformas:** el dominio de los casos en `commonMain` con sus pruebas en `commonTest` ·
+**Se verifica con:** las pruebas en verde en `jvm`, `iosSimulatorArm64`, `js` y `wasmJs`, y una comprobación que falla
+si `commonMain` importa algo de `java.*`.
 
 ### 11 · `composemp` — Compose Multiplatform: desktop, wasm, iOS
 
-> ⬜️ **Pendiente (tanda 8).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** construir una interfaz con Compose Multiplatform que corre en escritorio, iOS y navegador, y entender
+el modelo de estado y recomposición.
+**Sección:** `11-multiplatform` · **Build:** nivel 4 · **Caso:** Mercado · **Estado:** nueva
+
+| Java 21 | Kotlin (Compose Multiplatform ⚠️ se fija al escribir la sección) | Nota |
+|---|---|---|
+| Swing, JavaFX | `@Composable fun Portfolio(state: PortfolioState)` | UI como función del estado |
+| `PropertyChangeListener` y repintar | `mutableStateOf`, `remember`, recomposición | Compose vuelve a dibujar solo lo que leyó el estado |
+| Una app por plataforma | Escritorio (JVM), iOS y web (Wasm) desde el mismo código | Madurez distinta por plataforma ⚠️ |
+| `ResourceBundle`, recursos del classpath | Recursos de Compose (`Res.string.…`) | Generados y tipados |
+| Pruebas de Swing con robots | `runComposeUiTest { onNodeWithText(…) }` | Pruebas de UI en la JVM |
+
+**Trampas:**
+- Leer un estado en un scope más amplio que el necesario recompone de más (toda la lista en vez de una fila).
+- Un efecto lateral (red, log) dentro de una función `@Composable` corre en cada recomposición: va en
+  `LaunchedEffect`.
+- `remember` se pierde al rotar o al recrear la pantalla; para eso existe `rememberSaveable`.
+- Parámetros inestables (una `List` mutable, una clase sin `@Immutable`) impiden saltear recomposiciones.
+- La versión web (Wasm) necesita un navegador con soporte de GC de Wasm: no todos los navegadores viejos sirven.
+
+**Caso:** el tablero del portafolio del Mercado (posiciones, último precio, P&L) en escritorio, iOS y navegador.
+
+**🎤 Entrevista:** ¿qué es la recomposición? · `remember` frente a `rememberSaveable` · ¿Qué hace estable a un
+parámetro?
+
+**⚡ Tablero de portafolio en tres plataformas:** la misma UI de Compose en escritorio, iOS y Wasm, alimentada por un
+`StateFlow` de precios · **Se verifica con:** pruebas de UI con `runComposeUiTest` (filas, orden, resaltado al cambiar
+el precio) y los tres targets compilando en una tarea de verificación.
 
 ### 11 · `shared` — Ktor client + SQLDelight + kotlinx-datetime
 
-> ⬜️ **Pendiente (tanda 8).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** armar el módulo compartido de una app real: red con el cliente de Ktor, base local con SQLDelight y
+fechas con kotlinx-datetime, todo en código común.
+**Sección:** `11-multiplatform` · **Build:** nivel 4 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin (Ktor client, SQLDelight, kotlinx-datetime ⚠️) | Nota |
+|---|---|---|
+| `java.net.http.HttpClient` | `HttpClient` de Ktor con un motor por plataforma (`10 · client`) | CIO o OkHttp en Android, Darwin en iOS |
+| JDBC / Room | SQLDelight con un driver por plataforma (`04 · sqldelight`) | El mismo `.sq` en todas |
+| `java.time` | kotlinx-datetime / `kotlin.time.Instant` | El día de mercado en `America/New_York` también en iOS |
+| Inyección con Spring | Koin u objetos armados a mano ⚠️ | Sin reflexión en Kotlin/Native |
+| Repositorio que oculta red y base | `class PortfolioRepository(api, db)` en `commonMain` | La lógica no sabe de plataformas |
+
+**Trampas:**
+- Cada plataforma necesita su motor de Ktor y su driver de SQLDelight: olvidar uno compila en la JVM y falla al
+  enlazar en iOS.
+- Las zonas horarias dependen de la base de datos de zonas de cada sistema: probar el horario de verano en todas las
+  plataformas.
+- Las corrutinas en iOS: lo que se expone a Swift tiene que reanudar en el hilo principal para tocar la UI.
+- Un `Flow` de SQLDelight se vuelve a emitir con cualquier cambio de la tabla: hace falta `distinctUntilChanged`.
+- Compartir demasiado (también la UI y la navegación) puede costar más que lo que ahorra.
+
+**Caso:** el saldo y los movimientos de la cuenta del Banco y el portafolio con precios del Mercado, con caché local.
+
+**🎤 Entrevista:** ¿qué pondrías en el módulo compartido y qué no? · ¿Cómo manejas la red y la base en KMP? · ¿Qué
+cambia con las fechas en multiplataforma?
+
+**⚡ Módulo compartido consumido desde escritorio y web:** el módulo con red, base y fechas usado por una app de
+escritorio y una web (Wasm) · **Se verifica con:** pruebas del módulo con `MockEngine` y SQLDelight en memoria, y las
+dos apps compilando y mostrando los mismos datos de una fuente falsa.
 
 ### 11 · `web` — Kotlin/JS y Wasm
 
-> ⬜️ **Pendiente (tanda 8).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** llevar Kotlin al navegador con Kotlin/JS y Kotlin/Wasm, interoperar con JavaScript y medir qué cuesta
+cada uno.
+**Sección:** `11-multiplatform` · **Build:** nivel 4 · **Caso:** Mercado · **Estado:** nueva
+
+| Java 21 | Kotlin (targets `js` y `wasmJs` de 2.4.21 ⚠️ estado de Wasm) | Nota |
+|---|---|---|
+| GWT, TeaVM, J2CL | Kotlin/JS (compilador IR) | Genera JavaScript; usa paquetes npm |
+| — | Kotlin/Wasm (`wasmJs`) | WebAssembly con GC del navegador |
+| Llamar a JavaScript desde Java (no hay) | `external fun`, `external class` | Declaraciones de APIs de JS |
+| Exponer Java a JavaScript (no hay) | `@JsExport` | Lo que JavaScript puede llamar |
+| Tipado dinámico | `dynamic` (solo JS) | Sin comprobación del compilador |
+
+**Trampas:**
+- `Long` en Kotlin/JS no es un `number` de JavaScript: se emula y es lento; los precios en centavos conviene tenerlos
+  como `Int` o `Double` en la frontera.
+- `@JsExport` no exporta todo (genéricos, `suspend`, algunas colecciones): la API exportada se diseña aparte.
+- `dynamic` apaga el sistema de tipos: un error de nombre aparece en el navegador, no al compilar.
+- El tamaño del bundle crece con la stdlib y las dependencias: medirlo y activar la eliminación de código muerto.
+- Wasm necesita navegadores recientes; la versión JS llega a más navegadores.
+
+**Caso:** el motor de comisiones del Mercado (tramos de `control`) corriendo en el navegador.
+
+**🎤 Entrevista:** Kotlin/JS frente a Kotlin/Wasm · ¿Cómo llamas a una librería de npm desde Kotlin? · ¿Qué cuesta un
+`Long` en JS?
+
+**⚡ Calculadora de comisiones en el navegador:** el mismo motor compilado a JS y a Wasm, con una API `@JsExport` ·
+**Se verifica con:** pruebas que corren en los dos targets, una prueba en JavaScript que llama a la API exportada, y
+una tabla con el tamaño del bundle de cada uno.
 
 ---
 
@@ -2357,31 +2469,213 @@ Android. **Build:** 4 (fuera del composite) · **Caso:** Ambos.
 
 ### 12 · `android` — Activity, ciclo de vida
 
-> ⬜️ **Pendiente (tanda 8).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** entender las piezas base de una app Android (Activity, ciclo de vida, `Context`) y los problemas que
+vienen de ellas: rotaciones, muerte del proceso y trabajo en el hilo principal.
+**Sección:** `12-android` · **Build:** nivel 4 (fuera del composite) · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin (Android Gradle Plugin ⚠️; Android SDK instalado) | Nota |
+|---|---|---|
+| `main` y un proceso que vive lo que uno quiere | `ComponentActivity` con `onCreate`, `onStart`, `onStop`… | El sistema decide cuándo crear y destruir |
+| Estado en campos | `SavedStateHandle`, `rememberSaveable` | Sobrevive a la rotación y a la muerte del proceso |
+| Hilos y `ExecutorService` | `lifecycleScope`, `viewModelScope` | Corrutinas atadas al ciclo de vida |
+| `System.getProperty`, recursos del classpath | `Context`, `R.string.…` | El `Context` da acceso a casi todo |
+| Permisos del sistema operativo (no hay) | `AndroidManifest.xml` + permisos en runtime | |
+
+**Trampas:**
+- Rotar la pantalla destruye y recrea la `Activity`: lo que estaba en sus campos se pierde.
+- Guardar una `Activity` (o su `Context`) en un singleton la retiene en memoria después de destruida (fuga).
+- Trabajo largo en el hilo principal congela la UI y, a los pocos segundos, el sistema muestra un ANR.
+- El proceso puede morir en segundo plano: al volver, Android recrea la pantalla pero no la memoria.
+- El Android Gradle Plugin fija su propia versión de Gradle: por eso `12-android` vive fuera del composite.
+
+**Caso:** la app del cliente: saldo y movimientos de la cuenta (Banco), portafolio y precios (Mercado), con el
+módulo compartido de `11 · shared`.
+
+**🎤 Entrevista:** ¿qué pasa al rotar la pantalla? · ¿Cómo sobrevive el estado a la muerte del proceso? · ¿Por qué no
+guardar un `Context` en un singleton?
+
+**⚡ Pantalla a prueba de rotación:** la pantalla de transferencia con el formulario a medio llenar · **Se verifica
+con:** pruebas (Robolectric o en el emulador) que rotan y simulan la muerte del proceso, y comprueban que el
+formulario y el ticker elegido sobreviven.
 
 ### 12 · `compose` — Jetpack Compose
 
-> ⬜️ **Pendiente (tanda 8).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** construir pantallas con Jetpack Compose: estado elevado, listas perezosas, modificadores y efectos, sin
+caer en recomposiciones de más.
+**Sección:** `12-android` · **Build:** nivel 4 (fuera del composite) · **Caso:** Mercado · **Estado:** nueva
+
+| Java 21 | Kotlin (Jetpack Compose ⚠️) | Nota |
+|---|---|---|
+| Layouts XML + `findViewById` | `@Composable fun TickerRow(tick: Tick, onClick: () -> Unit)` | UI declarativa en Kotlin |
+| `RecyclerView` + `Adapter` | `LazyColumn { items(ticks, key = { it.ticker }) { … } }` | La `key` evita recomponer y animar de más |
+| Estado en la `View` | Estado elevado (*state hoisting*) | La función recibe el estado y avisa los eventos |
+| `AsyncTask`, callbacks | `LaunchedEffect(key) { … }` | Efectos atados a la composición |
+| Estilos XML | `MaterialTheme` y `Modifier` | El orden de los modificadores importa |
+
+**Trampas:**
+- El orden de los `Modifier` cambia el resultado: `padding` antes o después de `background` no es lo mismo.
+- Sin `key` en un `LazyColumn`, reordenar la lista recompone todas las filas y pierde su estado.
+- Leer un `State` en la función padre en vez de en la fila hace que cambie toda la pantalla por un precio.
+- `LaunchedEffect(Unit)` corre una sola vez: si depende de un parámetro, ese parámetro va como clave.
+- Calcular algo caro dentro de la composición lo repite en cada recomposición: `remember(key) { … }`.
+
+**Caso:** la lista de tickers con precio en vivo y el detalle con la vela del día (Mercado).
+
+**🎤 Entrevista:** ¿qué es *state hoisting*? · ¿Para qué sirve la `key` en una lista perezosa? · ¿Cuándo usas
+`LaunchedEffect`?
+
+**⚡ Pantalla de precios en Compose:** lista de tickers con precio que se actualiza, resaltado al subir o bajar y
+detalle con la vela · **Se verifica con:** pruebas de UI de Compose (orden, resaltado, navegación al detalle) y un
+contador de recomposiciones que muestra que al cambiar un precio solo se recompone su fila.
 
 ### 12 · `architecture` — ViewModel, `StateFlow`, navegación
 
-> ⬜️ **Pendiente (tanda 8).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** organizar una app Android con flujo de datos unidireccional: `ViewModel` con `StateFlow`, eventos de UI y
+navegación, sin fugas ni estado duplicado.
+**Sección:** `12-android` · **Build:** nivel 4 (fuera del composite) · **Caso:** Banco · **Estado:** nueva
+
+| Java 21 | Kotlin (AndroidX Lifecycle, Navigation ⚠️) | Nota |
+|---|---|---|
+| Presentador con referencia a la vista (MVP) | `ViewModel` que expone `StateFlow<UiState>` | La vista observa; el `ViewModel` no conoce la vista |
+| `LiveData` | `StateFlow` + `collectAsStateWithLifecycle()` | Deja de recolectar cuando la pantalla no se ve |
+| Callbacks de la vista | Eventos como funciones (`onTransfer(amount)`) | Flujo unidireccional |
+| `Intent` con extras | Navigation Compose con rutas tipadas | Argumentos serializables |
+| Singletons de estado | Estado en el `ViewModel`, datos en repositorios | Una sola fuente de verdad |
+
+**Trampas:**
+- Exponer un `MutableStateFlow` deja que la vista cambie el estado por su cuenta: se expone `StateFlow`.
+- `collectAsState()` sin ciclo de vida sigue recolectando en segundo plano y gasta batería.
+- Un `ViewModel` que guarda un `Context` de `Activity` la retiene (fuga): si hace falta, `Application`.
+- Un evento de una sola vez (mostrar un mensaje) guardado como estado se repite al rotar.
+- Pasar objetos grandes como argumentos de navegación supera el límite del `Bundle`.
+
+**Caso:** el flujo de transferencia del Banco: formulario, validación (las reglas de `exceptions`), confirmación y
+resultado, contra el módulo compartido.
+
+**🎤 Entrevista:** ¿qué es flujo unidireccional? · `StateFlow` frente a `LiveData` · ¿Cómo manejas un evento de una
+sola vez?
+
+**⚡ Flujo de transferencia con UDF:** `ViewModel`, estados (`Editing`, `Confirming`, `Done`, `Failed`) y navegación ·
+**Se verifica con:** pruebas del `ViewModel` con `runTest` y Turbine (la secuencia exacta de estados, también ante un
+error de red) y una prueba de navegación.
 
 ### 12 · `androiddata` — Room, DataStore
 
-> ⬜️ **Pendiente (tanda 8).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** guardar datos locales en Android con Room y DataStore, y hacer de la base local la fuente de verdad de
+una app que funciona sin red.
+**Sección:** `12-android` · **Build:** nivel 4 (fuera del composite) · **Caso:** Banco · **Estado:** nueva
+
+| Java 21 | Kotlin (Room, DataStore ⚠️) | Nota |
+|---|---|---|
+| `SQLiteOpenHelper` | Room: `@Entity`, `@Dao` con `suspend` y `Flow` | Generado con KSP (`06 · ksp`) |
+| `SharedPreferences` | DataStore (Preferences o con tipo) | Asíncrono, con `Flow` |
+| Migraciones a mano | `@Database(version = …)` + migraciones probadas | Esquema exportado a JSON |
+| Caché de red ad hoc | Base local como fuente de verdad + sincronización | *Offline-first* |
+
+**Trampas:**
+- Una consulta de Room en el hilo principal lanza una excepción: tiene que ser `suspend` o devolver `Flow`.
+- Subir la versión de la base sin migración borra los datos (o falla), según la configuración.
+- Dos instancias de DataStore sobre el mismo archivo lanzan una excepción: una por archivo, como singleton.
+- Room con kapt en vez de KSP hace mucho más lento el build.
+- Un `Flow` de Room emite ante cualquier cambio de la tabla: hace falta `distinctUntilChanged` en la UI.
+
+**Caso:** los movimientos de la cuenta del Banco guardados en Room y las transferencias hechas sin red, en cola hasta
+sincronizar.
+
+**🎤 Entrevista:** Room frente a SQLDelight · ¿Qué es una app *offline-first*? · ¿Cómo pruebas una migración de Room?
+
+**⚡ App offline-first con sincronización:** movimientos y transferencias pendientes en Room como fuente de verdad, y
+sincronización con el servidor cuando hay red · **Se verifica con:** pruebas de que una transferencia hecha sin red
+queda pendiente y se envía una sola vez al volver la red (servidor falso), una regla de conflicto probada, y una
+migración de esquema con datos.
 
 ### 12 · `di` — Hilt frente a Koin
 
-> ⬜️ **Pendiente (tanda 8).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** inyectar dependencias en una app Android con Hilt (en compilación) y con Koin (en runtime), y elegir
+según lo que cuesta cada uno.
+**Sección:** `12-android` · **Build:** nivel 4 (fuera del composite) · **Caso:** Banco · **Estado:** nueva
+
+| Java 21 | Kotlin (Hilt, Koin ⚠️) | Nota |
+|---|---|---|
+| Dagger | Hilt (`@HiltAndroidApp`, `@Inject constructor`, `@Module`) | El grafo se valida al compilar |
+| Spring con escaneo | Koin: `module { single { Ledger(get()) } }` | DSL en runtime; sin generación de código |
+| `@Singleton`, scopes de Dagger | Scopes de Hilt atados a componentes de Android | `ViewModelScoped`, `ActivityRetained`… |
+| Reemplazos en pruebas | `@TestInstallIn` (Hilt), `loadKoinModules` (Koin) | |
+
+**Trampas:**
+- Una dependencia que falta en Koin explota al ejecutar, no al compilar.
+- Hilt con kapt alarga mucho el build; con KSP mejora ⚠️.
+- Un scope equivocado (algo de pantalla como singleton) retiene objetos que deberían morir con la pantalla.
+- Inyectar un `Context` de `Activity` en algo de vida más larga es una fuga.
+- Para una app chica, armar el grafo a mano puede ser más claro que cualquier framework.
+
+**Caso:** el grafo de la app del cliente: repositorios del módulo compartido, cliente de red, base local y
+`ViewModel`.
+
+**🎤 Entrevista:** Hilt frente a Koin · ¿Qué valida Hilt al compilar? · ¿Cuándo no usarías un framework de inyección?
+
+**⚡ La misma app con Hilt y con Koin:** las dos variantes del grafo para la misma app · **Se verifica con:** las mismas
+pruebas en las dos, una dependencia faltante que en Hilt rompe la compilación y en Koin falla una prueba en runtime, y
+una tabla con el tiempo de build y de arranque de cada una.
 
 ### 12 · `background` — WorkManager
 
-> ⬜️ **Pendiente (tanda 8).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** hacer trabajo en segundo plano confiable en Android con WorkManager (restricciones, reintentos,
+periodicidad) dentro de los límites del sistema.
+**Sección:** `12-android` · **Build:** nivel 4 (fuera del composite) · **Caso:** Banco · **Estado:** nueva
+
+| Java 21 | Kotlin (WorkManager ⚠️) | Nota |
+|---|---|---|
+| `ScheduledExecutorService` | `PeriodicWorkRequestBuilder<SyncWorker>(15, MINUTES)` | Sobrevive al reinicio del dispositivo |
+| Hilo con reintentos a mano | `CoroutineWorker` + `Result.retry()` + `setBackoffCriteria` | |
+| Condiciones de red, batería | `Constraints(requiredNetworkType = CONNECTED)` | Corre cuando se cumplen |
+| Tarea única | `enqueueUniqueWork(name, KEEP, …)` | Evita duplicados |
+
+**Trampas:**
+- El trabajo periódico tiene un mínimo de 15 minutos: no sirve para "cada minuto".
+- El modo de ahorro de energía (Doze) y las restricciones de algunos fabricantes demoran el trabajo.
+- Sin nombre único, cada arranque de la app encola otra copia del mismo trabajo.
+- Un `Worker` que lanza una excepción se da por fallado, no se reintenta: hay que devolver `Result.retry()`.
+- El trabajo corre fuera de la pantalla: no puede depender de un `ViewModel`.
+
+**Caso:** la sincronización de transferencias pendientes del Banco y el refresco de precios del Mercado.
+
+**🎤 Entrevista:** WorkManager frente a un servicio en primer plano · ¿Cómo evitas trabajos duplicados? · ¿Qué
+limita el trabajo en segundo plano en Android?
+
+**⚡ Sincronización periódica confiable:** el `SyncWorker` de las transferencias pendientes con restricciones,
+reintentos y nombre único · **Se verifica con:** pruebas con las herramientas de prueba de WorkManager (restricciones
+simuladas, reintento con espera, trabajo único que no se duplica) y la integración con el ⚡ de `androiddata`.
 
 ### 12 · `androidtesting` — Pruebas de Compose, Robolectric
 
-> ⬜️ **Pendiente (tanda 8).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** probar una app Android en la JVM (unidad y Robolectric), con pruebas de UI de Compose y en el emulador,
+sabiendo qué atrapa cada nivel.
+**Sección:** `12-android` · **Build:** nivel 4 (fuera del composite) · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin (AndroidX Test, Robolectric, Compose UI Test ⚠️) | Nota |
+|---|---|---|
+| JUnit en la JVM | Pruebas de unidad de `ViewModel` y repositorios | Con `Dispatchers.setMain(StandardTestDispatcher())` |
+| Pruebas de Android en el dispositivo | Robolectric (en la JVM) | Rápidas, pero no es un dispositivo real |
+| Espresso | `createComposeRule()`, `onNodeWithText`, `testTag` | Pruebas de UI de Compose |
+| Pruebas instrumentadas | `connectedAndroidTest` en el emulador | Las más lentas y las más reales |
+
+**Trampas:**
+- Sin reemplazar `Dispatchers.Main`, una prueba de `ViewModel` en la JVM falla porque no hay hilo principal.
+- Esperas con `Thread.sleep` en pruebas de UI dan pruebas que fallan de vez en cuando: Compose espera solo a que la UI
+  quede quieta.
+- Robolectric simula Android: algo que pasa en Robolectric puede fallar en un dispositivo (y al revés).
+- Buscar nodos por texto rompe las pruebas al traducir la app: `testTag` para lo estructural.
+- El emulador en CI necesita aceleración por hardware; sin ella, las pruebas instrumentadas tardan muchísimo.
+
+**Caso:** la app del cliente (saldo, transferencia, precios) probada en todos los niveles.
+
+**🎤 Entrevista:** ¿qué pruebas en la JVM y qué en el dispositivo? · Robolectric frente a pruebas instrumentadas ·
+¿Cómo pruebas una pantalla de Compose?
+
+**⚡ Pirámide de pruebas de la app:** pruebas de unidad, Robolectric, UI de Compose e instrumentadas para la app del
+cliente · **Se verifica con:** una tabla con la cantidad y el tiempo de cada nivel, y cuatro errores sembrados, uno
+por nivel, cada uno atrapado por el nivel que corresponde.
 
 ---
 

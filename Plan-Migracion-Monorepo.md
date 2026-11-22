@@ -28,7 +28,7 @@ medias**. El avance por sección y lección está en [`CHECKLIST.md`](CHECKLIST.
 |---|---|---|
 | Fase A (A0–A9) | ✅ tag `phase-a` | — |
 | B1 · Tutoriales | ✅ | — (5 tutoriales, 72 ejercicios, 136 comprobaciones en sus `check.sh`) |
-| B0 · Temario | 🟡 tandas 0 a 7 de 10 | Tandas 8 a 10: 24 de las 88 entradas ([`docs/Temario-Plan.md`](docs/Temario-Plan.md#estado)) |
+| B0 · Temario | 🟡 tandas 0 a 8 de 10 | Tandas 9 y 10: 13 de las 88 entradas ([`docs/Temario-Plan.md`](docs/Temario-Plan.md#estado)) |
 | B0′ · Casos Banco y Mercado | ✅ | — (las 6 tandas del [reemplazo](docs/Casos.md#plan-de-reemplazo): el dominio de pedidos ya no existe) |
 | B0″ · Guías de lección | ✅ | — (índice, plantilla y 12 guías en [`docs/lessons/`](docs/lessons/README.md); se mantienen con cada cambio de código) |
 | B2–B10 | ⬜️ | Todo |
@@ -105,7 +105,8 @@ Tags anotados: `baseline-1.9.22` (curso v1 de proyecto único), `monorepo-1.9.22
 | `9ede67e` Write syllabus batch 5 | B0, tanda 5: `03-reactive` y `04-data` (10 entradas) |
 | `fdbb8c1` Move 04-data to the Bank ledger (B0′ batch 5) | B0′, tanda 5: `LedgerRepository` y su contrato en los tres motores, ledger en JPA; 153 pruebas |
 | `1f36e73` Rewrite the exercises for the cases (B0′ batch 6) | B0′ cerrado: enunciados y ruta 🎯 en los casos, `orders.json` y `sales.csv` borrados |
-| Write syllabus batch 7 | B0, tanda 7: `08-build`, `09-spring`, `10-ktor` (11 entradas) |
+| `44ecba4` Write syllabus batch 7 | B0, tanda 7: `08-build`, `09-spring`, `10-ktor` (11 entradas) |
+| Write syllabus batch 8 | B0, tanda 8: `11-multiplatform`, `12-android` (11 entradas) |
 
 **Remoto:** `origin` en GitHub desde el 13 de noviembre de 2026. Antes de cada push se repite el escaneo de
 referencias externas sobre `git log -p --all`, y se suben los tags con `git push origin main --follow-tags`.
@@ -122,11 +123,11 @@ temario ya está escrito (tandas 1 y 2 de B0), y así el código deja antes el d
    noviembre de 2026).
 4. ~~**B0′ · tandas 5 y 6**~~ ✅ (22 de noviembre de 2026): `04-data` con el ledger (se apoya en la tanda 5 de B0); ejercicios, ruta 🎯 y borrado de
    `orders.json`/`sales.csv`. Termina antes de B2.
-5. **B0 · tandas 7, 8, 9 y 10**, con la revisión juntos al final. Tanda 7 ✅ (22 de noviembre de 2026).
+5. **B0 · tandas 7, 8, 9 y 10**, con la revisión juntos al final. Tandas 7 y 8 ✅ (22 de noviembre de 2026).
 6. **B2–B10** según la [sección 8](#8-fase-b-generar-el-resto).
 
 **Preguntas abiertas** ([sección 10](#10-para-decidir-en-la-revisión)): cortes legacy, numeración de secciones, dónde
-van `io`/`datetime`/`json`, y Android SDK y Xcode.
+van `io`/`datetime`/`json`.
 
 ---
 
@@ -431,7 +432,8 @@ lección. Es parecido a `java-champion-review` (79 lecciones). Por eso va por fa
 2. ¿Numeración y nombres de secciones como están arriba?
 3. ¿`io`, `datetime` y `json` se quedan en `01-language`, como `02-language` del repo de Java, o van a una sección
    `02-stdlib` aparte?
-4. ¿Tienes Android SDK y Xcode instalados? Define el alcance de B7.
+4. ~~¿Tienes Android SDK y Xcode instalados? Define el alcance de B7.~~ Sí (medido el 22 de noviembre de 2026: Android
+   SDK con emulador en `~/Library/Android/sdk` y Xcode 27.2): el alcance incluye iOS.
 5. ~~¿Qué caso de la sección 11 reemplaza al dominio provisional?~~ Dos casos, Banco y Mercado, con puente: [`docs/Casos.md`](docs/Casos.md).
 6. ~~¿Arranco con A2–A5?~~ Hecho el 10 de noviembre de 2026.
 7. ~~**Guías de lección**: ¿carpetas por sección o lista plana? ¿Antes de B0′ o dentro de cada tanda?~~ Carpetas por

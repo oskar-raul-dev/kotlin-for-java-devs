@@ -25,7 +25,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
 | `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, casos de finanzas, guías de lección (propuesta); estado al 2026-11-22 |
 | `docs/lessons/` (guías de lección) | ✅ | `LISTO` | Índice, plantilla y 12 guías (10 de `01-language`, `jdbc`, `jpa`), en `docs/lessons/<sección>/NN-<lección>.md` (B0″) |
-| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tandas 1 a 7 escritas (64 entradas); faltan las tandas 8 a 10. El anterior, en `docs/archive/Temario-v1.md` |
+| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tandas 1 a 8 escritas (75 entradas); faltan las tandas 9 y 10. El anterior, en `docs/archive/Temario-v1.md` |
 | `docs/Temario-Plan.md` y `docs/prompts/temario-tanda.md` | ✅ | `LISTO` | Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
 | `docs/LegacyKotlin.md` | ✅ | `LISTO` | Versiones 1.0 → 2.x, los tres tracks, cómo correrlos y trampas |
@@ -424,3 +424,8 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   `springdata`, `webflux`, `springtesting`, `server` (precios y alertas por WebSocket), `client` y `ktortesting`, con la
   API de transferencias del Banco y el feed del Mercado. Librerías sin versión fijada quedan ⚠️. Quedan 24 de 88
   entradas.
+- **2026-11-22** · **B0, tanda 8 (`11-multiplatform`, `12-android`):** 11 entradas: `kmp` (y la trampa de que el `Money`
+  con `BigDecimal` no compila en `commonMain`), `composemp`, `shared`, `web`, `android`, `compose`, `architecture`,
+  `androiddata` (con el ⚡ del plan: app offline-first), `di`, `background` y `androidtesting`, sobre la app del cliente
+  (saldo, transferencias, portafolio y precios). Medido: Android SDK y Xcode 27.2 instalados (alcance con iOS, pregunta
+  4 del plan) y las clases `expect`/`actual` todavía en Beta en 2.4.21. Quedan 13 de 88 entradas.
