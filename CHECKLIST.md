@@ -7,7 +7,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 
 **Estados:** `PENDIENTE` · `EN CREACIÓN` · `LISTO`
 
-**Salto rápido:** [Infraestructura](#infraestructura-del-repo) · [Migración](#migración-fase-a) ·
+**Salto rápido:** [Infraestructura](#infraestructura-del-repo) · [Migración](#migración-fase-a) · [Fase B](#fase-b) ·
 [Secciones](#secciones) · [Lecciones](#lecciones) · [Bitácora](#bitácora)
 
 ## Infraestructura del repo
@@ -24,7 +24,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | `README.md` (índice general) | ✅ | `LISTO` | Documentos, requisitos, IDE y terminal, índice de secciones, tracks legacy, convenciones (A9) |
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
 | `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, casos de finanzas, guías de lección (propuesta); estado al 2026-11-22 |
-| `docs/lessons/` (guías de lección) | ✅ | `LISTO` | Índice, plantilla y 12 guías (10 de `01-language`, `jdbc`, `jpa`), en `docs/lessons/<sección>/NN-<lección>.md` (B0″) |
+| `docs/lessons/` (guías de estudio) | ✅ | `LISTO` | Índice, reglas, plantilla y 12 guías de estudio (teoría, mapa del código y fuentes verificadas), en `docs/lessons/<sección>/NN-<lección>.md` (B0″); `scripts/check-guide-links.sh` |
 | `docs/Temario.md` | ✅ | `LISTO` | Las 88 entradas, los dos 🐉 y la trazabilidad (tandas 0 a 10), revisado con el usuario (B0 cerrado). El anterior, en `docs/archive/Temario-v1.md` |
 | `docs/Temario-Plan.md` y `docs/prompts/temario-tanda.md` | ✅ | `LISTO` | Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
@@ -51,8 +51,63 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | A6 · Track `22-legacy-kotlin19` | ✅ | Wrapper propio 9.2.1, Kotlin 1.9.22, 4 pruebas de humo; fuera del composite |
 | A8 · Contenedores legacy | ✅ | `./scripts/legacy.sh 19` = nativo (4 pruebas); `arm64` nativo |
 | A9 · Documentación | ✅ | README con índice de secciones, CLAUDE.md reescrito; tag `phase-a` |
-| B0′ · Casos Banco y Mercado | ✅ | Diseño en `docs/Casos.md` ✅; las 6 tandas ✅: código, enunciados y ruta 🎯 en los casos |
-| B0″ · Guías de lección | ✅ | 12 guías en `docs/lessons/`, símbolos y pruebas citados comprobados contra el código |
+
+## Fase B
+
+👉 **Siguiente: B2.** B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`). El orden y el porqué de cada fase están en la
+[sección 8 del plan](Plan-Migracion-Monorepo.md#8-fase-b-generar-el-resto); el contenido de cada lección, en
+[`docs/Temario.md`](docs/Temario.md) (su trazabilidad dice caso, ⚡ y ejercicios de cada una).
+
+| Fase | Qué entrega | Lecciones | Depende de | Versiones a fijar antes de empezar | Estado |
+|---|---|---|---|---|---|
+| B0 · Temario | 88 entradas, los dos 🐉 y la trazabilidad, revisado | — | — | — | ✅ |
+| B0′ · Casos Banco y Mercado | Código, datos (`datagen`), enunciados y ruta 🎯 en los casos | — | B0 (tandas 1 y 2) | — | ✅ |
+| B0″ · Guías de estudio | 12 guías con teoría, mapa del código y fuentes verificadas | — | — | — | ✅ |
+| B1 · Tutoriales | 5 tutoriales numerados, 72 ejercicios, 136 comprobaciones | — | — | — | ✅ |
+| **B2 · Ejercicios a la escala nueva** | Las 12 lecciones con código: de 25 a 40 ejercicios, 🎤 marcados y su ⚡ ([detalle](#b2-en-detalle)) | 12 (rehacer ejercicios) | B0, B0′ | Ninguna | ⬜️ 👉 |
+| B3 · Corrutinas y reactivo | `02-coroutines` y `03-reactive`, con su build (y en el `includeBuild` del composite) | 14 | B0 | kotlinx-coroutines (y `-test`), Turbine, atomicfu, Reactor, RxJava 3, `kotlinx-coroutines-reactor`/`-rx3` | ⬜️ |
+| B4 · `01-language` nuevas | `generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2` | 6 | B0 | Ninguna (`interop` agrega Java al módulo; JSpecify) | ⬜️ |
+| B5 · Tracks legacy | `20` y `21` creados y corriendo en sus contenedores; contenido de `22` | 10 | A8 | Gradle de los tracks 14 (6.8.x) y 16 (7.6.x), JUnit 4 o 5 en 1.4, Spring Boot 2.7 | ⬜️ |
+| B6 · Backend web | `09-spring` (con WebFlux) y `10-ktor` | 7 | B3 | Spring Boot, SpringMockK, Ktor | ⬜️ |
+| B7 · Móvil | `11-multiplatform` y `12-android` (con iOS: Android SDK y Xcode instalados) | 11 | B3 | AGP, Compose Multiplatform, kotlinx-datetime, AndroidX (Room, Navigation, WorkManager), Hilt, Koin | ⬜️ |
+| B8 · Datos, pruebas y compilador | `04-data` nuevas, `05-testing`, `06-compiler` | 12 | B3 (`r2dbc`) | Exposed, jOOQ, R2DBC, SQLDelight, Kotest, MockK, AssertK, Testcontainers, KSP | ⬜️ |
+| B9 · Diseño, build y entrevistas | `07-design`, `08-build`, `25-interview` y `docs/EffectiveKotlin.md` | 10 | — | Arrow, detekt, ktlint, Kover, Dokka, Shadow, GraalVM Native Build Tools | ⬜️ |
+| B10 · Cierre | Los dos 🐉 y `26-kotlin-next` cuando Kotlin 2.5 salga estable | 1 + 2 🐉 | B2–B9 | Kotlin 2.5 | ⬜️ |
+
+**Total:** 12 lecciones que rehacer (B2) y 71 nuevas (B3–B10), más los dos 🐉. Las versiones se fijan en
+[`docs/Versions.md`](docs/Versions.md) al empezar cada fase, sin subir nada que ya esté fijado.
+
+### Cuándo una lección está lista (B2 en adelante)
+
+- [ ] **Código** en el caso del temario (Banco, Mercado o los dos): `Main.kt` solo como demo y la lógica aparte.
+- [ ] **Pruebas** en verde (`<Lección>Test.kt`), con PostgreSQL y MySQL arriba y ninguna `SKIPPED`.
+- [ ] **`Exercises.md`** con 25 a 40 ejercicios graduados (orientativo: ~30 % 🟢, ~35 % 🟡, ~25 % 🟠, ~10 % 🔴), los 🎤
+      marcados y su **⚡** con un criterio verificable (el del temario); sin soluciones.
+- [ ] **Guía de estudio** en `docs/lessons/` (teoría, mapa del código, fuentes en inglés o español), con
+      `scripts/check-guide-links.sh` sin enlaces rotos; los temas largos o difíciles, con más profundidad.
+- [ ] **Documentos al día en el mismo cambio:** estado de la entrada del temario, tabla y conteos del README, esta
+      fila del checklist y su bitácora, el plan y, si hay versiones nuevas, `docs/Versions.md`.
+- [ ] **Commit** por tanda con el escaneo de referencias externas vacío; tag al cerrar cada fase.
+
+### B2 en detalle
+
+Las 12 lecciones con código ya tienen guía, código y pruebas en los casos; B2 lleva sus ejercicios a la escala nueva.
+Los ⚡ son los del temario.
+
+| Lección | Ejercicios hoy | Meta | 🎤 | ⚡ | Estado |
+|---|---|---|---|---|---|
+| `01-language` · `basics` | 25 | 25–40 | ⬜️ | ⬜️ Calculadora de precisión arbitraria | ⬜️ |
+| `01-language` · `control` | 24 | 25–40 | ⬜️ | ⬜️ Matcher por búsqueda binaria | ⬜️ |
+| `01-language` · `strings` | 24 | 25–40 | ⬜️ | ⬜️ Códec estilo FIX | ⬜️ |
+| `01-language` · `oop` | 24 | 25–40 | ⬜️ | ⬜️ Evaluador de expresiones con `sealed` | ⬜️ |
+| `01-language` · `io` | 23 | 25–40 | ⬜️ | ⬜️ Conciliador de extracto | ⬜️ |
+| `01-language` · `collections` | 24 | 25–40 | ⬜️ | ⬜️ `HashMap` propio | ⬜️ |
+| `01-language` · `functional` | 24 | 25–40 | ⬜️ | ⬜️ Librería de operadores de `Sequence` | ⬜️ |
+| `01-language` · `json` | 24 | 25–40 | ⬜️ | ⬜️ Serializador para un formato binario | ⬜️ |
+| `01-language` · `datetime` | 24 | 25–40 | ⬜️ | ⬜️ Velas por sesión | ⬜️ |
+| `01-language` · `exceptions` | 24 | 25–40 | ⬜️ | ⬜️ `TransferService` completo | ⬜️ |
+| `04-data` · `jdbc` | 25 | 25–40 | ⬜️ | ⬜️ Ledger concurrente en tres motores | ⬜️ |
+| `04-data` · `jpa` | 24 | 25–40 | ⬜️ | ⬜️ Ledger en JPA con concurrencia | ⬜️ |
 
 ## Secciones
 
@@ -79,194 +134,193 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 
 ## Lecciones
 
-Las lecciones que ya existen tienen código y pruebas, pero quedan 🟡 hasta: cambiar el
-dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la escala de `java-champion-review`
-(mínimo 25, marcas 🎤 y su ⚡, fase B2).
+Las 12 lecciones con código ya están en los casos y tienen su guía de estudio; quedan 🟡 hasta llevar sus
+ejercicios a la escala nueva (B2). La columna **Fase** dice en qué fase nace o se completa cada lección.
 
 ### tutorials
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| — | `01-install` | ✅ ejemplos | ✅ `check.sh` (14) | ✅ 12 | ➖ | `LISTO` |
-| — | `02-cli` | ✅ ejemplos | ✅ `check.sh` (30) | ✅ 15 | ➖ | `LISTO` |
-| — | `03-repl` | ✅ ejemplos | ✅ `check.sh` (17) | ✅ 15 | ➖ | `LISTO` |
-| — | `04-decompile` | ✅ ejemplos | ✅ `check.sh` (47) | ✅ 16 | ✅ enunciado | `LISTO` |
-| — | `05-debug` | ✅ ejemplos | ✅ `check.sh` (28) | ✅ 14 | ➖ | `LISTO` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `01-install` | ✅ ejemplos | ✅ `check.sh` (14) | ✅ 12 | ➖ | ➖ (su README) | B1 | `LISTO` |
+| — | `02-cli` | ✅ ejemplos | ✅ `check.sh` (30) | ✅ 15 | ➖ | ➖ (su README) | B1 | `LISTO` |
+| — | `03-repl` | ✅ ejemplos | ✅ `check.sh` (17) | ✅ 15 | ➖ | ➖ (su README) | B1 | `LISTO` |
+| — | `04-decompile` | ✅ ejemplos | ✅ `check.sh` (47) | ✅ 16 | ✅ enunciado | ➖ (su README) | B1 | `LISTO` |
+| — | `05-debug` | ✅ ejemplos | ✅ `check.sh` (28) | ✅ 14 | ➖ | ➖ (su README) | B1 | `LISTO` |
 
 ### 01-language
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| 1 | `basics` | ✅ | ✅ | 🟡 25 | ⬜️ | `EN CREACIÓN` |
-| 2 | `control` | ✅ | ✅ | 🟡 24 | ⬜️ | `EN CREACIÓN` |
-| 3 | `strings` | ✅ | ✅ | 🟡 24 | ⬜️ | `EN CREACIÓN` |
-| 4 | `oop` | ✅ | ✅ | 🟡 24 | ⬜️ | `EN CREACIÓN` |
-| 5 | `io` | ✅ | ✅ | 🟡 23 | ⬜️ | `EN CREACIÓN` |
-| 6 | `collections` | ✅ | ✅ | 🟡 24 | ⬜️ | `EN CREACIÓN` |
-| 7 | `functional` | ✅ | ✅ | 🟡 24 | ⬜️ | `EN CREACIÓN` |
-| 8 | `json` | ✅ | ✅ | 🟡 24 | ⬜️ | `EN CREACIÓN` |
-| 9 | `datetime` | ✅ | ✅ | 🟡 24 | ⬜️ | `EN CREACIÓN` |
-| 14 | `exceptions` | ✅ | ✅ | 🟡 24 | ⬜️ | `EN CREACIÓN` |
-| — | `generics` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `inline` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `interop` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `delegation` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `dsl` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `kotlin2` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| 1 | `basics` | ✅ | ✅ | 🟡 25 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| 2 | `control` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| 3 | `strings` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| 4 | `oop` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| 5 | `io` | ✅ | ✅ | 🟡 23 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| 6 | `collections` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| 7 | `functional` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| 8 | `json` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| 9 | `datetime` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| 14 | `exceptions` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| — | `generics` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B4 | `PENDIENTE` |
+| — | `inline` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B4 | `PENDIENTE` |
+| — | `interop` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B4 | `PENDIENTE` |
+| — | `delegation` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B4 | `PENDIENTE` |
+| — | `dsl` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B4 | `PENDIENTE` |
+| — | `kotlin2` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B4 | `PENDIENTE` |
 
 ### 02-coroutines
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| — | `fundamentals` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `cancellation` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `dispatchers` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `channels` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `flow` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `hotflows` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `sync` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `internals` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `testing` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `loom` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `fundamentals` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
+| — | `cancellation` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
+| — | `dispatchers` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
+| — | `channels` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
+| — | `flow` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
+| — | `hotflows` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
+| — | `sync` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
+| — | `internals` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
+| — | `testing` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
+| — | `loom` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
 
 ### 03-reactive
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| — | `reactor` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `rxjava` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `bridges` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `backpressure` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `reactor` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
+| — | `rxjava` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
+| — | `bridges` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
+| — | `backpressure` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
 
 ### 04-data
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| 10–12 | `jdbc` (SQLite, PostgreSQL, MySQL) | ✅ | ✅ | 🟡 25 | ⬜️ | `EN CREACIÓN` |
-| 13 | `jpa` | ✅ | ✅ | 🟡 24 | ⬜️ | `EN CREACIÓN` |
-| — | `exposed` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `jooq` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `r2dbc` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `sqldelight` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| 10–12 | `jdbc` (SQLite, PostgreSQL, MySQL) | ✅ | ✅ | 🟡 25 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| 13 | `jpa` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| — | `exposed` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
+| — | `jooq` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
+| — | `r2dbc` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
+| — | `sqldelight` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
 
 ### 05-testing
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| — | `kotest` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `mockk` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `assertions` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `testcontainers` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `kotest` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
+| — | `mockk` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
+| — | `assertions` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
+| — | `testcontainers` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
 
 ### 06-compiler
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| — | `bytecode` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `reflection` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `ksp` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `compilerplugins` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `bytecode` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
+| — | `reflection` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
+| — | `ksp` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
+| — | `compilerplugins` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
 
 ### 07-design
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| — | `idioms` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `gof` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `fp` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `architecture` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `idioms` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B9 | `PENDIENTE` |
+| — | `gof` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B9 | `PENDIENTE` |
+| — | `fp` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B9 | `PENDIENTE` |
+| — | `architecture` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B9 | `PENDIENTE` |
 
 ### 08-build
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| — | `gradle` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `quality` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `docs` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `packaging` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `gradle` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B9 | `PENDIENTE` |
+| — | `quality` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B9 | `PENDIENTE` |
+| — | `docs` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B9 | `PENDIENTE` |
+| — | `packaging` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B9 | `PENDIENTE` |
 
 ### 09-spring
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| — | `boot` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `springdata` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `webflux` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `springtesting` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `boot` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B6 | `PENDIENTE` |
+| — | `springdata` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B6 | `PENDIENTE` |
+| — | `webflux` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B6 | `PENDIENTE` |
+| — | `springtesting` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B6 | `PENDIENTE` |
 
 ### 10-ktor
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| — | `server` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `client` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `ktortesting` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `server` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B6 | `PENDIENTE` |
+| — | `client` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B6 | `PENDIENTE` |
+| — | `ktortesting` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B6 | `PENDIENTE` |
 
 ### 11-multiplatform
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| — | `kmp` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `composemp` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `shared` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `web` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `kmp` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B7 | `PENDIENTE` |
+| — | `composemp` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B7 | `PENDIENTE` |
+| — | `shared` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B7 | `PENDIENTE` |
+| — | `web` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B7 | `PENDIENTE` |
 
 ### 12-android
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| — | `android` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `compose` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `architecture` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `androiddata` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `di` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `background` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `androidtesting` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `android` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B7 | `PENDIENTE` |
+| — | `compose` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B7 | `PENDIENTE` |
+| — | `architecture` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B7 | `PENDIENTE` |
+| — | `androiddata` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B7 | `PENDIENTE` |
+| — | `di` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B7 | `PENDIENTE` |
+| — | `background` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B7 | `PENDIENTE` |
+| — | `androidtesting` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B7 | `PENDIENTE` |
 
 ### 20-legacy-kotlin14
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| — | `language14` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `coroutines14` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `android14` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `migration14` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `language14` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B5 | `PENDIENTE` |
+| — | `coroutines14` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B5 | `PENDIENTE` |
+| — | `android14` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B5 | `PENDIENTE` |
+| — | `migration14` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B5 | `PENDIENTE` |
 
 ### 21-legacy-kotlin16
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| — | `language16` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `boot27` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `migration16` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `language16` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B5 | `PENDIENTE` |
+| — | `boot27` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B5 | `PENDIENTE` |
+| — | `migration16` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B5 | `PENDIENTE` |
 
 ### 22-legacy-kotlin19
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| — | `language19` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `k2migration` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `compat` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `language19` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B5 | `PENDIENTE` |
+| — | `k2migration` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B5 | `PENDIENTE` |
+| — | `compat` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B5 | `PENDIENTE` |
 
 ### 25-interview
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| — | `livecoding` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
-| — | `prreview` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `livecoding` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B9 | `PENDIENTE` |
+| — | `prreview` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B9 | `PENDIENTE` |
 
 ### 26-kotlin-next
 
-| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Estado |
-|---|---|---|---|---|---|---|
-| — | `kotlin25` | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
+| # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
+|---|---|---|---|---|---|---|---|---|
+| — | `kotlin25` | ⬜️ | ⬜️ | ⬜️ | ➖ | ⬜️ | B10 | `PENDIENTE` |
 
 ### 🐉 Jefes finales
 
-| Proyecto | Estado |
-|---|---|
-| Mini `kotlinx.coroutines` (`02` + `06`) | `PENDIENTE` |
-| Producto full-stack de finanzas: backend + cliente KMP (`04` + `09`/`10` + `11`/`12` + `08`) | `PENDIENTE` |
+| Proyecto | Fase | Estado |
+|---|---|---|
+| Mini `kotlinx.coroutines` (`02` + `06`) | B10 | `PENDIENTE` |
+| Producto full-stack de finanzas: backend + cliente KMP (`04` + `09`/`10` + `11`/`12` + `08`) | B10 | `PENDIENTE` |
 
 ## Bitácora
 
@@ -490,3 +544,7 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   responde a `getValue`), orden estable (medido), concurrencia e interoperabilidad. `functional`: referencias ligadas y
   no ligadas (medido), lambdas con receptor, pureza, `sequence { }`, puente con `Stream` (medido: `asSequence` y
   `asStream` en la stdlib) y costos.
+- **2026-11-22** · **Checklist reorganizado para la fase B:** sección "Fase B" con la tabla de B0 a B10 (qué entrega
+  cada fase, cuántas lecciones, de qué depende, qué versiones hay que fijar antes de empezar y su estado), la definición
+  de "lección lista" que vale para B2 en adelante, y el detalle de B2 lección por lección con sus ⚡. Las tablas de
+  lecciones suman las columnas **Guía** y **Fase**. Antes: commit, tag `phase-b0` y push de lo avanzado.
