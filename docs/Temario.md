@@ -1218,19 +1218,143 @@ Pruebas. **Build:** 2 · **Caso:** Ambos.
 
 ### 05 · `kotest` — Estilos, property-based
 
-> ⬜️ **Pendiente (tanda 6).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** escribir pruebas con Kotest (estilos de especificación, pruebas guiadas por datos) y, sobre todo,
+pruebas basadas en propiedades que encuentran los casos borde que uno no pensó.
+**Sección:** `05-testing` · **Build:** nivel 2 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin (Kotest ⚠️ se fija al escribir la sección) | Nota |
+|---|---|---|
+| Clase JUnit con métodos `@Test` | `class BookSpec : FunSpec({ test("…") { } })` | También `StringSpec`, `DescribeSpec`, `BehaviorSpec` |
+| `@ParameterizedTest` + `@MethodSource` | `withData(…)` | Cada dato es una prueba con nombre propio |
+| jqwik (`@Property`, `@ForAll`) | `checkAll(Arb.long(1..1_000)) { q -> … }` | Generadores (`Arb`) y *shrinking* al mínimo caso que falla |
+| `assertEquals` | `x shouldBe y` | Matchers infix; se ven en `assertions` |
+| `@BeforeEach` | `beforeTest { }`, extensiones | Ojo con el modo de aislamiento (trampa) |
+| JUnit Platform | `kotest-runner-junit5` sobre JUnit Platform | Convive con `kotlin.test` en el mismo módulo |
+
+**Trampas:**
+- El modo de aislamiento por defecto de Kotest es una sola instancia de la especificación para todas sus pruebas: un
+  `val` mutable de la clase se comparte entre pruebas, al revés que en JUnit (una instancia por método); se confirma
+  con la versión que se fije ⚠️.
+- Una propiedad que falla con datos aleatorios solo se reproduce con la semilla que Kotest imprime: hay que fijarla
+  en la prueba al investigar.
+- `shouldBe` sobre `BigDecimal` usa `equals`: `1.0` y `1.00` no son iguales (por eso `Money` normaliza la escala).
+- Una propiedad trivial ("no lanza") pasa siempre y no prueba nada: la propiedad tiene que decir algo del dominio.
+- Sin `useJUnitPlatform()` en Gradle, las especificaciones de Kotest no corren y el build sale verde igual.
+
+**Caso:** propiedades del `OrderBook` del Mercado ("nunca queda cruzado", "la cantidad total se conserva", "el orden
+de llegada se respeta dentro de un precio") y de `Money` del Banco (`a + b - b == a`, `ofCents` ida y vuelta).
+
+**🎤 Entrevista:** ¿qué es una prueba basada en propiedades y qué encuentra que una de ejemplos no? · ¿Qué es el
+*shrinking*? · Kotest frente a JUnit 5.
+
+**⚡ Propiedades del motor de emparejamiento:** generadores de secuencias de órdenes (`Arb` propio) contra el motor de
+`02 · channels` · **Se verifica con:** las tres propiedades del caso con 10 000 secuencias cada una, y un error
+sembrado a propósito en el motor que Kotest encuentra y reduce a una secuencia de dos o tres órdenes.
 
 ### 05 · `mockk` — MockK, incluido `coEvery`
 
-> ⬜️ **Pendiente (tanda 6).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** aislar una unidad de sus dependencias con MockK (incluidas funciones `suspend`, `object` y funciones de
+extensión), y saber cuándo un *fake* escrito a mano es mejor que un mock.
+**Sección:** `05-testing` · **Build:** nivel 2 · **Caso:** Banco · **Estado:** nueva
+
+| Java 21 | Kotlin (MockK ⚠️) | Nota |
+|---|---|---|
+| `when(fx.rate(…)).thenReturn(…)` (Mockito) | `every { fx.rate(USD, EUR) } returns BigDecimal("0.92")` | En Kotlin `when` es palabra reservada: Mockito pide comillas invertidas |
+| — (Mockito no conoce `suspend`) | `coEvery { client.quote("ACME") } returns …`, `coVerify` | `every` no acepta una llamada `suspend` |
+| `verify(repo).save(…)`, `ArgumentCaptor` | `verify(exactly = 1) { repo.save(capture(slot)) }` | `slot<T>()` captura el argumento |
+| `mockStatic` | `mockkStatic(…)`, `mockkObject(IdGenerator)` | Funciones de nivel superior y `object` |
+| `@Mock(answer = RETURNS_DEFAULTS)` | `mockk(relaxed = true)` | Devuelve valores vacíos sin configurar nada |
+| Clases `final` (Mockito 5 usa *inline mock maker*) | Todas las clases son `final` y MockK las mockea igual | Sin `open` solo para probar |
+
+**Trampas:**
+- `any()` de Mockito devuelve `null`: en un parámetro no nullable de Kotlin lanza `NullPointerException` antes de
+  llegar al mock (MockK no tiene ese problema).
+- `mockkStatic` sobre una función de extensión de nivel superior pide el nombre de la clase del archivo
+  (`"dev.….MoneyKt"`): renombrar el archivo rompe la prueba sin error de compilación.
+- `mockkObject` cambia un singleton para toda la JVM: sin `unmockkAll()` al final, contamina otras pruebas.
+- Un mock `relaxed` responde a todo: una llamada que falta configurar pasa en silencio con un valor vacío.
+- Mockear un tipo que no es nuestro (un `ResultSet`, un cliente HTTP) da pruebas que pasan y producción que falla:
+  mejor un *fake* o una prueba de integración.
+
+**Caso:** `TransferService` del Banco probado con un `FxRateClient` y un repositorio mockeados: la transferencia en
+otra moneda pide la tasa una sola vez, una falla del cliente se traduce en `FxUnavailable`, y nada se guarda si falla.
+
+**🎤 Entrevista:** ¿mock, stub o fake? · ¿Cómo se mockea una función `suspend` o un `object`? · ¿Por qué Mockito
+incomoda en Kotlin?
+
+**⚡ Mini MockK:** una librería mínima con `mock<T>()`, `every { } returns`, `verify { }` y *matchers*, sobre proxies
+dinámicos de Java para interfaces · **Se verifica con:** pruebas que usan la mini librería para probar el
+`TransferService` (mismos casos que con MockK) y una prueba de que la grabación de llamadas dentro de `every { }` no
+ejecuta el código real.
 
 ### 05 · `assertions` — Kotest, AssertK, power-assert
 
-> ⬜️ **Pendiente (tanda 6).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** escribir aserciones que dicen qué falló sin tener que depurar, y elegir entre `kotlin.test`, los
+matchers de Kotest, AssertK y el plugin power-assert del compilador.
+**Sección:** `05-testing` · **Build:** nivel 2 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin | Nota |
+|---|---|---|
+| `assertEquals(expected, actual)` | `assertEquals` de `kotlin.test` (lo que usa el curso hoy) | Mismo orden de argumentos que JUnit |
+| AssertJ: `assertThat(x).isEqualTo(y)` | AssertK: `assertThat(x).isEqualTo(y)` ⚠️ | Pensada para Kotlin: tipos nullables y smart casts |
+| Hamcrest / AssertJ encadenado | Kotest: `x shouldBe y`, `list shouldContainExactly …` ⚠️ | Infix y `assertSoftly { }` |
+| `assert` de Java (`-ea`) | Plugin power-assert de `kotlinc`, incluido desde 2.0 | Medido en 2.4.21: dibuja cada subexpresión de un `require` o `assert` que falla |
+| `assertNotNull(x)` y luego `x.get()` | `assertNotNull(x)` de `kotlin.test` hace smart cast | Contrato `returns() implies (actual != null)` (ver `k2-notes`) |
+| `SoftAssertions` | `assertSoftly { }` (Kotest), `assertAll` (AssertK) | Reportan todas las fallas juntas |
+
+**Trampas:**
+- Invertir `expected` y `actual` en `assertEquals` da mensajes al revés ("esperaba X y fue Y" con X e Y cambiados).
+- AssertJ funciona desde Kotlin, pero `isNotNull()` no le dice nada al compilador: después hace falta `!!`.
+- El plugin power-assert solo transforma las funciones que se le configuran (`kotlin.assert`, `require`,
+  `assertTrue`…); el resto sigue con mensajes planos.
+- Comparar `Money` o `BigDecimal` con un matcher de igualdad tropieza con la escala; con números de punto flotante
+  hace falta tolerancia.
+- Una aserción que solo comprueba "no es null" o "no lanza" pasa con casi cualquier implementación.
+
+**Caso:** las mismas pruebas del `TransferService` del Banco y de las velas del Mercado escritas en los tres estilos,
+para comparar los mensajes de error.
+
+**🎤 Entrevista:** ¿qué hace bueno el mensaje de una aserción? · ¿Qué es power-assert? · ¿Por qué AssertK y no
+AssertJ en Kotlin?
+
+**⚡ Mensajes de falla comparados:** el mismo conjunto de pruebas que fallan a propósito, escrito con `kotlin.test`,
+Kotest, AssertK y power-assert · **Se verifica con:** los mensajes de cada estilo capturados en archivos dorados
+(una prueba que corre las demás y compara su salida), y una tabla en la lección con cuál ubica la causa en una lectura.
 
 ### 05 · `testcontainers` — Testcontainers
 
-> ⬜️ **Pendiente (tanda 6).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** probar contra bases reales y desechables desde la prueba, sin depender de contenedores levantados a
+mano, y mantener la suite rápida.
+**Sección:** `05-testing` · **Build:** nivel 2 · **Caso:** Banco · **Estado:** nueva
+
+| Java 21 | Kotlin (Testcontainers ⚠️) | Nota |
+|---|---|---|
+| `docker compose up` antes de las pruebas (lo de hoy en `04-data`) | `PostgreSQLContainer("postgres:17.2")` en la prueba | La prueba levanta y tira su base |
+| `@Testcontainers` + `@Container static` | `companion object` con el contenedor | Ver la trampa del campo estático |
+| Puertos fijos (15432, 13306) | `container.jdbcUrl` | Puerto aleatorio del host: nunca se escribe a mano |
+| Un contenedor por clase de prueba | Patrón de contenedor único (un `object` que lo arranca una vez) | Una sola base para toda la suite |
+| `@DynamicPropertySource` (Spring) | Igual, se ve en `09-spring` | |
+
+**Trampas:**
+- Un `@Container` en una propiedad de instancia arranca un contenedor por prueba, porque JUnit crea una instancia por
+  método; compartirlo pide que la anotación quede en un campo estático (`companion object` con `@JvmField`) ⚠️.
+- Sin Docker, las pruebas fallan o se saltan según la configuración: hay que decidir cuál (hoy `04-data` las salta).
+- La primera corrida baja imágenes y tarda minutos: fijar la imagen por versión (como `docker/postgres/compose.yaml`)
+  evita sorpresas y comparte la caché.
+- Pruebas que comparten la base sin limpiar dependen del orden; cada prueba prepara y borra sus datos, o usa una
+  transacción que revierte.
+- En Apple Silicon, una imagen sin variante `arm64` corre emulada y mucho más lenta.
+
+**Caso:** el contrato `LedgerRepositoryContract` de `04-data` (tanda 5 de B0′) corrido contra PostgreSQL y MySQL de
+Testcontainers, incluida la diferencia de aislamiento entre motores en una transferencia concurrente.
+
+**🎤 Entrevista:** ¿por qué no usar H2 para probar código que corre en PostgreSQL? · ¿Cómo se mantiene rápida una suite
+con contenedores? · ¿Qué ventaja tiene sobre un `docker compose` previo?
+
+**⚡ El contrato del ledger con contenedores:** el mismo contrato de `04-data` sobre PostgreSQL y MySQL de
+Testcontainers, con un contenedor único por motor · **Se verifica con:** la suite en verde sin ningún `docker compose`
+previo, el tiempo total medido con y sin contenedor único, y una prueba que reproduce la actualización perdida en un
+saldo en un motor y la evita con `SELECT … FOR UPDATE`.
 
 ---
 
@@ -1240,19 +1364,145 @@ Bytecode, reflexión, KSP y plugins del compilador. **Build:** 2 · **Caso:** �
 
 ### 06 · `bytecode` — Lambdas, `companion`, `value class`, propiedades
 
-> ⬜️ **Pendiente (tanda 6).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** leer el bytecode que genera Kotlin para sus construcciones y saber qué cuesta cada una y cómo la ve
+Java.
+**Sección:** `06-compiler` · **Build:** nivel 2 · **Caso:** — · **Estado:** nueva
+
+| Java 21 | Lo que genera Kotlin | Nota |
+|---|---|---|
+| Campo privado + getter/setter | Propiedad: campo privado + `getX`/`setX` | `@JvmField` deja el campo público, sin métodos |
+| `static final` | `const val` → constante en línea; `companion object` → clase anidada `Companion` + campo estático | Sin `@JvmStatic`, los métodos viven en `Companion` |
+| Método estático en una clase de utilidades | Función de nivel superior → `ArchivoKt.f()` | `@file:JvmName` cambia el nombre de la clase |
+| Lambda (`invokedynamic`) | `invokedynamic` desde 2.0 (antes, una clase por lambda) | Medido en `k2-notes` y en el tutorial `decompile` |
+| Sobrecargas | Parámetros por defecto → método sintético `f$default` con una máscara de bits | Java no lo ve sin `@JvmOverloads` |
+| `record` | `data class` → `equals`, `hashCode`, `toString`, `componentN`, `copy` | `@JvmRecord` genera un `record` de verdad |
+| Clase envoltorio | `value class` → el tipo de adentro y nombres alterados (`f-abc12`) | Se boxea al usarse como nullable o genérica |
+| `switch` sobre `String` | `when` sobre `String` → `hashCode()` + `equals` | Igual que `javac` |
+
+**Trampas:**
+- Cada función pública con parámetros no nullables comprueba sus argumentos con `Intrinsics.checkNotNullParameter`:
+  el NPE que llega desde Java nombra el parámetro, pero es una llamada más por método.
+- Un `object` se inicializa en la carga de la clase (seguro entre hilos) y una excepción en su `init` deja la clase
+  inutilizable (`NoClassDefFoundError` en los siguientes usos).
+- Una función `inline` grande copiada en muchos llamadores infla el tamaño del bytecode.
+- `lateinit` agrega una comprobación en cada lectura y lanza `UninitializedPropertyAccessException`, no NPE.
+- La anotación `@Metadata` lleva la información de Kotlin (nulabilidad, propiedades): herramientas que la borran
+  (R8 sin reglas) rompen la reflexión de Kotlin.
+
+**Caso:** las construcciones del propio curso (`Money`, `TransferId`, `OrderBook`, las lambdas de `functional`)
+decompiladas con las herramientas del tutorial `decompile`.
+
+**🎤 Entrevista:** ¿cómo ve Java un `companion object`? · ¿Qué genera un parámetro por defecto? · ¿Una `value class` es
+siempre gratis?
+
+**⚡ Catálogo de bytecode con archivos dorados:** una construcción por archivo y su salida de `javap -p` (o del
+decompilador) guardada como dorada · **Se verifica con:** una prueba que compila cada ejemplo, corre `javap` con
+`ToolProvider` y compara con su dorado, de modo que un cambio de compilador que altera el bytecode hace fallar la
+prueba y obliga a documentarlo.
 
 ### 06 · `reflection` — `KClass`, `KProperty`, `kotlin-reflect` y su costo
 
-> ⬜️ **Pendiente (tanda 6).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** usar reflexión de Kotlin cuando hace falta (mappers, serialización, frameworks), saber qué funciona sin
+`kotlin-reflect` y medir cuánto cuesta.
+**Sección:** `06-compiler` · **Build:** nivel 2 · **Caso:** — · **Estado:** nueva
+
+| Java 21 | Kotlin | Nota |
+|---|---|---|
+| `Tick.class` | `Tick::class` (`KClass`), `Tick::class.java` | `KClass` sabe de nulabilidad y propiedades |
+| `getDeclaredFields()` | `Tick::class.memberProperties` | Necesita `kotlin-reflect` (≈ 3.8 MB en 2.4.21) |
+| `getSimpleName()` | `Tick::class.simpleName`, `qualifiedName` | Medido: funcionan **sin** `kotlin-reflect` |
+| `Method` / `MethodHandle` | `Tick::price` (`KProperty1`), `::validate` (`KFunction`) | Las referencias funcionan sin `kotlin-reflect` (medido: `name` y `get`) |
+| Constructor por reflexión | `Tick::class.primaryConstructor!!.callBy(args)` | `callBy` respeta los valores por defecto |
+| `TypeToken`/`ParameterizedType` | `typeOf<List<Tick>>()` con `reified` | El tipo genérico completo en runtime |
+
+**Trampas:**
+- Sin `kotlin-reflect` en el classpath, `Tick::class.members` lanza `KotlinReflectionNotSupportedError` en runtime
+  (medido); compila igual.
+- La primera llamada a la reflexión completa de Kotlin es lenta (lee y arma la metadata): en un camino caliente se
+  guarda el resultado.
+- La reflexión de Java sobre una clase Kotlin ve getters, campos privados y `Companion`, no propiedades ni nulabilidad.
+- `T::class` sobre un genérico no compila sin `reified`; sobre un valor nullable hace falta comprobar antes.
+- En Android, R8 sin reglas de conservación borra la metadata y la reflexión de Kotlin falla en producción, no en las
+  pruebas.
+
+**Caso:** un mapper genérico de filas (`Map<String, Any?>`) a `data class` para los asientos del ledger y los ticks.
+
+**🎤 Entrevista:** ¿qué aporta `KClass` sobre `Class`? · ¿Qué necesita `kotlin-reflect` y qué no? · ¿Cómo se evita
+el costo de la reflexión en un camino caliente?
+
+**⚡ Mapper por reflexión frente a uno escrito a mano:** el mapper genérico (constructor primario, nombres, valores
+por defecto con `callBy`, nullables) y su versión a mano · **Se verifica con:** pruebas de valores por defecto, nulos
+y claves faltantes, y una medición con calentamiento (un millón de filas) guardada en la lección, con y sin caché de
+la metadata.
 
 ### 06 · `ksp` — KSP frente a kapt
 
-> ⬜️ **Pendiente (tanda 6).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** generar código en tiempo de compilación con KSP (el reemplazo de kapt), entender por qué kapt es lento y
+escribir un procesador con errores propios.
+**Sección:** `06-compiler` · **Build:** nivel 2 · **Caso:** — · **Estado:** nueva
+
+| Java 21 | Kotlin (KSP ⚠️ se fija al escribir la sección) | Nota |
+|---|---|---|
+| `javax.annotation.processing.Processor` | `SymbolProcessor` + `SymbolProcessorProvider` | Lee símbolos de Kotlin, no stubs de Java |
+| Procesadores de Java desde Kotlin | kapt: genera stubs Java de todo el módulo y corre APT | Lento; en mantenimiento |
+| Registro con `@AutoService` / `META-INF/services` | `META-INF/services/…SymbolProcessorProvider` | Mismo mecanismo de `ServiceLoader` |
+| `Messager.printMessage(ERROR, …, element)` | `logger.error("…", symbol)` | El error apunta al símbolo en el código del usuario |
+| MapStruct, Dagger, Room con APT | Sus versiones KSP (Room, Moshi, Dagger) | Hay que confirmar soporte KSP por librería |
+
+**Trampas:**
+- KSP solo **genera** archivos nuevos: no modifica clases existentes (para eso hace falta un plugin del compilador).
+- Declarar mal las dependencias de un archivo generado (`aggregating` frente a `isolating`) rompe el build incremental:
+  cambios que no regeneran o regeneraciones de más.
+- El código generado tiene que estar en los *source sets* para que el IDE lo vea; si no, compila en Gradle y se ve rojo
+  en IntelliJ.
+- Un procesador que lanza una excepción en vez de reportar con `logger.error` da un error ilegible.
+- Mezclar kapt y KSP en un módulo paga los dos costos.
+
+**Caso:** builders y mappers generados para las entidades del curso (`Tick`, `JournalEntry`, `Transfer`).
+
+**🎤 Entrevista:** ¿por qué KSP es más rápido que kapt? · ¿Qué puede y qué no puede hacer un procesador KSP? · ¿Qué es
+el procesamiento incremental?
+
+**⚡ Generador de builders y mappers:** un procesador KSP que, para cada clase anotada, genera un builder y un mapper
+desde `Map<String, Any?>`, con errores de compilación propios (constructor privado, tipo no soportado) · **Se verifica
+con:** pruebas de compilación en memoria donde el código generado compila y funciona, y donde cada uso incorrecto da
+exactamente el error esperado, apuntando al símbolo.
 
 ### 06 · `compilerplugins` — all-open, no-arg, serialization, power-assert, uno propio con FIR
 
-> ⬜️ **Pendiente (tanda 6).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** saber qué plugins del compilador usa todo proyecto Kotlin de backend (y por qué), cuáles vienen con
+`kotlinc`, y escribir uno propio sobre el frontend K2 (FIR).
+**Sección:** `06-compiler` · **Build:** nivel 2 · **Caso:** — · **Estado:** nueva
+
+| Java 21 | Kotlin (plugins de `kotlinc` 2.4.21) | Nota |
+|---|---|---|
+| Clases no `final` por defecto (proxies de Spring) | `allopen` / `kotlin-spring` | Abre las clases anotadas; sin él, Spring no puede crear el proxy |
+| Constructor sin argumentos para JPA | `noarg` / `kotlin-jpa` | Lo usa `04-data` (`jpa`) |
+| Jackson por reflexión | `kotlinx-serialization` | Genera los serializadores al compilar (lección `json`) |
+| `assert` con mensaje plano | `power-assert` | En `kotlinc/lib` desde 2.0 (medido) |
+| Lombok | Plugin `lombok` de Kotlin | Para que Kotlin vea lo que Lombok genera en clases Java del mismo módulo |
+| — | `compose-compiler` | En `kotlinc/lib` desde 2.0 (medido); se ve en `11-multiplatform` |
+| Procesador que modifica el AST (truco de Lombok) | Plugin propio con FIR (análisis) e IR (generación) | API inestable: atado a una versión exacta de Kotlin ⚠️ |
+
+**Trampas:**
+- Sin `kotlin-spring`, un `@Service` con `@Transactional` es `final` y Spring falla al crear el proxy (o, en algunos
+  casos, la anotación no se aplica sin avisar).
+- El constructor de `noarg` no corre los inicializadores de las propiedades salvo la opción `invokeInitializers`: una
+  entidad cargada por JPA puede tener `null` donde Kotlin prometía otra cosa.
+- `allopen` abre también los métodos: una `val` de una entidad abierta puede sobrescribirse en un proxy y devolver otra
+  cosa.
+- Un plugin propio compilado contra 2.4.21 casi seguro no carga en 2.5: la API del compilador no es estable.
+- Que un plugin venga en `kotlinc/lib` no quiere decir que Gradle lo active: cada uno se declara en el build.
+
+**Caso:** un diagnóstico propio para el Banco: error de compilación al construir `BigDecimal` o `Money` desde un
+`Double`, y aviso al declarar una entidad JPA como `data class`.
+
+**🎤 Entrevista:** ¿por qué existen `kotlin-spring` y `kotlin-jpa`? · ¿Qué es FIR? · Plugin del compilador frente a
+procesador KSP.
+
+**⚡ Plugin propio con FIR:** el diagnóstico del caso como plugin de K2, empaquetado y usado por un módulo de ejemplo
+· **Se verifica con:** pruebas del compilador con los diagnósticos esperados (código, línea y columna) sobre archivos
+de ejemplo, y una prueba de que el código válido del curso compila sin avisos con el plugin activo.
 
 ---
 
@@ -1262,19 +1512,141 @@ Idioms, patrones, FP y arquitectura. **Build:** 1 · **Caso:** Banco (DDD) y Mer
 
 ### 07 · `idioms` — Effective Kotlin
 
-> ⬜️ **Pendiente (tanda 6).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** escribir Kotlin que un equipo Kotlin aprueba en una revisión: inmutable por defecto, null-safety sin
+`!!`, el tipo justo para cada cosa, y la stdlib en vez de utilidades propias.
+**Sección:** `07-design` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin | Nota |
+|---|---|---|
+| Clase de utilidades con `static` | Funciones de nivel superior y de extensión | `Money.format()` en vez de `MoneyUtils.format(m)` |
+| Builder o constructores telescópicos | Parámetros con nombre y por defecto | El builder solo si hay validación en pasos |
+| `Optional<T>` | `T?` con `?.`, `?:` y `let` | `Optional` en Kotlin es ruido |
+| Getters/setters y `equals` escritos | Propiedades y `data class` | Pero no para entidades JPA |
+| Banderas `boolean`/`int` de estado | `sealed` o `enum` | El `when` exhaustivo obliga a cubrir todo |
+| Validaciones con `if` + `throw` | `require`, `check`, `requireNotNull` | Distinguen culpa del cliente de culpa nuestra |
+| `final` donde se acuerda uno | `val`, colecciones de solo lectura, clases `final` por defecto | Lo inmutable es lo normal |
+
+**Trampas:**
+- Las funciones de extensión se resuelven por el tipo **declarado**, no por el real: no son polimórficas y una
+  extensión no puede "sobrescribir" un miembro.
+- `!!` en un PR casi siempre esconde una decisión de diseño pendiente (¿puede ser null o no?).
+- Exponer una `MutableList` como `List` sin copiar deja que el dueño la cambie por debajo del que la lee.
+- Encadenar más de dos scope functions se vuelve ilegible; `apply`/`also` para configurar y efectos, no para todo.
+- Copiar el estilo de Java (getters explícitos, `Optional`, utilidades estáticas) compila pero no pasa una revisión.
+
+**Caso:** revisión de PRs sobre código del Banco y del Mercado con errores típicos sembrados (`!!`, `data class` como
+entidad, `var` innecesarios, `MutableList` expuesta).
+
+**🎤 Entrevista:** ¿cuándo usarías una función de extensión y cuándo un miembro? · ¿Qué le dirías a un PR lleno de `!!`?
+· `data class`: ¿cuándo sí y cuándo no?
+
+**⚡ Rescate de legado:** una clase dios portada tal cual de Java (servicio de transferencias de 600 líneas), cubierta
+primero con pruebas de caracterización y refactorizada a Kotlin idiomático · **Se verifica con:** las pruebas de
+caracterización (un *golden master* sobre 1 000 entradas generadas con semilla fija) en verde antes y después, y
+cero `!!` y menos `var` medidos al final.
 
 ### 07 · `gof` — Qué patrones desaparecen en Kotlin
 
-> ⬜️ **Pendiente (tanda 6).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** reconocer qué patrones de diseño clásicos ya trae el lenguaje (y se escriben en una línea), cuáles
+cambian de forma y cuáles siguen igual.
+**Sección:** `07-design` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin | Nota |
+|---|---|---|
+| Singleton con `getInstance()` | `object` | Seguro entre hilos; difícil de reemplazar en pruebas |
+| Builder | Parámetros por defecto y con nombre, o un DSL (`dsl`) | |
+| Strategy con interfaz y clases | Una lambda o `fun interface` | `CommissionRule = (Order) -> Money` |
+| Decorator | Delegación de clase `by` (`delegation`) | |
+| Observer | `Flow`, `StateFlow` (`02-coroutines`) | |
+| Visitor | `sealed` + `when` exhaustivo | Sin doble despacho |
+| Factory method | `companion object { fun of(…) }`, `operator fun invoke` | |
+| Template method | Función de orden superior | El "hueco" es un parámetro función |
+
+**Trampas:**
+- Un `object` como singleton es estado global: las pruebas no lo pueden reemplazar si no se inyecta.
+- `sealed` + `when` facilita agregar operaciones pero obliga a tocar todos los `when` al agregar un tipo (el clásico
+  problema de la expresión, al revés que el Visitor abierto).
+- Un `operator fun invoke` en el `companion` hace que una fábrica parezca un constructor: confunde al que lee.
+- Escribir el patrón de Java completo en Kotlin "por si acaso" agrega clases que el lenguaje ya resolvía.
+- Una lambda como Strategy pierde el nombre en los logs y en el depurador: si la estrategia tiene identidad, mejor un
+  `enum` o un `object` con nombre.
+
+**Caso:** reglas de comisión del Mercado como Strategy (lambdas), los comandos del `OrderBook` como Command sellado,
+`AuditedLedger` como Decorator del Banco y las alertas de precio como Observer.
+
+**🎤 Entrevista:** ¿qué patrones desaparecen en Kotlin y por qué? · ¿Cómo se escribe un Visitor en Kotlin? · ¿Es
+`object` un buen singleton?
+
+**⚡ Catálogo antes y después:** ocho patrones con su versión Java (en `src/main/java`) y su versión Kotlin, en el mismo
+módulo · **Se verifica con:** la misma batería de pruebas parametrizada corriendo contra las dos implementaciones de
+cada patrón, y una tabla de líneas y clases de cada versión.
 
 ### 07 · `fp` — Arrow: `Either`, `Raise`, optics
 
-> ⬜️ **Pendiente (tanda 6).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** manejar errores como valores con Arrow (`Either`, el DSL `Raise`, acumulación de errores) y modificar
+estructuras inmutables anidadas con optics, sabiendo cuándo esto ayuda y cuándo complica.
+**Sección:** `07-design` · **Build:** nivel 1 · **Caso:** Banco · **Estado:** nueva
+
+| Java 21 | Kotlin (Arrow ⚠️ se fija al escribir la sección) | Nota |
+|---|---|---|
+| `Either` de Vavr | `Either<BankError, Transfer>` | El error es parte de la firma |
+| Cadena de `flatMap` anidados | `either { val a = parse(x).bind(); ensure(a > 0) { … } }` | DSL `Raise`: código directo, cortocircuito en el primer error |
+| `Validation` de Vavr | `zipOrAccumulate`, `mapOrAccumulate` | Acumula todos los errores |
+| `Optional` | `T?` (no `Option`) | Arrow recomienda los nullables de Kotlin |
+| `record` + "withers" anidados | Optics (`@optics` + KSP): `Account.limits.daily.modify(…)` | Modificar en profundidad sin `copy` anidados |
+| `List` que no puede estar vacía | `NonEmptyList` | Los errores acumulados nunca son una lista vacía |
+
+**Trampas:**
+- Arrow cambió mucho entre versiones mayores (`Validated` dejó paso a las funciones de acumulación): los ejemplos de
+  internet suelen ser de una API vieja.
+- Mezclar excepciones y `Either` sin una frontera clara termina en las dos cosas: una excepción que escapa de un
+  `either { }` no se convierte sola en `Left`.
+- `bind()` fuera de un bloque `either { }` (o de un `Raise`) no compila: el DSL vive en su receptor.
+- Optics pide KSP y anotar las clases: en un dominio chico, `copy` anidado se lee mejor.
+- Llenar de `Either` el código de infraestructura (controladores, repositorios) obliga a desenvolver en cada capa.
+
+**Caso:** la validación de una `Transfer` del Banco acumulando errores, y `TransferService` devolviendo
+`Either<BankError, TransferReceipt>` en vez de lanzar `BankException`.
+
+**🎤 Entrevista:** excepciones, `Result` o `Either`: ¿cuándo cada uno? · ¿Qué hace `Raise` y por qué no es "solo
+`flatMap`"? · ¿Cómo acumulas errores de validación?
+
+**⚡ `TransferService` funcional:** el ⚡ de `exceptions` reescrito con `Either` y `Raise` · **Se verifica con:** la
+misma tabla de casos del ⚡ de `exceptions` (solicitud → resultado → código HTTP) pasando con la versión funcional,
+y una prueba basada en propiedades de que la validación devuelve **todos** los errores de una solicitud inválida.
 
 ### 07 · `architecture` — Hexagonal + DDD
 
-> ⬜️ **Pendiente (tanda 6).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** separar el dominio de la infraestructura (puertos y adaptadores), modelar agregados con invariantes y
+eventos de dominio, y publicar eventos sin perderlos ni duplicarlos (outbox).
+**Sección:** `07-design` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin | Nota |
+|---|---|---|
+| Capas de Spring (`@Service` → `@Repository`) | Módulo de dominio sin dependencias + adaptadores | El dominio no importa Spring ni JPA |
+| Interfaz de repositorio en el paquete de infraestructura | Puerto (`interface Ledger`) en el dominio | El adaptador JDBC o JPA lo implementa |
+| Entidad JPA como modelo de dominio | Agregado (`Account`) separado de su entidad de persistencia | El mapeo vive en el adaptador |
+| Eventos con jerarquía de clases | `sealed interface AccountEvent` | `when` exhaustivo en los consumidores |
+| Visibilidad de paquete para esconder detalles | `internal` (visible en el módulo de Gradle) | No hay visibilidad de paquete en Kotlin |
+| IDs como `Long` o `String` | `value class AccountId` | El compilador no deja mezclar ids |
+
+**Trampas:**
+- `internal` es por módulo de Gradle, no por paquete: sin módulos separados, todo el proyecto ve lo "interno".
+- Un dominio de `data class` con todo público y servicios que lo manipulan es un modelo anémico con otro nombre.
+- Una anotación de JPA o de Spring en el dominio ata el dominio a la infraestructura (y a sus plugins `allopen`).
+- Un outbox sin consumidor idempotente duplica efectos cuando reintenta.
+- Una transacción que modifica dos agregados a la vez esconde una regla de negocio que debería ser un evento.
+
+**Caso:** el ledger del Banco como agregado `Account` con eventos (`Debited`, `Credited`, `Frozen`) y outbox; el
+motor de emparejamiento del Mercado como núcleo hexagonal sin dependencias, con adaptadores en memoria y JDBC.
+
+**🎤 Entrevista:** ¿qué es una arquitectura hexagonal y qué gana? · ¿Qué es un agregado y dónde viven sus invariantes?
+· ¿Qué problema resuelve el patrón outbox?
+
+**⚡ Núcleo hexagonal con ledger DDD:** módulos de Gradle `domain` (sin dependencias), `adapters` y `app`, con el
+motor de emparejamiento y el ledger · **Se verifica con:** una prueba que falla si `domain` importa algo de Spring,
+JPA o JDBC; el mismo contrato de puertos pasando con el adaptador en memoria y con el JDBC; y una prueba de que el
+outbox entrega cada evento una sola vez a un consumidor falso aunque se reintente.
 
 ---
 

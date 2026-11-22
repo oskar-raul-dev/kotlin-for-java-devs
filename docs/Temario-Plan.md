@@ -150,6 +150,7 @@ estable en la versión anterior medida"; `[≤ 1.4]` = ya estable en la versión
 | `$$"…"` (plantillas con varios `$`) | no | no | no | no | no | no | exp | exp | ok | ok | ok | `[2.2]` |
 | `kotlin.io.encoding.Base64` | no | no | no | no | exp | exp | exp | exp | ok | ok | ok | `[2.2]` |
 | `HexFormat` (`toHexString()`) | no | no | no | no | no | exp | exp | exp | ok | ok | ok | `[2.2]` |
+| Plugins `power-assert` y `compose-compiler` en `kotlinc/lib` | — | — | — | — | — | no | sí | sí | sí | sí | sí | `[2.0]` (medido listando `lib/`; `allopen`, `noarg`, `serialization`, `lombok`, `assignment` y `sam-with-receiver` ya estaban en 1.9). power-assert probado en 2.4.21 sobre un `require` |
 | Método con cuerpo en una interfaz → `default` de Java | — | — | — | — | — | abstracto | abstracto | abstracto | default | default | default | `[2.2]` (medido a mano con `javap`; `DefaultImpls` se sigue generando) |
 | Alias de tipo anidados | no | no | no | no | no | no | no | no | exp | ok | ok | `[2.3]` |
 | `kotlin.time.Instant` y `Clock` | no | no | no | no | no | no | no | exp | exp | ok | ok | `[2.3]` |
@@ -185,7 +186,11 @@ limpia y cuál pide opt-in en esa versión, compilando un ejemplo de una línea 
 | `buffer`, `conflate`, `flowOn`, `callbackFlow` | `debounce`, `sample` (`@FlowPreview`); `chunked`, `flatMapMerge`, `flatMapLatest` (`@ExperimentalCoroutinesApi`) |
 | `MutableStateFlow.update`, `stateIn`, `shareIn`, `Mutex.withLock`, `Semaphore.withPermit` | — |
 
-Comportamientos medidos con la misma versión: un `suspend` dentro de `synchronized` **no compila** ("the 'delay'
+**Reflexión sin `kotlin-reflect`** (stdlib 2.4.21, tanda 6): `simpleName`, `qualifiedName` y las referencias a
+propiedades (`Tick::price.name`, `.get(…)`) funcionan; `Tick::class.members` lanza `KotlinReflectionNotSupportedError`
+en runtime. `kotlin-reflect.jar` pesa ≈ 3.8 MB.
+
+Comportamientos medidos con kotlinx-coroutines: un `suspend` dentro de `synchronized` **no compila** ("the 'delay'
 suspension point is inside a critical section"); `withContext` dentro de `flow { }` lanza `IllegalStateException`
 ("Flow invariant is violated").
 
@@ -199,7 +204,7 @@ suspension point is inside a critical section"); `withContext` dentro de `flow {
 | 3 | ✅ | 2026-11-22 | `generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2`. 12 construcciones nuevas en `version-probes.sh` (la de `\|\|` se reescribió con De Morgan: el script separa con `\|`) y dos medidas a mano: JSpecify (error desde 2.1) y métodos `default` en interfaces (desde 2.2, con `javap`). ⚡ nuevos (solo el de `dsl` está en la sección 5 del plan): colecciones persistentes covariantes, utilidades sin asignaciones, módulo mixto Java + Kotlin, configuración tipada con delegados, catálogo ejecutable de 2.x |
 | 4 | ✅ | 2026-11-22 | `02-coroutines` completa (10 entradas), con el feed y el libro del Mercado y las transferencias concurrentes del Banco. Sin etiquetas de lenguaje nuevas (es librería): se midió qué API de kotlinx-coroutines 1.11.0 pide opt-in ([tabla](#librerías-qué-pide-opt-in-medido)). ⚡ nuevos además de los tres del plan (`flow`, `internals`, `loom`): fan-out de cotizaciones, transferencia con compensación, dimensionar dispatchers, motor como actor, tablero en vivo, transferencias concurrentes, sesión en un segundo |
 | 5 | ⬜️ | | |
-| 6 | ⬜️ | | |
+| 6 | ✅ | 2026-11-22 | `05-testing` (4), `06-compiler` (4), `07-design` (4). Kotest, MockK, AssertK, Testcontainers, KSP y Arrow sin versión fijada (⚠️ hasta B8/B9). Medido: qué plugins trae `kotlinc/lib` por versión (power-assert y Compose desde 2.0), power-assert funcionando en 2.4.21, y qué reflexión anda sin `kotlin-reflect`. ⚡ del plan: Mini MockK (`mockk`), generador KSP (`ksp`), rescate de legado (`idioms`); el resto, nuevos |
 | 7 | ⬜️ | | |
 | 8 | ⬜️ | | |
 | 9 | ⬜️ | | |
