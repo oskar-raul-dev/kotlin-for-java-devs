@@ -1,10 +1,17 @@
 # Temario: Kotlin para quien viene de Java
 
 Qué enseña el curso, lección por lección: el **mapeo Java → Kotlin**, las **trampas**, la **versión** de cada
-construcción, el **caso** (Banco o Mercado) y el **⚡** que la cierra. Cubre las 18 secciones del
-[plan](../Plan-Migracion-Monorepo.md#5-secciones-y-lecciones): 5 tutoriales y 83 lecciones.
+construcción, el **caso** (Banco o Mercado) y el **⚡** que la cierra. Cubre 18 secciones: 5 tutoriales y 83
+lecciones, más `13-spring-api` (pendiente, fase B6′).
 
-> **Estado:** completo y revisado (22 de noviembre de 2026); cierra el paso B0 según [`Temario-Plan.md`](Temario-Plan.md). La [trazabilidad](#trazabilidad) resume cada lección. El temario
+**Lo que viene de `java-champion-review`** (revisado con su Temario): los tutoriales de CLI, REPL, decompilación y
+depuración (`tutorials`) · metaprogramación → `06-compiler` · `16-testing` → `05-testing` · `17-quality`,
+`19-gradle`, `21-docs` y `06-packaging` → `08-build` · `15-design` → `07-design` · `03-concurrency` → `02-coroutines`
+(JMM, sincronización, problemas clásicos) · `23-legacy-jdks` → tracks `20`–`22` · `25-interview` → `25-interview` ·
+*Effective Java* → `docs/EffectiveKotlin.md`. **No se trae**: GUI (AWT, Swing, JavaFX), sonido, imágenes, Ant,
+Jenkins, JPMS y JVM internals a fondo (GC, JIT): ya están en el repo de Java y no cambian con Kotlin.
+
+> **Estado:** completo y revisado (22 de noviembre de 2026); cierra el paso B0 según [`Temario-Plan.md`](archive/Temario-Plan.md). La [trazabilidad](#trazabilidad) resume cada lección. El temario
 > anterior de las 14 lecciones originales está en [`archive/Temario-v1.md`](archive/Temario-v1.md).
 
 - Fuente de verdad de conteos y de la ruta prioritaria: [`README.md`](../README.md). Casos: [`Casos.md`](Casos.md).
@@ -27,7 +34,7 @@ construcción, el **caso** (Banco o Mercado) y el **⚡** que la cierra. Cubre l
 | 🐉 | **Jefe final**: proyecto que cruza secciones |
 | 🎤 | Pregunta típica de entrevista |
 | 🎯 | Prioritario: ruta mínima recomendada |
-| `[1.9]` `[2.2]` | Versión de Kotlin en que la construcción es estable, **medida** (tabla en [`Temario-Plan.md`](Temario-Plan.md#referencia-de-versiones-medida)) |
+| `[1.9]` `[2.2]` | Versión de Kotlin en que la construcción es estable, **medida** (tabla en [`Temario-Plan.md`](archive/Temario-Plan.md#referencia-de-versiones-medida)) |
 | `[exp N]` / `[dep N]` / `[rm N]` | Experimental, deprecada o retirada en la versión N |
 | **Build 0–6** | Complejidad del build: 0 sin build · 1 Gradle simple · 2 con librerías (y Docker) · 3 framework · 4 multiplataforma · 5 herramientas de build · 6 legacy en contenedor |
 | ⚠️ | Por verificar al escribir la sección |
@@ -51,6 +58,7 @@ construcción, el **caso** (Banco o Mercado) y el **⚡** que la cierra. Cubre l
 | [`10-ktor`](#10-ktor) | Ktor | 3 | Mercado | 3 | 7 |
 | [`11-multiplatform`](#11-multiplatform) | Kotlin Multiplatform y Compose | 4 | Ambos | 4 | 8 |
 | [`12-android`](#12-android) | Android | 4 (fuera del composite) | Ambos | 7 | 8 |
+| [`13-spring-api`](#13-spring-api) | API Spring de punta a punta, en dos sabores (MVC y reactiva) | 3 | Banco | 2 sabores (pendiente) | B6′ |
 | [`20-legacy-kotlin14`](#20-legacy-kotlin14) | Legacy: Android clásico y Boot 2.3–2.4 (Kotlin 1.4.32) | 6 | — | 4 | 9 |
 | [`21-legacy-kotlin16`](#21-legacy-kotlin16) | Legacy: Spring Boot 2.7 con `javax` (Kotlin 1.6.21) | 6 | Banco (la API de `09-spring` portada) | 3 | 9 |
 | [`22-legacy-kotlin19`](#22-legacy-kotlin19) | Legacy: el último K1 y la migración a K2 (Kotlin 1.9.22) | 6 | — | 3 | 9 |
@@ -773,7 +781,7 @@ comportamiento al pasar de K1 a K2 y cómo se nota en código que se migra.
 | `ScopedValue` (vista previa en 21) o pasar el contexto | *Context parameters* `[2.4]` | Reemplazan a los *context receivers* `[rm 2.4]` |
 | Campo privado + getter de otro tipo | *Explicit backing fields* `[2.4]` | `val x: List<T> field = mutableListOf()` |
 | — | Smart cast a supertipo común con `x is B \|\| x is C` `[2.0]`; `break`/`continue` en lambdas inline `[2.2]` | K2 infiere más: aparecen avisos nuevos (`!!` innecesario) |
-| — | `enumEntries<T>()` `[2.0]`, `@SubclassOptInRequired` `[2.1]`, alias de tipo anidados `[2.3]` | Ver la [referencia medida](Temario-Plan.md#referencia-de-versiones-medida) |
+| — | `enumEntries<T>()` `[2.0]`, `@SubclassOptInRequired` `[2.1]`, alias de tipo anidados `[2.3]` | Ver la [referencia medida](archive/Temario-Plan.md#referencia-de-versiones-medida) |
 | Lambdas con `invokedynamic` | Lambdas con `invokedynamic` desde 2.0 | `toString()` distinto; `@JvmSerializableLambda` `[1.8]` o `-Xlambdas=class` |
 
 **Trampas:**
@@ -2678,6 +2686,26 @@ por nivel, cada uno atrapado por el nivel que corresponde.
 
 ---
 
+## 13-spring-api
+
+> **Pendiente:** las entradas se escriben al empezar la fase B6′, con la plantilla de
+> [`archive/Temario-Plan.md`](archive/Temario-Plan.md). Decisiones 12 a 14 de [`Decisions.md`](Decisions.md).
+
+La API de transferencias del Banco como proyecto guiado, en dos sabores opcionales con el mismo contrato de pruebas
+(se puede hacer uno, los dos o saltar la sección):
+
+- **`mvc`:** Spring MVC, Spring Data JPA o JDBC, Flyway, Spring Security con JWT, springdoc-openapi, Actuator,
+  `@ConfigurationProperties`, beans condicionales, `@Retryable` o Resilience4j contra el cliente de tipos de cambio,
+  EhCache 3 por JCache (con nivel *off-heap*), Valkey, MockMvc DSL y Testcontainers. **⚡** La API de transferencias
+  con idempotencia, seguridad y caché, en verde con el contrato.
+- **`reactive`:** lo mismo con WebFlux, `suspend` y `Flow`, `coRouter`, R2DBC, `SecurityWebFilterChain`, Caffeine
+  asíncrona, Valkey con Lettuce reactivo y `WebTestClient`. **⚡** La misma API con el mismo contrato y una prueba de
+  carga frente a `mvc`.
+
+Al escribirla, el ⚡ de `09 · webflux` se achica: la API completa y la prueba de carga frente a MVC pasan aquí.
+
+---
+
 ## 20-legacy-kotlin14
 
 Legacy: Android clásico y Boot 2.3–2.4 (Kotlin 1.4.32). **Build:** 6 · **Caso:** —.
@@ -3228,7 +3256,7 @@ ya tiene código; **Ejercicios** es la cantidad actual de su `Exercises.md` (las
 con la escala de 25 a 40 de la sección 6 del plan). Los tutoriales tienen 72 ejercicios entre los cinco, en sus `README.md`.
 
 **Revisión de consistencia (tanda 10):** las 83 lecciones tienen objetivo, sección, tabla, trampas, caso, 🎤 y ⚡;
-cada etiqueta `[x.y]` del temario existe en la [referencia medida](Temario-Plan.md#referencia-de-versiones-medida); todos
+cada etiqueta `[x.y]` del temario existe en la [referencia medida](archive/Temario-Plan.md#referencia-de-versiones-medida); todos
 los enlaces relativos y anclas resuelven. Comprobado con scripts, no a ojo.
 
 

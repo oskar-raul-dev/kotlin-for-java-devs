@@ -2,7 +2,7 @@
 
 > **Archivo histórico.** Temario de las 14 lecciones originales, escrito cuando el repo era un solo proyecto y el
 > caso de ejemplo eran pedidos de tienda. Lo reemplaza [`docs/Temario.md`](../Temario.md), que se escribe por tandas
-> según [`docs/Temario-Plan.md`](../Temario-Plan.md); las tandas 1 a 3 toman de aquí lo que sigue valiendo (tablas
+> según [`docs/Temario-Plan.md`](Temario-Plan.md); las tandas 1 a 3 toman de aquí lo que sigue valiendo (tablas
 > Java → Kotlin, trampas y la sección "Huecos"). No se actualiza.
 
 Qué cubre el tutorial, lección por lección, con el **mapeo Java → Kotlin**, los **idioms** que se practican y

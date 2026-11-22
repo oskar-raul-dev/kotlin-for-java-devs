@@ -1,7 +1,7 @@
 # Checklist del curso
 
 Bitácora de avance: qué está creado y qué falta, sección por sección y lección por lección. Se actualiza cada vez
-que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migracion-Monorepo.md`](Plan-Migracion-Monorepo.md).
+que se termina algo. El orden de lo que falta está en [Fase B](#fase-b); las decisiones, en [`docs/Decisions.md`](docs/Decisions.md).
 
 **Leyenda:** ✅ listo · 🟡 en progreso · ⬜️ pendiente · ➖ no aplica
 
@@ -23,10 +23,10 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | Workspace de VS Code | ✅ | `LISTO` | `kotlin-for-java-devs.code-workspace` (ignorado por git) |
 | `README.md` (índice general) | ✅ | `LISTO` | Documentos, requisitos, IDE y terminal, índice de secciones, tracks legacy, convenciones (A9) |
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
-| `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, casos de finanzas, guías de lección (propuesta); estado al 2026-11-22 |
+| `docs/Decisions.md` | ✅ | `LISTO` | Las decisiones del curso con su fecha; reemplaza al plan de migración, cerrado y borrado el 2026-11-22 (tag `migration-closed`) |
 | `docs/lessons/` (guías de estudio) | ✅ | `LISTO` | Índice, reglas, plantilla y 12 guías de estudio (teoría, mapa del código y fuentes verificadas), en `docs/lessons/<sección>/NN-<lección>.md` (B0″); `scripts/check-guide-links.sh` |
 | `docs/Temario.md` | ✅ | `LISTO` | Las 88 entradas, los dos 🐉 y la trazabilidad (tandas 0 a 10), revisado con el usuario (B0 cerrado). El anterior, en `docs/archive/Temario-v1.md` |
-| `docs/Temario-Plan.md` y `docs/prompts/temario-tanda.md` | ✅ | `LISTO` | Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
+| `docs/archive/Temario-Plan.md` y `docs/archive/prompts/temario-tanda.md` | ✅ | `LISTO` | Archivados al cerrar B0. Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
 | `docs/LegacyKotlin.md` | ✅ | `LISTO` | Versiones 1.0 → 2.x, los tres tracks, cómo correrlos y trampas |
 | `docs/Casos.md` | ✅ | `LISTO` | Diseño de los casos Banco y Mercado y su puente; se revisa al implementar |
@@ -54,8 +54,8 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 
 ## Fase B
 
-👉 **Siguiente: B2.** B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`). El orden y el porqué de cada fase están en la
-[sección 8 del plan](Plan-Migracion-Monorepo.md#8-fase-b-generar-el-resto); el contenido de cada lección, en
+👉 **Siguiente: B2.** B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`). El orden va primero por lo pedido explícitamente (corrutinas, reactivo,
+legacy, web y móvil) y deja lo transversal al final; las decisiones, en [`docs/Decisions.md`](docs/Decisions.md); el contenido de cada lección, en
 [`docs/Temario.md`](docs/Temario.md) (su trazabilidad dice caso, ⚡ y ejercicios de cada una).
 
 | Fase | Qué entrega | Lecciones | Depende de | Versiones a fijar antes de empezar | Estado |
@@ -76,7 +76,22 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | B10 · Cierre | Los dos 🐉 y `26-kotlin-next` cuando Kotlin 2.5 salga estable | 1 + 2 🐉 | B2–B9 | Kotlin 2.5 | ⬜️ |
 
 **Total:** 12 lecciones que rehacer (B2), 71 nuevas (B3–B10) y los dos sabores de `13-spring-api`, más los dos 🐉. Las versiones se fijan en
-[`docs/Versions.md`](docs/Versions.md) al empezar cada fase, sin subir nada que ya esté fijado.
+[`docs/Versions.md`](docs/Versions.md) al empezar cada fase, sin subir nada que ya esté fijado. Del orden de 2,500
+ejercicios a 30 por lección: por eso va por fases.
+
+### Riesgos
+
+- ⚠️ **Versiones sin confirmar**: Gradle exacto para KGP 1.4.32 y 1.6.21, y si `kotlin-test-junit5` existe para 1.4 (si no, JUnit 4 en ese track).
+- **IntelliJ y Gradle viejo**: puede que un IntelliJ actual no importe bien un proyecto con Gradle 6.8. Alternativa:
+  abrir el track como proyecto aparte o trabajarlo solo por CLI y contenedor.
+- **Android** necesita Android SDK y emulador, y su AGP fija la versión de Gradle (AGP 9.0 exige Gradle 9.1+).
+  **iOS** necesita Xcode; sin él, KMP se hace con targets desktop y wasm.
+- ⚠️ **Versiones de `13-spring-api` sin fijar**: línea de Spring Boot (se espera la 4, sobre Spring Framework 7), si
+  `@Retryable` ya está en el núcleo de Spring 7 o hace falta Spring Retry, y las versiones de springdoc, EhCache,
+  Caffeine, Resilience4j y la imagen de Valkey. Se fijan al empezar B6′, y se confirma que EhCache por JCache no sirve
+  para la caché asíncrona.
+- **El composite usa el Gradle de la raíz** para todas las secciones incluidas. Si una sección necesita otro Gradle,
+  sale del composite (como `12-android`).
 
 ### Cuándo una lección está lista (B2 en adelante)
 
@@ -568,3 +583,7 @@ y el ⚡ de `09 · webflux` achicado (la API completa y la prueba de carga pasan
   sabores opcionales, `mvc` y `reactive`, con el mismo contrato de pruebas (Security, OpenAPI, Actuator, propiedades,
   beans, reintentos, caché, Testcontainers). Caché: EhCache 3 por JCache en `mvc`, Caffeine asíncrona en `reactive`,
   Valkey en los dos. Fase nueva B6′; `04 · r2dbc` se adelanta de B8 a B6.
+- **2026-11-22** · **Plan de migración cerrado y borrado.** Las decisiones pasan a `docs/Decisions.md` (con las de esta
+  fase: generador de órdenes, tutoriales numerados, guías de estudio, idioma de las fuentes, puertos); el orden de la
+  fase B, su tamaño y los riesgos, a la sección "Fase B" de este checklist; el origen de las secciones y `13-spring-api`,
+  a `docs/Temario.md`. `docs/Temario-Plan.md` y su prompt pasan a `docs/archive/`. Tag `migration-closed`.

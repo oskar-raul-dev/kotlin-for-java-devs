@@ -13,28 +13,28 @@ Each lesson has runnable code, tests, and graded exercises **without solutions**
 The repo is **public on GitHub**: never mention specific companies, clients or hiring processes anywhere (code,
 docs, tests, exercises, commit messages).
 
-Phase A (migration to the monorepo, Kotlin 2.x, legacy track 19 and its container) is done. Phase B (new content) is
-next; its order is in `Plan-Migracion-Monorepo.md`.
+The migration (phase A and B0: monorepo, Kotlin 2.x, legacy track 19, the cases, the syllabus, the guides) is done and
+its plan was deleted (tag `migration-closed`). Phase B (new content) continues; its order is in `CHECKLIST.md` ("Fase B").
 
 ## Documents and what each one owns
 
 | Document | Source of truth for |
 |---|---|
 | `README.md` | Section index, lesson table, exercise counts, test count ("Estado actual"), "Ruta prioritaria" |
-| `CHECKLIST.md` | Progress per section and lesson, and the dated log ("Bitácora") |
-| `Plan-Migracion-Monorepo.md` | Roadmap, decisions, phase A/B steps, open questions |
+| `CHECKLIST.md` | Progress per section and lesson, phase B order, dependencies and risks, and the dated log ("Bitácora") |
+| `docs/Decisions.md` | Design decisions with their date (they came from the deleted migration plan) |
 | `docs/Versions.md` | Every pinned version (base, per section, legacy tracks, container images) and how to bump them |
 | `docs/LegacyKotlin.md` | What changed from Kotlin 1.0 to 2.x, the three legacy tracks, how to run them |
 | `docs/Casos.md` | The two case studies (Bank: ledger/transfers/reconciliation; Market: ticks/candles/order book/P&L) and which lesson uses which |
 | `docs/Temario.md` | Per-lesson syllabus (Java → Kotlin mapping, traps); rewritten in phase B0 |
-| `docs/Temario-Plan.md` | How B0 is written: lesson template, batches (tandas), measured version tags (from `scripts/version-probes.sh`), status. Each batch runs the master prompt in `docs/prompts/temario-tanda.md`; the old syllabus is in `docs/archive/Temario-v1.md` |
+| `docs/archive/` | Closed material: syllabus v1, the B0 batch plan `Temario-Plan.md` (lesson template, measured version tags from `scripts/version-probes.sh`) and its prompt |
 | `docs/lessons/` | One guide per lesson with code (`<section>/NN-<subpackage>.md`): reading order, file → symbols → test map, how to run, status. Index and rules in `docs/lessons/README.md`, template in `_template.md` |
 | `22-legacy-kotlin19/docs/k2-notes.md` | What actually changed when the base moved from 1.9.22 (K1) to 2.4.21 (K2) |
 
 **Sync rules** — update in the same change:
 
 - New or removed tests/exercises → README counts ("Estado actual: N pruebas", per-lesson and total exercises).
-- Finished step or lesson → `CHECKLIST.md` (status + log entry) and, for plan steps, the plan's status section.
+- Finished step or lesson → `CHECKLIST.md` (status + log entry); a new design decision → `docs/Decisions.md`.
 - Version change → every section's `build.gradle.kts` (no shared parent), `docs/Versions.md`, README "Versiones",
   and this file.
 - New section with a build → root `settings.gradle.kts` `includeBuild` list (unless it is a legacy track or Android).

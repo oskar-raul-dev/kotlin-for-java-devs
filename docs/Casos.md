@@ -1,7 +1,7 @@
 # Casos de estudio: Banco y Mercado
 
-Diseño de los dos casos de punta a punta que reemplazan al dominio provisional de pedidos de tienda (paso B0′ del
-[plan](../Plan-Migracion-Monorepo.md#11-caso-de-punta-a-punta-ideas-de-reemplazo)). Este documento se revisa
+Diseño de los dos casos de punta a punta que reemplazan al dominio provisional de pedidos de tienda (paso B0′, decisión 11
+de [`Decisions.md`](Decisions.md)). Este documento se revisa
 **antes** de tocar código; las lecciones y los ejercicios lo toman como referencia. Escrito el **13 de noviembre de
 2026**; lo marcado con ⚠️ se decide al implementar.
 

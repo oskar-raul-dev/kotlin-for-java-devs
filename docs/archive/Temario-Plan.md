@@ -1,10 +1,13 @@
 # Plan de trabajo del temario (paso B0)
 
-Cómo se escribe [`docs/Temario.md`](Temario.md) completo: el formato de cada lección, las tandas en que se reparte el
+> **Archivado** al cerrar B0 (22 de noviembre de 2026). Sigue siendo la referencia de la plantilla de lección y de
+> las versiones medidas que usa `docs/Temario.md`.
+
+Cómo se escribe [`docs/Temario.md`](../Temario.md) completo: el formato de cada lección, las tandas en que se reparte el
 trabajo, lo que tiene que cumplir cada tanda y su estado. Cada tanda se ejecuta con el prompt maestro de
 [`docs/prompts/temario-tanda.md`](prompts/temario-tanda.md), rellenando sus parámetros con la fila de la tanda.
 
-Escrito el **13 de noviembre de 2026**. El paso B0 está en el [plan](../Plan-Migracion-Monorepo.md#8-fase-b-generar-el-resto)
+Escrito el **13 de noviembre de 2026**. El paso B0 está en el [plan](../Decisions.md)
 ("cada lección con mapeo Java → Kotlin, trampas, etiquetas de versión y su ⚡") y termina con una revisión juntos
 antes de escribir el código de las fases B2 a B10.
 
@@ -15,11 +18,11 @@ antes de escribir el código de las fases B2 a B10.
 
 | | Hoy | Al terminar B0 |
 |---|---|---|
-| Lecciones | 14 (las que tienen código) | **88 entradas**: 5 tutoriales + 83 lecciones en 17 secciones, según la [sección 5 del plan](../Plan-Migracion-Monorepo.md#5-secciones-y-lecciones) |
+| Lecciones | 14 (las que tienen código) | **88 entradas**: 5 tutoriales + 83 lecciones en 17 secciones, según la [sección 5 del plan](../Decisions.md) |
 | Por lección | Mapeo Java → Kotlin y trampas | Además: objetivo, caso (Banco o Mercado), etiquetas de versión, su ⚡ y los temas 🎤 |
 | Etiquetas de versión | 0 | Todas sacadas de la [referencia medida](#referencia-de-versiones-medida) |
 | ⚡ | 0 | Uno por lección (los tutoriales solo `decompile`) |
-| Casos | Pedidos de tienda (provisional) | Banco y Mercado ([`Casos.md`](Casos.md)) |
+| Casos | Pedidos de tienda (provisional) | Banco y Mercado ([`Casos.md`](../Casos.md)) |
 | "Huecos" y "Para la discusión" | Preguntas de antes del plan | Quitadas: las responde el plan (cada hueco quedó como lección) |
 
 El temario es un documento: **no** se escribe código de lecciones en B0. Lo que sí se escribe y se corre son las pruebas
@@ -52,15 +55,15 @@ de compilación que fijan las etiquetas de versión (en el scratchpad, no en el 
 
 ## Reglas para todas las tandas
 
-1. **Fuentes, en este orden:** la sección 5 del plan (qué lecciones hay y su ⚡ de sección), [`Casos.md`](Casos.md)
-   (qué caso usa cada lección), [`Versions.md`](Versions.md), la [referencia de versiones](#referencia-de-versiones-medida)
-   y, para las lecciones que ya existen, [`archive/Temario-v1.md`](archive/Temario-v1.md) (tablas, trampas y la
+1. **Fuentes, en este orden:** la sección 5 del plan (qué lecciones hay y su ⚡ de sección), [`Casos.md`](../Casos.md)
+   (qué caso usa cada lección), [`Versions.md`](../Versions.md), la [referencia de versiones](#referencia-de-versiones-medida)
+   y, para las lecciones que ya existen, [`archive/Temario-v1.md`](Temario-v1.md) (tablas, trampas y la
    sección "Huecos") junto con su código y su `Exercises.md`.
 2. **Etiquetas de versión solo medidas.** Una etiqueta `[x.y]` sale de la referencia de este documento. Si una tanda
-   necesita una que no está, la agrega a [`scripts/version-probes.sh`](../scripts/version-probes.sh), la mide y suma la
+   necesita una que no está, la agrega a [`scripts/version-probes.sh`](../../scripts/version-probes.sh), la mide y suma la
    fila a la referencia en la misma tanda. Lo que no se pueda medir lleva ⚠️.
 3. **Librerías con versión, no con etiqueta de lenguaje:** kotlinx-coroutines, Spring, Ktor, Exposed… se citan con
-   la versión de [`Versions.md`](Versions.md) o, si aún no está fijada, con ⚠️ ("se fija al escribir la sección").
+   la versión de [`Versions.md`](../Versions.md) o, si aún no está fijada, con ⚠️ ("se fija al escribir la sección").
 4. **Español en el texto, inglés en el código** (identificadores, nombres de lección). Repo público: nada de
    empresas ni procesos de selección; datos y entidades ficticios.
 5. **Cada tanda reemplaza sus bloques `⬜️ pendiente` del temario** y no toca los de otras tandas, salvo el mapa
@@ -72,7 +75,7 @@ de compilación que fijan las etiquetas de versión (en el scratchpad, no en el 
 
 | Tanda | Contenido | Entradas | Depende de | Nota |
 |---|---|---|---|---|
-| **0** ✅ | Base: esqueleto nuevo de `Temario.md` (encabezado, leyenda, mapa general, un bloque `⬜️ pendiente` por lección), migración de la chuleta, los idioms y las trampas consolidadas, retiro de "Huecos" y "Para la discusión" (el temario anterior queda en [`archive/Temario-v1.md`](archive/Temario-v1.md)); referencia de versiones con `kotlinc` 2.2 y 2.3 | — | — | Es la que habilita el resto |
+| **0** ✅ | Base: esqueleto nuevo de `Temario.md` (encabezado, leyenda, mapa general, un bloque `⬜️ pendiente` por lección), migración de la chuleta, los idioms y las trampas consolidadas, retiro de "Huecos" y "Para la discusión" (el temario anterior queda en [`archive/Temario-v1.md`](Temario-v1.md)); referencia de versiones con `kotlinc` 2.2 y 2.3 | — | — | Es la que habilita el resto |
 | **1** | `tutorials` (5, versión corta) y `01-language` existentes I: `basics`, `control`, `strings`, `oop`, `io` | 10 | 0 | Pasar a los casos y a la plantilla |
 | **2** | `01-language` existentes II: `collections`, `functional`, `json`, `datetime`, `exceptions` | 5 | 0 | Ídem; aquí vive la ruta 🎯 del Mercado |
 | **3** | `01-language` nuevas: `generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2` | 6 | 0 | `kotlin2` usa toda la referencia de 2.x |
@@ -169,7 +172,7 @@ estable en la versión anterior medida"; `[≤ 1.4]` = ya estable en la versión
 | `MutableList.removeFirst()` compilado contra JDK 21 | — | — | — | — | — | `List.removeFirst` | — | — | — | — | `List.removeFirst` | Sin aviso: llama al método de Java 21 (`javap`; lección `collections`) |
 
 Lo medido en los tutoriales y en `k2-notes.md` (smart casts de K2, `typeSwitch` con target 21, avisos nuevos de K2)
-también vale como referencia. La tabla sale de [`scripts/version-probes.sh`](../scripts/version-probes.sh): un ejemplo de
+también vale como referencia. La tabla sale de [`scripts/version-probes.sh`](../../scripts/version-probes.sh): un ejemplo de
 una línea por construcción, compilado con cada `kotlinc` instalado. Para medir una construcción nueva, se agrega una
 línea al script y se corre `scripts/version-probes.sh <nombre>`.
 

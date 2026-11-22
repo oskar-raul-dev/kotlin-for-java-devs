@@ -1,6 +1,6 @@
 # Prompt maestro: una tanda del temario
 
-Prompt para escribir una tanda de [`docs/Temario.md`](../Temario.md) según el [plan de trabajo](../Temario-Plan.md).
+Prompt para escribir una tanda de [`docs/Temario.md`](../../Temario.md) según el [plan de trabajo](../Temario-Plan.md).
 Se copia, se rellenan los parámetros con la fila de la tanda y se usa en una sesión nueva (o se le pasa a un
 subagente). Así cada tanda sale con las mismas reglas aunque se escriba en días distintos.
 
@@ -28,8 +28,8 @@ Construcciones que hay que medir: {MEDIR}
 Extensión orientativa por lección: {EXTENSIÓN}
 
 Antes de escribir, lee:
-1. docs/Temario-Plan.md completo: la plantilla de lección, las reglas y la referencia de versiones medida.
-2. Plan-Migracion-Monorepo.md, sección 5 (qué cubre cada lección y el ⚡ de su sección) y sección 6 (escala de
+1. docs/archive/Temario-Plan.md completo: la plantilla de lección, las reglas y la referencia de versiones medida.
+2. docs/Temario.md, mapa general (qué cubre cada sección) y README, leyenda de ejercicios (escala de
    ejercicios: 🟢 🟡 🟠 🔴 ⚡ 🐉 🎤 🎯, etiquetas [x.y]).
 3. docs/Casos.md: entidades, invariantes y qué lección usa qué caso. Usa sus nombres (Money, Tick, OrderBook,
    JournalEntry, Transfer…).

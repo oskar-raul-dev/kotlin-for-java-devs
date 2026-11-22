@@ -11,7 +11,8 @@ ejercicios graduados **sin soluciones**. Los ejemplos y los ejercicios siguen do
 > tutoriales están listos, todo el código y los ejercicios ya usan los casos Banco y Mercado, y el temario nuevo
 > está completo y revisado (B0 cerrado). Hay 14 lecciones con código en `01-language` y `04-data`, verificadas en
 > Kotlin 2.4.21, cada una con su guía en [`docs/lessons/`](docs/lessons/README.md). El avance está en
-> [`CHECKLIST.md`](CHECKLIST.md) y la hoja de ruta en [`Plan-Migracion-Monorepo.md`](Plan-Migracion-Monorepo.md).
+> [`CHECKLIST.md`](CHECKLIST.md) (con el orden de lo que falta) y las decisiones en
+> [`docs/Decisions.md`](docs/Decisions.md).
 
 **Salto rápido:** [Documentos](#documentos) · [Requisitos](#requisitos) · [Cómo se usa](#cómo-se-usa) ·
 [Índice de secciones](#índice-de-secciones) · [Versiones](#versiones) · [Lecciones](#lecciones) ·
@@ -24,13 +25,13 @@ ejercicios graduados **sin soluciones**. Los ejemplos y los ejercicios siguen do
 | Documento | Para qué |
 |---|---|
 | [`CHECKLIST.md`](CHECKLIST.md) | Avance por sección y por lección, y la bitácora con fechas |
-| [`Plan-Migracion-Monorepo.md`](Plan-Migracion-Monorepo.md) | Hoja de ruta: decisiones, secciones, fases A y B, preguntas abiertas |
+| [`docs/Decisions.md`](docs/Decisions.md) | Las decisiones de diseño del curso, con su fecha |
 | [`docs/Versions.md`](docs/Versions.md) | Todas las versiones fijadas (base, secciones, tracks, imágenes) y cómo actualizarlas |
 | [`docs/LegacyKotlin.md`](docs/LegacyKotlin.md) | Qué trajo cada versión de 1.0 a 2.x, los tres tracks legacy y cómo correrlos |
 | [`docs/Casos.md`](docs/Casos.md) | Los dos casos de estudio, Banco y Mercado: entidades, datos y qué lección usa cada uno |
 | [`docs/Temario.md`](docs/Temario.md) | Temario por lección: mapeo Java → Kotlin, trampas, versión, caso y ⚡ (completo y revisado; el anterior, en [`docs/archive/`](docs/archive/Temario-v1.md)) |
 | [`docs/lessons/`](docs/lessons/README.md) | Guías de lección: por dónde leer cada lección con código, qué archivo muestra qué y qué prueba lo demuestra |
-| [`docs/Temario-Plan.md`](docs/Temario-Plan.md) | Plan de B0: plantilla de lección, tandas, versiones medidas y estado; el prompt de cada tanda está en [`docs/prompts/`](docs/prompts/temario-tanda.md) |
+| [`docs/archive/`](docs/archive/) | Lo cerrado: el temario v1, el plan de tandas de B0 (con la plantilla de lección y las versiones medidas) y su prompt |
 | [`22-legacy-kotlin19/docs/k2-notes.md`](22-legacy-kotlin19/docs/k2-notes.md) | Qué cambió de verdad al pasar este repo de Kotlin 1.9.22 (K1) a 2.4.21 (K2) |
 
 ## Requisitos
@@ -82,8 +83,8 @@ en `22-legacy-kotlin19`. Las 26 de PostgreSQL y MySQL salen `SKIPPED` si sus con
 
 El número del directorio es el orden de estudio. El nivel indica qué tan complejo es el build: 0 sin build ·
 1 Gradle simple · 2 Gradle con librerías (y Docker) · 3 framework · 4 multiplataforma · 5 herramientas de build ·
-6 legacy en contenedor. El detalle de cada lección está en la sección 5 del
-[plan](Plan-Migracion-Monorepo.md#5-secciones-y-lecciones).
+6 legacy en contenedor. El detalle de cada lección está en
+[`docs/Temario.md`](docs/Temario.md).
 
 | Sección | Tema | Kotlin | Build | Lecciones | Estado |
 |---|---|---|---|---|---|
@@ -339,18 +340,17 @@ las siguientes ~4 segundos ([`docker/legacy-kotlin/README.md`](docker/legacy-kot
 
 ```text
 kotlin-for-java-devs/
-├── README.md, CHECKLIST.md, CLAUDE.md, Plan-Migracion-Monorepo.md
+├── README.md, CHECKLIST.md, CLAUDE.md
 ├── settings.gradle.kts         # composite build: includeBuild de las secciones de la base
 ├── build.gradle.kts            # tareas agregadas build/test/check/clean
 ├── gradlew, gradle/wrapper/    # Gradle 9.9.1 para todo el composite
 ├── .sdkmanrc                   # JDK 21 (Zulu) para `sdk env`
 ├── docs/
 │   ├── Temario.md              # temario por lección (88 entradas y la trazabilidad)
-│   ├── Temario-Plan.md         # plan de las tandas del temario y versiones medidas
+│   ├── Decisions.md            # decisiones del curso con su fecha
 │   ├── Casos.md                # casos de estudio Banco y Mercado
 │   ├── Versions.md             # versiones fijadas y cómo actualizarlas
 │   ├── LegacyKotlin.md         # Kotlin 1.0 → 2.x y los tracks legacy
-│   ├── prompts/                # prompt maestro de cada tanda del temario
 │   └── archive/                # temario anterior (v1)
 ├── docker/
 │   ├── postgres/compose.yaml   # PostgreSQL 17.2 en 25432

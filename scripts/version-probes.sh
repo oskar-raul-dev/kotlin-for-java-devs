@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Mide en qué versión de Kotlin es estable cada construcción: compila un ejemplo mínimo con cada kotlinc instalado
-# con SDKMAN y clasifica el resultado. Es la fuente de la "Referencia de versiones" de docs/Temario-Plan.md.
+# con SDKMAN y clasifica el resultado. Es la fuente de la "Referencia de versiones" de docs/archive/Temario-Plan.md.
 #
 #   scripts/version-probes.sh                      # todas las pruebas, con todas las versiones instaladas
 #   scripts/version-probes.sh guard multidollar    # solo esas
