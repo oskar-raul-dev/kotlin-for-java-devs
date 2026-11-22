@@ -452,3 +452,8 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   `05-debug` (el orden de lectura); los paquetes de Kotlin de los ejemplos siguen sin número (`…tutorials.cli`). Rutas
   actualizadas en los tutoriales, el temario, las guías, el README y CLAUDE.md; el bucle que corre todos los
   `check.sh` pasa a `for t in tutorials/0*/check.sh`. Las 136 comprobaciones pasan con las carpetas nuevas.
+- **2026-11-22** · **Propuesta de guías de estudio (sección 13 del plan):** que cada guía de `docs/lessons/` sume la
+  teoría de la lección (concepto, contraste con Java 21, por qué del diseño, símbolo del código, fuente) y un bloque
+  "Para profundizar" con documentación oficial, lecturas y videos verificados. Muestra: `01-basics.md`, con 14 enlaces
+  (13 responden 200; Baeldung bloquea clientes automáticos) y una trampa nueva medida (la división `/` de Kotlin sobre
+  `BigDecimal` redondea con `HALF_EVEN` a la escala del dividendo). Pendiente de revisión.
