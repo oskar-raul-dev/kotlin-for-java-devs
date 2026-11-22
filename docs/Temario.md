@@ -566,27 +566,239 @@ reintento con la misma clave que no duplica asientos, y una comprobación de que
 
 ### 01 · `generics` — Varianza, `*`, `reified`, `T & Any`, `typealias`
 
-> ⬜️ **Pendiente (tanda 3).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** escribir APIs genéricas que acepten lo que deben (varianza en la declaración y en el uso), saber qué se
+borra en runtime y cuándo `reified` lo evita, y leer las firmas genéricas de la stdlib sin adivinar.
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** nueva
+
+| Java | Kotlin | Nota |
+|---|---|---|
+| `List<? extends MarketEvent>` (en cada uso) | `interface Source<out T>` (en la declaración) o `List<out T>` (en el uso) | Varianza en la declaración: se escribe una vez, no en cada firma |
+| `Consumer<? super Trade>` | `fun interface Handler<in T>` | PECS sin repetir el comodín: un `Handler<MarketEvent>` sirve donde se pide `Handler<Trade>` |
+| Tipo crudo `List`, `List<?>` | `List<*>` `[≤ 1.4]` | Proyección estrella: se lee como `Any?`, no se escribe |
+| `<T extends Comparable<T> & Serializable>` | `fun <T> f() where T : Comparable<T>, T : java.io.Serializable` | Varias cotas con `where` |
+| `Class<T> type` como parámetro extra | `inline fun <reified T> decode(…)` `[≤ 1.4]` | El tipo existe en runtime dentro de la función inline; no se llama desde Java |
+| `@NonNull T` (sin efecto en el compilador) | `T & Any` `[1.7]`, `T : Any` | `T` sin cota admite `null`; `T & Any` lo excluye en un uso puntual |
+| `Collections.<String, Integer>emptyMap()` | `pick<_, Int>(m)` `[1.7]` | Guion bajo: se infiere uno y se escribe el otro |
+| — (no hay alias de tipo) | `typealias Prices = Map<String, Money>` `[≤ 1.4]`; anidado en una clase `[2.3]` | Solo un nombre: no crea un tipo nuevo (para eso, `value class`) |
+
+**Trampas:**
+- El borrado es el mismo que en Java: `x is List<String>` no compila y `List<Trade>` y `List<Quote>` son la misma clase
+  en runtime; `reified` solo existe dentro de funciones `inline`.
+- `Array<T>` es invariante, a diferencia del arreglo covariante de Java (que acepta la asignación y lanza
+  `ArrayStoreException` al escribir); `Array<Trade>` no se pasa como `Array<MarketEvent>`.
+- `MutableList<*>` no acepta `add` de nada y `List<Any?>` sí acepta cualquier cosa: no son lo mismo.
+- Un `typealias` no protege: `typealias AccountId = String` acepta cualquier `String`, incluido un ticker.
+- Desde Java, `List<out T>` en un parámetro se ve como `List<? extends T>` y en un retorno sin comodín; si una API
+  Java lo necesita distinto hace falta `@JvmSuppressWildcards` o `@JvmWildcard`.
+
+**Caso:** la jerarquía `MarketEvent` (`Trade`, `Quote`, `Halt`) de `json` con un `Source<out MarketEvent>` del feed y
+`Handler<in Trade>` para los suscriptores; `typealias Prices = Map<String, Money>`; un `decode<T>()` con `reified` sobre
+`ticks.json`; un `OrderBook<O : Order>` genérico sobre las órdenes de `oop`. **Ruta 🎯:** no entra (la ruta cubre las
+10 lecciones base).
+
+**🎤 Entrevista:** ¿qué significan `out` e `in` y cómo se relacionan con `? extends`/`? super`? · ¿Por qué `reified`
+exige `inline`? · ¿Por qué `List` es covariante y `MutableList` no?
+
+**⚡ Colecciones persistentes covariantes:** `PersistentList<out T>` y `PersistentMap<K, out V>` inmutables con
+compartición estructural (cada `plus` devuelve una versión nueva sin copiar todo) · **Se verifica con:** una prueba
+diferencial contra `List`/`Map` de la stdlib (10 000 operaciones aleatorias con semilla fija), una prueba de que una
+versión vieja no cambia después de un `plus`, y una que asigna un `PersistentList<Trade>` a un
+`PersistentList<MarketEvent>` (varianza) y documenta en un comentario por qué la versión mutable no compilaría.
 
 ### 01 · `inline` — `noinline`, `crossinline`, contratos, `value class`
 
-> ⬜️ **Pendiente (tanda 3).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** saber qué hace `inline` con el bytecode y cuándo vale la pena, controlar los `return` dentro de lambdas,
+y tipar valores (`AccountId`, cantidades, centavos) con `value class` sin pagar un objeto por valor.
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Banco · **Estado:** nueva
+
+| Java | Kotlin | Nota |
+|---|---|---|
+| Lambda → objeto `Function` (o `invokedynamic`) en cada llamada | `inline fun <T> measured(block: () -> T)` | El cuerpo y la lambda se copian en el llamador: sin objeto, sin llamada virtual |
+| `return` en una lambda sale solo de la lambda | `return` en la lambda de una `inline` sale de la función que llama | *Non-local return*; `return@forEach` es el local |
+| Pasar la lambda a otro hilo o guardarla | `crossinline` `[≤ 1.4]` / `noinline` | `crossinline` prohíbe el `return` no local; `noinline` deja esa lambda como objeto |
+| `Objects.requireNonNull(x)` (el compilador no aprende nada) | `contract { returns() implies (x != null) }` `[exp 2.4]` | Experimental desde 1.3; así funcionan los smart casts después de `require` |
+| Clase que envuelve un `long` (un objeto por valor) | `@JvmInline value class Cents(val v: Long)` `[1.5]`; genérica `[1.8]` | En runtime es un `long` salvo cuando se usa como nullable, genérico o interfaz |
+| — | `break`/`continue` dentro de una lambda inline `[2.2]` | Antes había que usar etiquetas o `return@` |
+| — | `@PublishedApi internal` | Una `public inline fun` no puede usar miembros privados: se copia en el código del cliente |
+
+**Trampas:**
+- `inline` en una función que no recibe lambdas solo agranda el bytecode; el compilador avisa ("expected performance
+  impact … is insignificant").
+- `value class` se boxea en `List<Cents>`, en `Cents?` y al pasarla como interfaz; además las funciones que la
+  reciben llevan un nombre alterado (`credit-abc12`) que Java no puede llamar (`@JvmExposeBoxed` es `[exp 2.4]`).
+- `inline class` está deprecada `[dep 1.5]`: hoy se escribe `@JvmInline value class`.
+- El compilador no verifica los contratos: uno falso (`returns() implies (x != null)` sin comprobarlo) produce smart
+  casts falsos y un NPE donde el código parecía seguro.
+- Una lambda `crossinline` que se ejecuta en otro hilo ya no está dentro del `try` del llamador: sus excepciones no
+  las atrapa quien llamó a la función inline.
+
+**Caso:** `AccountId`, `TransferId` y `Cents` como `value class` del Banco; `inline fun <T> Connection.inTransaction`
+(ya está en `jdbc`) y un `retrying` para el `FxRateClient` de `exceptions`, con `crossinline` para el registro de cada
+intento; un `requireBalanced` con contrato para el invariante de `JournalEntry`. **Ruta 🎯:** no entra.
+
+**🎤 Entrevista:** ¿qué hace `inline` y cuándo no conviene? · ¿Qué es un *non-local return* y por qué existe
+`crossinline`? · ¿Cuándo una `value class` deja de ser gratis?
+
+**⚡ Utilidades sin asignaciones:** `measured`, `retrying` y `withLock` como funciones `inline` y `Cents`/`AccountId`
+como `value class`, usadas por un servicio de transferencias en memoria · **Se verifica con:** `javap -c` sobre la
+clase que las usa: cero `invokedynamic` y cero clases `$lambda` para las lambdas inline, `Cents` como `long` en las
+firmas; una prueba de que el `return` no local sale de la función llamadora; y una de que la lambda `noinline`
+guardada se puede invocar después.
 
 ### 01 · `interop` — Platform types, `@Jvm*`, Java y Kotlin en el mismo módulo
 
-> ⬜️ **Pendiente (tanda 3).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** llamar a Java desde Kotlin sin NPE escondidos y escribir APIs Kotlin que Java use con naturalidad, en un
+módulo que mezcla los dos lenguajes.
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Banco · **Estado:** nueva
+
+| Java | Kotlin | Nota |
+|---|---|---|
+| Método sin anotar que puede devolver `null` | Platform type `String!` | Kotlin no sabe si es nullable: decide quien lo recibe |
+| `@Nullable` de JSpecify | `String?` real: error al usarlo sin `?.` `[2.1]` | Medido: ignorado en 1.7, aviso de 1.8 a 2.0, error desde 2.1 |
+| `static` en una clase | `companion object` + `@JvmStatic`; funciones de nivel superior → `ArchivoKt` | Sin `@JvmStatic`, Java escribe `Rates.Companion.of(…)` |
+| Sobrecargas para "parámetros opcionales" | Parámetros por defecto + `@JvmOverloads` `[≤ 1.4]` | Genera las sobrecargas quitando parámetros desde el final |
+| `public static final` / campo público | `const val`, `@JvmField` | Sin ellos Java ve un getter |
+| `throws IOException` | `@Throws(IOException::class)` | Sin ella, `javac` no deja atrapar la excepción ("never thrown") |
+| `record` | `@JvmRecord data class` `[1.5]` | Exige `jvmTarget` 16 o más |
+| Método `default` en una interfaz | Método con cuerpo en una interfaz Kotlin → `default` de Java `[2.2]` | Medido con `javap`: hasta 2.1 era abstracto con el cuerpo en `DefaultImpls` |
+
+**Trampas:**
+- Asignar un platform type a un `String` no comprueba nada: el NPE salta en el primer uso, lejos de la llamada a
+  Java; se declara el tipo (`String?`) en el borde.
+- Subir de compilador puede romper el build: el mismo `Rates.find(code).length` sobre un `@Nullable` de JSpecify pasa
+  de aviso (2.0) a error (2.1).
+- Renombrar `Rates.kt` cambia la clase `RatesKt` que ven los llamadores Java; `@file:JvmName("Rates")` fija el nombre.
+- Una `value class` o una función `suspend` en una API pública es casi inutilizable desde Java (nombre alterado,
+  `Continuation` como último parámetro).
+- Las colecciones de solo lectura de Kotlin son `java.util.List` mutables para Java: un `add` desde Java las cambia
+  (o lanza `UnsupportedOperationException`, según la implementación).
+
+**Caso:** un cliente Java heredado de tasas de cambio (`LegacyFxClient`, con JSpecify) envuelto por el `FxRateClient`
+de `exceptions`, y la API Kotlin del ledger (`Money`, `TransferService`) consumida desde una prueba escrita en Java.
+**Ruta 🎯:** no entra.
+
+**🎤 Entrevista:** ¿qué es un platform type y por qué existe? · ¿Qué anotaciones pones para que Java use bien tu API
+Kotlin? · ¿Cómo se ve un `companion object` desde Java?
+
+**⚡ Módulo mixto Java + Kotlin:** `src/main/java` con el cliente heredado y `src/main/kotlin` con la API nueva, en el
+mismo módulo de Gradle · **Se verifica con:** una prueba JUnit escrita en Java que usa la API Kotlin sin
+`Companion`, sin `INSTANCE` y con parámetros opcionales; el build con `-Werror` y JSpecify en modo estricto; y una
+salida de `javap` guardada en la prueba que muestra los métodos `static` y las sobrecargas generadas.
 
 ### 01 · `delegation` — Delegados propios, `by map`, delegación de clase
 
-> ⬜️ **Pendiente (tanda 3).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** reemplazar decoradores, holders perezosos y listeners escritos a mano por delegación de clase y de
+propiedades, y escribir delegados propios (`getValue`/`setValue`, `provideDelegate`).
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Banco · **Estado:** nueva
+
+| Java | Kotlin | Nota |
+|---|---|---|
+| Decorator que reenvía cada método a mano (o `@Delegate` de Lombok) | `class AuditedLedger(inner: Ledger) : Ledger by inner` | Se sobrescribe solo lo que cambia |
+| *Holder* perezoso, doble chequeo con `volatile` | `val rates by lazy { load() }` | `SYNCHRONIZED` por defecto; `LazyThreadSafetyMode` para otras políticas |
+| `PropertyChangeSupport` y listeners | `Delegates.observable`, `Delegates.vetoable` | `observable` avisa después del cambio; `vetoable` decide antes |
+| Configuración leída de un `Map` con casts | `class Limits(m: Map<String, Any?>) { val daily: Long by m }` `[≤ 1.4]` | La clave es el nombre de la propiedad |
+| Un campo que refleja a otro | `var b by this::a` `[≤ 1.4]` | Útil al renombrar una propiedad sin romper a los llamadores |
+| — | `operator fun getValue`/`setValue`, `ReadOnlyProperty`, `provideDelegate` | `provideDelegate` corre al crear el objeto: valida antes del primer acceso |
+| Campo privado mutable + getter de solo lectura | `val orders: List<Order> field = mutableListOf()` `[2.4]` | *Explicit backing field*: sin la pareja `_orders`/`orders` |
+
+**Trampas:**
+- La delegación de clase no es herencia: dentro de `inner`, `this` es `inner`, así que sus llamadas internas no pasan
+  por lo que sobrescribió la clase que delega.
+- El delegado se fija al construir: si se delega en un parámetro y después se quiere cambiar la instancia, no cambia.
+- `by map` busca la clave en cada acceso y lanza `NoSuchElementException` si falta; con `Map<String, Any?>` el tipo se
+  comprueba recién al usar el valor (`ClassCastException` tardía).
+- Una inicialización de `lazy` que lanza no se guarda: el siguiente acceso vuelve a intentar.
+- `Delegates.notNull()` y `lateinit` fallan en runtime, no en compilación, y `lateinit` no admite tipos primitivos.
+
+**Caso:** `AuditedLedger : Ledger by inner` que registra cada asiento del Banco; `AccountLimits` leídos de un `Map`
+con `by map` y validados con `vetoable` (un límite diario nunca negativo); el historial de estados de una `Account`
+con `observable`; un delegado propio `setting<T>()` que valida la clave en `provideDelegate`. **Ruta 🎯:** no entra.
+
+**🎤 Entrevista:** ¿qué diferencia hay entre delegar con `by` y heredar? · ¿Es seguro `by lazy` entre hilos y qué
+cuesta? · ¿Cómo se escribe un delegado de propiedad propio?
+
+**⚡ Configuración tipada con delegados:** una clase `BankSettings` cuyas propiedades salen de un `Map` (o de variables
+de entorno) con `by setting<Int>("retries", default = 3)`, con validación, valores por defecto y un registro de
+cambios · **Se verifica con:** pruebas de que una clave mal escrita falla **al construir** el objeto (`provideDelegate`)
+y no en el primer acceso, de que un valor fuera de rango se rechaza con `vetoable`, y de que el registro de cambios
+queda en orden.
 
 ### 01 · `dsl` — `@DslMarker`, builders
 
-> ⬜️ **Pendiente (tanda 3).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** diseñar DSLs type-safe con lambdas con receptor, evitar que se mezclen los receptores de bloques
+anidados y saber cuándo un DSL ayuda y cuándo estorba.
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+
+| Java | Kotlin | Nota |
+|---|---|---|
+| Builder con `withX(…).withY(…).build()` | `journalEntry { debit(…); credit(…) }` | Lambda con receptor (`JournalEntryBuilder.() -> Unit`) |
+| Builders anidados que dejan llamar al de afuera | `@DslMarker annotation class LedgerDsl` `[≤ 1.4]` | Dentro de un bloque marcado no se ve el receptor implícito del bloque externo |
+| `StringBuilder` + `append` | `buildString { }`, `buildList { }` `[1.6]` | El builder no sale del bloque; afuera queda un valor de solo lectura |
+| Plantillas de texto con `$` escapado | `$$"""…$${x}…"""` `[2.2]` | En plantillas de HTML o JSON, el `$` suelto es literal |
+| Pasar el contexto (logger, transacción) a mano | `context(tx: Transaction) fun post(…)` `[2.4]` | *Context parameters*; los *context receivers* sin nombre se retiraron `[rm 2.4]` |
+| Gradle en Groovy | `build.gradle.kts` | El DSL más usado de Kotlin; se ve a fondo en `08-build` |
+
+**Trampas:**
+- Sin `@DslMarker`, dentro de `tr { }` se puede llamar al `table()` del bloque de afuera sin darse cuenta: compila y
+  arma un HTML equivocado.
+- Si el builder se escapa del bloque (se guarda en una variable de afuera), se puede modificar después; el DSL debe
+  devolver un valor inmutable al terminar.
+- `operator fun String.unaryPlus()` para agregar texto es un truco conocido pero oscuro para quien lee: mejor una
+  función con nombre (`text("…")`).
+- El código experimental con `context(Log)` (sin nombre) de 1.6 a 2.3 ya no compila en 2.4: hay que pasarlo a
+  `context(log: Log)`.
+- Un DSL para algo que se usa una vez cuesta más de leer que una llamada con argumentos con nombre.
+
+**Caso:** `journalEntry { }` del Banco que construye un `JournalEntry` y rechaza al terminar un asiento desbalanceado;
+el reporte HTML del portafolio del Mercado (posiciones, P&L) como ⚡. **Ruta 🎯:** no entra.
+
+**🎤 Entrevista:** ¿qué es una lambda con receptor? · ¿Para qué sirve `@DslMarker`? · ¿Context parameters o
+receptores de extensión: cuándo cada uno?
+
+**⚡ DSL de HTML type-safe:** `html { body { table { tr { td("ACME") } } } }` que genera el reporte del portafolio,
+con escape de texto y atributos tipados · **Se verifica con:** la salida idéntica a un HTML dorado, una prueba de que
+`<script>` en el nombre de un ticker sale escapado, y un comentario con el código que **no** compila gracias a
+`@DslMarker` (llamar a `table` dentro de `td`).
 
 ### 01 · `kotlin2` — Lo de 2.0 a 2.4, con su etiqueta
 
-> ⬜️ **Pendiente (tanda 3).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** saber qué trajo cada versión de 2.0 a 2.4 (lenguaje, stdlib y compilador), qué cambió de
+comportamiento al pasar de K1 a K2 y cómo se nota en código que se migra.
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin | Nota |
+|---|---|---|
+| `case Integer i when i > 0 ->` | `is Int if x > 0 ->` `[2.2]` | Guardas en `when` |
+| Text block con `$` literal | `$$"…"` `[2.2]` | Plantillas con varios `$` |
+| `java.time.Instant`, `UUID`, `Base64`, `HexFormat` | `kotlin.time.Instant`/`Clock` `[2.3]`, `kotlin.uuid.Uuid` `[2.4]`, `kotlin.io.encoding.Base64`, `toHexString()` `[2.2]` | En la stdlib, útiles en multiplataforma |
+| `ScopedValue` (vista previa en 21) o pasar el contexto | *Context parameters* `[2.4]` | Reemplazan a los *context receivers* `[rm 2.4]` |
+| Campo privado + getter de otro tipo | *Explicit backing fields* `[2.4]` | `val x: List<T> field = mutableListOf()` |
+| — | Smart cast a supertipo común con `x is B \|\| x is C` `[2.0]`; `break`/`continue` en lambdas inline `[2.2]` | K2 infiere más: aparecen avisos nuevos (`!!` innecesario) |
+| — | `enumEntries<T>()` `[2.0]`, `@SubclassOptInRequired` `[2.1]`, alias de tipo anidados `[2.3]` | Ver la [referencia medida](Temario-Plan.md#referencia-de-versiones-medida) |
+| Lambdas con `invokedynamic` | Lambdas con `invokedynamic` desde 2.0 | `toString()` distinto; `@JvmSerializableLambda` `[1.8]` o `-Xlambdas=class` |
+
+**Trampas:**
+- K2 es otro compilador, no otra versión del mismo: cambia la inferencia y los smart casts, y código que compilaba
+  puede dar avisos o errores nuevos (los de [`k2-notes.md`](../22-legacy-kotlin19/docs/k2-notes.md)).
+- El `toString()` de una lambda cambió en 2.0 (`Function1<…>` → `…$$Lambda/0x…`): cualquier log o prueba que lo
+  compare se rompe.
+- Un `kotlinc` 2.4 rechaza `-language-version 1.9` (tutorial `cli`): para compilar como 1.9 hace falta otro
+  compilador, no una opción.
+- Desde 2.1, los `@Nullable` de JSpecify son errores; desde 2.2, los métodos con cuerpo en interfaces se compilan como
+  `default` de Java: dos cambios que se notan sin tocar el código propio.
+- Los *context receivers* experimentales ya no compilan en 2.4 `[rm 2.4]`.
+
+**Caso:** cada construcción con un ejemplo de los casos: guardas sobre `MarketEvent`, `Uuid` como clave de
+idempotencia de una transferencia, `kotlin.time.Instant` en los ticks, *context parameters* para la transacción del
+ledger, *explicit backing field* en el `OrderBook`. **Ruta 🎯:** no entra.
+
+**🎤 Entrevista:** ¿qué cambió con K2 y cómo se nota al migrar? · ¿Qué son los *context parameters* y qué
+reemplazaron? · ¿Por qué cambió el `toString()` de las lambdas?
+
+**⚡ Catálogo ejecutable de 2.x:** una prueba por construcción de 2.0 a 2.4, con su etiqueta en el nombre, y los
+mismos ejemplos como pruebas del script de versiones · **Se verifica con:** `./gradlew test` en verde con 2.4.21 y
+`scripts/version-probes.sh` (con los ejemplos agregados) reproduciendo exactamente las etiquetas de la referencia,
+incluido que cada ejemplo **no** compila con la versión anterior a su etiqueta.
 
 ---
 

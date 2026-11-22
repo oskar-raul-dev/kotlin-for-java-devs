@@ -9,7 +9,8 @@
 #
 # ok  = compila sin avisos · exp = pide habilitarla (-X…), opt-in, o "solo desde la versión N"
 # dep = compila con aviso de deprecación · dep! = deprecación con error (ya no compila) · no = no compila (u otro aviso)
-# Para agregar una construcción: una línea más en el bloque PROBES (nombre|código en una línea; \n para saltos), con
+# Para agregar una construcción: una línea más en el bloque PROBES (nombre|código en una línea; \n para saltos; el código
+# no puede llevar `|`, así que `a || b` se escribe `!(!a && !b)`), con
 # un tercer campo opcional de opciones de kotlinc (nombre|código|-jvm-target 16).
 # Los kotlinc 1.4.x no arrancan en JDK 21: se corren con el primer JDK 11 de SDKMAN (o JAVA11_HOME).
 # Compila en una carpeta temporal; no deja nada en el repo.
@@ -67,6 +68,18 @@ range-until-comparable|fun f(a: java.time.LocalDate, b: java.time.LocalDate) = a
 regex-match-at|fun f(r: Regex) = r.matchAt("ACME", 1)
 copy-visibility|data class Money private constructor(val cents: Long) { companion object { fun of(c: Long) = Money(c) } }\nfun f(m: Money) = m.copy(cents = 1)
 contracts|import kotlin.contracts.*\nfun f(x: Any?) { contract { returns() implies (x != null) } }
+typealias|typealias Prices = Map<String, Long>\nfun f(p: Prices) = p.size
+reified|inline fun <reified T> f(xs: List<Any>) = xs.filterIsInstance<T>()
+star-projection|fun f(xs: List<*>) = xs.size
+underscore-type-arg|fun <K, V> pick(m: Map<K, V>): Map<K, V> = m\nfun f() = pick<_, Int>(mapOf("ACME" to 1))
+crossinline|inline fun run2(crossinline b: () -> Unit) = Runnable { b() }
+generic-value-class|@JvmInline value class Box<T>(val v: T)
+delegate-to-property|class P { var a = 1; var b by this::a }
+by-map|class C(m: Map<String, Any?>) { val ticker: String by m }
+dsl-marker|@DslMarker annotation class Html\n@Html class Tag
+jvm-overloads|class C @JvmOverloads constructor(val a: Int = 1, val b: Int = 2)
+smartcast-or|interface A { fun a() = 1 }\nclass B : A\nclass C : A\nfun f(x: Any) = if (!(x !is B && x !is C)) x.a() else 0
+jvm-serializable-lambda|fun f(): () -> Unit = @JvmSerializableLambda { }
 '
 
 java11="${JAVA11_HOME:-$(ls -d "${SDKMAN_DIR:-$HOME/.sdkman}"/candidates/java/11* 2>/dev/null | head -1)}"

@@ -103,6 +103,14 @@ estable en la versión anterior medida"; `[≤ 1.4]` = ya estable en la versión
 | `ArrayDeque` de `kotlin.collections` | ok | dep | dep | dep | dep | ok | ok | ok | ok | ok | ok | `[≤ 1.4]` (el `dep` de 1.5 a 1.8 es el choque con `addLast` de `SequencedCollection` en JDK 21) |
 | `sumOf { }` | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[≤ 1.4]` |
 | `runningFold` | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[≤ 1.4]` |
+| `typealias` | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[≤ 1.4]` |
+| `inline fun <reified T>` | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[≤ 1.4]` |
+| Proyección estrella `List<*>` | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[≤ 1.4]` |
+| `crossinline` | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[≤ 1.4]` |
+| Delegar en otra propiedad (`var b by this::a`) | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[≤ 1.4]` |
+| Propiedades `by map` | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[≤ 1.4]` |
+| `@DslMarker` | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[≤ 1.4]` |
+| `@JvmOverloads` | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[≤ 1.4]` |
 | Contratos propios (`contract { returns() implies … }`) | exp | exp | exp | exp | exp | exp | exp | exp | exp | exp | exp | `[exp 2.4]` (experimental desde 1.3) |
 | `UInt`, `ULong` (`1u + 2u`) | exp | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[1.5]` |
 | `Int.mod` | no | ok | ok | ok | ok | ok | ok | ok | ok | ok | ok | `[1.5]` |
@@ -123,6 +131,9 @@ estable en la versión anterior medida"; `[≤ 1.4]` = ya estable en la versión
 | `min()`/`max()` no nulos | no | no | no | ok | ok | ok | ok | ok | ok | ok | ok | `[1.7]` (deprecados en 1.4, ocultos en 1.5 y 1.6) |
 | `when` no exhaustivo sobre `sealed` como sentencia | ok | ok | aviso | error | error | error | error | error | error | error | error | `[1.7]` (desde 1.7 es error) |
 | `Regex.matchAt` | no | exp | exp | ok | ok | ok | ok | ok | ok | ok | ok | `[1.7]` |
+| Guion bajo como argumento de tipo (`pick<_, Int>()`) | no | no | no | ok | ok | ok | ok | ok | ok | ok | ok | `[1.7]` |
+| `value class` genérica (`Box<T>(val v: T)`) | no | no | no | no | ok | ok | ok | ok | ok | ok | ok | `[1.8]` |
+| `@JvmSerializableLambda` | no | no | no | no | ok | ok | ok | ok | ok | ok | ok | `[1.8]` |
 | `data object` | no | no | no | exp | exp | ok | ok | ok | ok | ok | ok | `[1.9]` |
 | `Enum.entries` | no | no | no | no | exp | ok | ok | ok | ok | ok | ok | `[1.9]` |
 | `..<` (rango abierto) | no | no | no | exp | exp | ok | ok | ok | ok | ok | ok | `[1.9]` |
@@ -130,13 +141,16 @@ estable en la versión anterior medida"; `[≤ 1.4]` = ya estable en la versión
 | `measureTime { }` | exp | exp | exp | exp | exp | ok | ok | ok | ok | ok | ok | `[1.9]` |
 | `enumEntries<T>()` | no | no | no | no | no | exp | ok | ok | ok | ok | ok | `[2.0]` |
 | `copy()` de una `data class` con constructor `private` | ok | ok | ok | ok | ok | ok | aviso | aviso | aviso | aviso | aviso | `[2.0]` avisa que `copy()` expone el constructor; `@ConsistentCopyVisibility` lo alinea |
+| Smart cast al supertipo común con `x is B \|\| x is C` | no | no | no | no | no | no | ok | ok | ok | ok | ok | `[2.0]` (K1: "unresolved reference") |
 | `@SubclassOptInRequired` | no | no | no | no | ok | ok | exp | ok | ok | ok | ok | `[2.1]` (1.8 y 1.9 la aceptaban sin opt-in; 2.0 pidió `@ExperimentalSubclassOptIn`) |
 | `kotlin.io.path.walk` | no | no | no | no | exp | exp | exp | ok | ok | ok | ok | `[2.1]` |
+| `@Nullable` de JSpecify usado sin `?.` (desde Java) | — | — | — | ok | aviso | aviso | aviso | error | error | error | error | `[2.1]` como error (ignorado en 1.7; aviso de 1.8 a 2.0); medido a mano con `jspecify-1.0.0` |
 | `break`/`continue` en lambdas inline | no | no | no | no | exp | exp | exp | exp | ok | ok | ok | `[2.2]` |
 | `when` con guardas (`is Int if x > 0 ->`) | no | no | no | no | no | no | exp | exp | ok | ok | ok | `[2.2]` |
 | `$$"…"` (plantillas con varios `$`) | no | no | no | no | no | no | exp | exp | ok | ok | ok | `[2.2]` |
 | `kotlin.io.encoding.Base64` | no | no | no | no | exp | exp | exp | exp | ok | ok | ok | `[2.2]` |
 | `HexFormat` (`toHexString()`) | no | no | no | no | no | exp | exp | exp | ok | ok | ok | `[2.2]` |
+| Método con cuerpo en una interfaz → `default` de Java | — | — | — | — | — | abstracto | abstracto | abstracto | default | default | default | `[2.2]` (medido a mano con `javap`; `DefaultImpls` se sigue generando) |
 | Alias de tipo anidados | no | no | no | no | no | no | no | no | exp | ok | ok | `[2.3]` |
 | `kotlin.time.Instant` y `Clock` | no | no | no | no | no | no | no | exp | exp | ok | ok | `[2.3]` |
 | *Context parameters* (`context(log: …) fun`) | no | no | no | no | no | no | no | exp | exp | exp | ok | `[2.4]` |
@@ -163,7 +177,7 @@ línea al script y se corre `scripts/version-probes.sh <nombre>`.
 | 0 | ✅ | 2026-11-13 | Referencia medida con cinco `kotlinc` (1.9 a 2.4); esqueleto de 88 entradas pendientes; temario anterior en `archive/Temario-v1.md`; chuleta, idioms y trampas migradas y puestas al día |
 | 1 | ✅ | 2026-11-13 | 5 tutoriales (versión corta) y `basics`, `control`, `strings`, `oop`, `io`. Referencia ampliada a once `kotlinc` (1.4.31 a 2.4.21) con 27 construcciones nuevas; `path.walk` pasa a `[2.1]` y `T & Any`, `enumEntries` y `@SubclassOptInRequired` quedan sin ⚠️. ⚡ nuevos (no están en la sección 5 del plan): `control` matcher por búsqueda binaria, `strings` códec estilo FIX, `io` conciliador de extracto |
 | 2 | ✅ | 2026-11-13 | `collections`, `functional`, `json`, `datetime`, `exceptions`, con la ruta 🎯 del Mercado (bloques 1 a 4) y del Banco (bloque 5) en cada entrada. kotlinx-serialization 1.13.0 medida aparte: `explicitNulls` y `namingStrategy` estables, `decodeToSequence` y `classDiscriminatorMode` con opt-in. ⚡ nuevos (no están en la sección 5 del plan): `datetime` velas por sesión, `exceptions` `TransferService` completo |
-| 3 | ⬜️ | | |
+| 3 | ✅ | 2026-11-22 | `generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2`. 12 construcciones nuevas en `version-probes.sh` (la de `\|\|` se reescribió con De Morgan: el script separa con `\|`) y dos medidas a mano: JSpecify (error desde 2.1) y métodos `default` en interfaces (desde 2.2, con `javap`). ⚡ nuevos (solo el de `dsl` está en la sección 5 del plan): colecciones persistentes covariantes, utilidades sin asignaciones, módulo mixto Java + Kotlin, configuración tipada con delegados, catálogo ejecutable de 2.x |
 | 4 | ⬜️ | | |
 | 5 | ⬜️ | | |
 | 6 | ⬜️ | | |

@@ -28,7 +28,7 @@ medias**. El avance por sección y lección está en [`CHECKLIST.md`](CHECKLIST.
 |---|---|---|
 | Fase A (A0–A9) | ✅ tag `phase-a` | — |
 | B1 · Tutoriales | ✅ | — (5 tutoriales, 72 ejercicios, 136 comprobaciones en sus `check.sh`) |
-| B0 · Temario | 🟡 tandas 0, 1 y 2 de 10 | Tandas 3 a 10: 73 de las 88 entradas ([`docs/Temario-Plan.md`](docs/Temario-Plan.md#estado)) |
+| B0 · Temario | 🟡 tandas 0 a 3 de 10 | Tandas 4 a 10: 67 de las 88 entradas ([`docs/Temario-Plan.md`](docs/Temario-Plan.md#estado)) |
 | B0′ · Casos Banco y Mercado | 🟡 diseño y tandas 1–4 | Tandas 5 (`04-data`) y 6 (enunciados y ruta 🎯) del reemplazo del dominio de pedidos ([`docs/Casos.md`](docs/Casos.md#plan-de-reemplazo)) |
 | B0″ · Guías de lección | ✅ | — (índice, plantilla y 12 guías en [`docs/lessons/`](docs/lessons/README.md); se mantienen con cada cambio de código) |
 | B2–B10 | ⬜️ | Todo |
@@ -98,7 +98,8 @@ Tags anotados: `baseline-1.9.22` (curso v1 de proyecto único), `monorepo-1.9.22
 | `237c387` Generate the case data (B0′ batch 1) | B0′, tanda 1: paquete `datagen` y los cuatro archivos de datos; 130 pruebas |
 | `9ac0342` Move json and io to the cases (B0′ batch 2) | B0′, tanda 2: `json` sobre `ticks.json` (`Tick`, `MarketEvent`), `io` sobre el extracto con conciliación exacta; 134 pruebas |
 | `7e66694` Move basics, oop and exceptions to the Bank (B0′ batch 3) | B0′, tanda 3: `Money`, `Order` sellado, `AccountType`, `BankException`, `TransferService`, `MoneyAsString`; 140 pruebas |
-| Move the rest of 01-language to the cases (B0′ batch 4) | B0′, tanda 4: `control`, `strings`, `collections`, `functional`, `datetime`; 141 pruebas |
+| `abc737d` Move the rest of 01-language to the cases (B0′ batch 4) | B0′, tanda 4: `control`, `strings`, `collections`, `functional`, `datetime`; 141 pruebas |
+| Write syllabus batch 3 | B0, tanda 3: `generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2`; 12 etiquetas medidas más JSpecify y `default` |
 
 **Remoto:** `origin` en GitHub desde el 13 de noviembre de 2026. Antes de cada push se repite el escaneo de
 referencias externas sobre `git log -p --all`, y se suben los tags con `git push origin main --follow-tags`.
@@ -111,7 +112,8 @@ temario ya está escrito (tandas 1 y 2 de B0), y así el código deja antes el d
 1. ~~**B0″ · Guías de lección**~~ ✅ (22 de noviembre de 2026): índice, plantilla y 12 guías en `docs/lessons/`.
 2. ~~**B0′ · tandas 1 a 4**~~ ✅ (22 de noviembre de 2026): datos y generador, `json`/`io`, `basics`/`oop`/`exceptions` y
    el resto de `01-language`; el código de `01-language` ya está en los casos.
-3. **B0 · tandas 3, 4 y 6** (no dependen de otras) y luego la **5** (espera a la 4).
+3. **B0 · tandas 3, 4 y 6** (no dependen de otras) y luego la **5** (espera a la 4). Tanda 3 ✅ (22 de noviembre
+   de 2026).
 4. **B0′ · tandas 5 y 6:** `04-data` con el ledger (se apoya en la tanda 5 de B0); ejercicios, ruta 🎯 y borrado de
    `orders.json`/`sales.csv`. Termina antes de B2.
 5. **B0 · tandas 7, 8, 9 y 10**, con la revisión juntos al final.

@@ -25,7 +25,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
 | `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, casos de finanzas, guías de lección (propuesta); estado al 2026-11-22 |
 | `docs/lessons/` (guías de lección) | ✅ | `LISTO` | Índice, plantilla y 12 guías (10 de `01-language`, `jdbc`, `jpa`), en `docs/lessons/<sección>/NN-<lección>.md` (B0″) |
-| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tandas 1 y 2 escritas (15 entradas); faltan las tandas 3 a 10. El anterior, en `docs/archive/Temario-v1.md` |
+| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tandas 1 a 3 escritas (21 entradas); faltan las tandas 4 a 10. El anterior, en `docs/archive/Temario-v1.md` |
 | `docs/Temario-Plan.md` y `docs/prompts/temario-tanda.md` | ✅ | `LISTO` | Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
 | `docs/LegacyKotlin.md` | ✅ | `LISTO` | Versiones 1.0 → 2.x, los tres tracks, cómo correrlos y trampas |
@@ -374,3 +374,10 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   (`marketDateOf`, `sessionBounds`, `isMarketOpen`, feriados ficticios, `isOpenNow` con `Clock`, `monthClose`).
   Con esto el código de `01-language` ya no usa pedidos; faltan `04-data` (tanda 5) y los enunciados y la ruta 🎯
   (tanda 6). Guías `02`, `03`, `06`, `07` y `09` al día. 141 pruebas (103 + 38), 0 `SKIPPED`.
+- **2026-11-22** · **B0, tanda 3 (`01-language` nuevas):** entradas de `generics`, `inline`, `interop`, `delegation`,
+  `dsl` y `kotlin2` en la plantilla, con Banco y Mercado. Doce construcciones nuevas medidas con
+  `scripts/version-probes.sh` (`underscore-type-arg` `[1.7]`, `value class` genérica y `@JvmSerializableLambda`
+  `[1.8]`, smart cast con `||` `[2.0]`, y ocho `[≤ 1.4]`); la prueba de `||` se reescribió con De Morgan porque el
+  script separa los campos con `|`. Medidos a mano: los `@Nullable` de JSpecify (ignorados en 1.7, aviso de 1.8 a 2.0,
+  error desde 2.1) y los métodos con cuerpo en interfaces, que desde 2.2 compilan como `default` de Java (`javap`).
+  ⚡ nuevos en las cinco lecciones que el plan no traía. Quedan 67 de 88 entradas.
