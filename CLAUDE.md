@@ -28,6 +28,7 @@ next; its order is in `Plan-Migracion-Monorepo.md`.
 | `docs/Casos.md` | The two case studies (Bank: ledger/transfers/reconciliation; Market: ticks/candles/order book/P&L) and which lesson uses which |
 | `docs/Temario.md` | Per-lesson syllabus (Java → Kotlin mapping, traps); rewritten in phase B0 |
 | `docs/Temario-Plan.md` | How B0 is written: lesson template, batches (tandas), measured version tags (from `scripts/version-probes.sh`), status. Each batch runs the master prompt in `docs/prompts/temario-tanda.md`; the old syllabus is in `docs/archive/Temario-v1.md` |
+| `docs/lessons/` | One guide per lesson with code (`<section>/NN-<subpackage>.md`): reading order, file → symbols → test map, how to run, status. Index and rules in `docs/lessons/README.md`, template in `_template.md` |
 | `22-legacy-kotlin19/docs/k2-notes.md` | What actually changed when the base moved from 1.9.22 (K1) to 2.4.21 (K2) |
 
 **Sync rules** — update in the same change:
@@ -37,6 +38,9 @@ next; its order is in `Plan-Migracion-Monorepo.md`.
 - Version change → every section's `build.gradle.kts` (no shared parent), `docs/Versions.md`, README "Versiones",
   and this file.
 - New section with a build → root `settings.gradle.kts` `includeBuild` list (unless it is a legacy track or Android).
+- New lesson → new guide in `docs/lessons/<section>/` and its row in `docs/lessons/README.md`; a file added, renamed
+  or removed in a lesson, or a cited symbol or test that changes → that lesson's guide (cite symbols, never line
+  numbers).
 
 ## Language rules
 
@@ -141,8 +145,9 @@ all tests with both databases up** (no SKIPPED).
 ## Adding a lesson
 
 In the right section, create `<topic>/Main.kt` with `fun main()`, put logic in other files, add `<Topic>Test.kt`,
-write `Exercises.md` with the same header as the others (graded exercises with signature and cases), add the row to
-the README lessons table and update `CHECKLIST.md`.
+write `Exercises.md` with the same header as the others (graded exercises with signature and cases), write its guide
+from `docs/lessons/_template.md` (and the row in `docs/lessons/README.md`), add the row to the README lessons table
+and update `CHECKLIST.md`.
 
 ## Known gotchas (already handled — don't "fix" them away)
 

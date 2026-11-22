@@ -30,7 +30,7 @@ medias**. El avance por sección y lección está en [`CHECKLIST.md`](CHECKLIST.
 | B1 · Tutoriales | ✅ | — (5 tutoriales, 72 ejercicios, 136 comprobaciones en sus `check.sh`) |
 | B0 · Temario | 🟡 tandas 0, 1 y 2 de 10 | Tandas 3 a 10: 73 de las 88 entradas ([`docs/Temario-Plan.md`](docs/Temario-Plan.md#estado)) |
 | B0′ · Casos Banco y Mercado | 🟡 diseño hecho | Las 6 tandas de reemplazo del dominio de pedidos ([`docs/Casos.md`](docs/Casos.md)); hoy quedan 17 archivos de `src/` con pedidos |
-| B0″ · Guías de lección | 📝 propuesta | Revisar la [sección 12](#12-guías-de-lección-docslessons) y decidir |
+| B0″ · Guías de lección | ✅ | — (índice, plantilla y 12 guías en [`docs/lessons/`](docs/lessons/README.md); se mantienen con cada cambio de código) |
 | B2–B10 | ⬜️ | Todo |
 
 ### La base del curso v1, verificada en Kotlin 2.x
@@ -93,23 +93,28 @@ Tags anotados: `baseline-1.9.22` (curso v1 de proyecto único), `monorepo-1.9.22
 | `890e295` Plan the syllabus rewrite (B0 batch 0) and measure version tags | B0: `docs/Temario-Plan.md`, prompt por tanda, `scripts/version-probes.sh`, tanda 0 |
 | `b1e3280` Write syllabus batch 1 | B0, tanda 1: tutoriales y `basics`, `control`, `strings`, `oop`, `io` |
 | `984b5d0` Write syllabus batch 2 | B0, tanda 2: `collections`, `functional`, `json`, `datetime`, `exceptions` |
+| `edc5e49` Review phase B status and propose lesson guides (B0″) | Revisión de estado; tag `b0-status-review` |
+| Add lesson guides (B0″) | B0″: `docs/lessons/` con índice, plantilla y 12 guías; regla de sincronía en CLAUDE.md y README |
 
 **Remoto:** `origin` en GitHub desde el 13 de noviembre de 2026. Antes de cada push se repite el escaneo de
 referencias externas sobre `git log -p --all`, y se suben los tags con `git push origin main --follow-tags`.
 
 ### Pendiente, en el orden en que se va a hacer
 
-1. **B0 · Temario, tandas 3 a 10.** Las tandas 3, 4 y 6 no dependen de otras y van primero; la 5 espera a la 4, la
-   7 a la 4 y la 5, y la 10 cierra con la revisión juntos.
-2. **B0″ · Guías de lección** ([sección 12](#12-guías-de-lección-docslessons)): si se aprueba, plantilla, índice y
-   las guías de las 12 lecciones con código, antes de B0′ para que el reemplazo tenga un mapa de partida.
-3. **B0′ · Casos Banco y Mercado:** las 6 tandas de reemplazo (datos, `json`/`io`, `basics`/`oop`/`exceptions`, el
-   resto de `01-language`, `04-data`, ejercicios y ruta 🎯), cada una con sus pruebas en verde con las dos bases
-   arriba y actualizando las guías de las lecciones que toque. Termina antes de B2.
-4. **B2–B10** según la [sección 8](#8-fase-b-generar-el-resto).
+Orden decidido el 22 de noviembre de 2026: B0′ se adelanta, porque sus tandas 1 a 4 reescriben lecciones cuyo
+temario ya está escrito (tandas 1 y 2 de B0), y así el código deja antes el dominio de pedidos.
+
+1. ~~**B0″ · Guías de lección**~~ ✅ (22 de noviembre de 2026): índice, plantilla y 12 guías en `docs/lessons/`.
+2. **B0′ · tandas 1 a 4:** datos y generador, `json`/`io`, `basics`/`oop`/`exceptions` y el resto de `01-language`.
+   Cada una con sus pruebas en verde con las dos bases arriba y actualizando las guías que toque.
+3. **B0 · tandas 3, 4 y 6** (no dependen de otras) y luego la **5** (espera a la 4).
+4. **B0′ · tandas 5 y 6:** `04-data` con el ledger (se apoya en la tanda 5 de B0); ejercicios, ruta 🎯 y borrado de
+   `orders.json`/`sales.csv`. Termina antes de B2.
+5. **B0 · tandas 7, 8, 9 y 10**, con la revisión juntos al final.
+6. **B2–B10** según la [sección 8](#8-fase-b-generar-el-resto).
 
 **Preguntas abiertas** ([sección 10](#10-para-decidir-en-la-revisión)): cortes legacy, numeración de secciones, dónde
-van `io`/`datetime`/`json`, Android SDK y Xcode, y la estructura de las guías de lección.
+van `io`/`datetime`/`json`, y Android SDK y Xcode.
 
 ---
 
@@ -374,7 +379,7 @@ transversal.
 | Fase | Contenido | Entregable |
 |---|---|---|
 | **B0′** 🟡 | Elegir el caso de finanzas (sección 11) y reemplazar el dominio provisional de pedidos en datos, lecciones y ejercicios 🎯. Caso elegido y diseñado en [`docs/Casos.md`](docs/Casos.md); falta el reemplazo en 6 tandas | Ruta prioritaria del README rehecha |
-| **B0″** 📝 | Guías de lección en `docs/lessons/` ([sección 12](#12-guías-de-lección-docslessons)): plantilla, índice y una guía por cada lección con código | 12 guías (10 de `01-language`, `jdbc`, `jpa`); desde ahí, cada lección nueva nace con la suya |
+| **B0″** ✅ | Guías de lección en `docs/lessons/` ([sección 12](#12-guías-de-lección-docslessons)): plantilla, índice y una guía por cada lección con código | 12 guías (10 de `01-language`, `jdbc`, `jpa`); desde ahí, cada lección nueva nace con la suya |
 | **B0** 🟡 | `docs/Temario.md` completo: cada lección con mapeo Java → Kotlin, trampas, etiquetas de versión y su ⚡. Se hace por tandas según [`docs/Temario-Plan.md`](docs/Temario-Plan.md) | Revisión juntos antes de escribir código |
 | **B1** ✅ | `tutorials/`: `install`, `cli`, `repl`, `decompile`, `debug` | 5 tutoriales con sus scripts y un `check.sh` cada uno (136 comprobaciones, 72 ejercicios) |
 | **B2** | Ejercicios de las 12 lecciones actuales llevados a la nueva escala: mínimo 25, 🎤, ⚡ | ~300 → ~330 ejercicios + 12 ⚡ |
@@ -417,9 +422,8 @@ lección. Es parecido a `java-champion-review` (79 lecciones). Por eso va por fa
 4. ¿Tienes Android SDK y Xcode instalados? Define el alcance de B7.
 5. ~~¿Qué caso de la sección 11 reemplaza al dominio provisional?~~ Dos casos, Banco y Mercado, con puente: [`docs/Casos.md`](docs/Casos.md).
 6. ~~¿Arranco con A2–A5?~~ Hecho el 10 de noviembre de 2026.
-7. **Guías de lección** ([sección 12](#12-guías-de-lección-docslessons)): ¿carpetas por sección con lecciones
-   numeradas dentro (`docs/lessons/01-language/01-basics.md`, la recomendada) o una lista plana con numeración global
-   (`docs/lessons/006-basics.md`)? ¿Se escriben antes de B0′, como se propone, o dentro de cada tanda de B0′?
+7. ~~**Guías de lección**: ¿carpetas por sección o lista plana? ¿Antes de B0′ o dentro de cada tanda?~~ Carpetas por
+   sección (`docs/lessons/01-language/01-basics.md`), escritas antes de B0′ (22 de noviembre de 2026).
 
 ---
 
@@ -458,7 +462,7 @@ Fuentes de versiones: [Kotlin 2.4.20 Released](https://blog.jetbrains.com/kotlin
 
 ## 12. Guías de lección (`docs/lessons/`)
 
-**Propuesta del 22 de noviembre de 2026, pendiente de revisión** (pregunta 7 de la [sección 10](#10-para-decidir-en-la-revisión)).
+**Propuesta del 22 de noviembre de 2026, aprobada el mismo día** (pregunta 7 de la [sección 10](#10-para-decidir-en-la-revisión)): carpetas por sección y escritas antes de B0′.
 
 ### Para qué
 
@@ -474,7 +478,7 @@ prueba lo demuestra, cómo correrlo, y qué está hecho y qué falta. No repite 
 | `docs/lessons/…` (nuevo) | **Dónde** está y **por dónde** leerlo: archivos, símbolos, pruebas, comandos, estado |
 | `CHECKLIST.md` | **Cuánto** falta, en una tabla para todo el curso |
 
-### Estructura de directorios (recomendada)
+### Estructura de directorios (aprobada)
 
 Una carpeta por sección, con **el mismo nombre que la sección en la raíz**, y dentro un archivo por lección numerado
 con dos dígitos en el orden de estudio del temario. Así el árbol de `docs/lessons/` se lee de arriba abajo en el orden

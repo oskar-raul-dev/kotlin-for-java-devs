@@ -1,0 +1,32 @@
+# 09 · `datetime` — `java.time` correcto
+
+**Sección:** `01-language` · **Paquete:** `dev.raul.oskar.learning.kotlin.datetime` · **Caso:** pedidos (provisional) → Ambos
+**Enlaces:** [temario](../../Temario.md#01--datetime--javatime-correcto) · [ejercicios](../../../01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/datetime/Exercises.md) · [código](../../../01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/datetime/) · [pruebas](../../../01-language/src/test/kotlin/dev/raul/oskar/learning/kotlin/datetime/DateTimeTest.kt)
+
+## Cómo correrla
+
+```bash
+./gradlew -p 01-language run -Plesson=datetime
+./gradlew -p 01-language test --tests '*.datetime.*'
+```
+
+## Recorrido sugerido
+
+1. `DateTimes.kt`, de arriba abajo: el mapa mental de tipos (comentario inicial), parseo estricto `MM/dd/uuuu`
+   (`parseUsDate`, `formatUsDate`), `Period` y `Clock` inyectado (`ageAt`, `age`), epoch y zonas (`dateOf`,
+   `isoInstant`), ventanas y días (`windowBefore`, `daysBetween`, `businessDays`), calendario (`lastDayOfMonth`,
+   `plusOneMonth`), horario de verano (`hoursInDay`), conversión de zonas (`convert`) y horario (`isOpen`).
+2. `DateTimeTest.kt`: relojes fijos, años bisiestos y los días de 23 y 25 horas.
+3. `Main.kt`.
+
+## Mapa del código
+
+| Archivo | Qué muestra | Símbolos | Lo prueba |
+|---|---|---|---|
+| `DateTimes.kt` | `java.time` sin trampas | `parseUsDate`, `formatUsDate`, `ageAt`, `age`, `dateOf`, `windowBefore`, `daysBetween`, `businessDays`, `lastDayOfMonth`, `plusOneMonth`, `hoursInDay`, `convert`, `isoInstant`, `formatDuration`, `isOpen`, `zonedNow` | `DateTimeTest` (las 8 pruebas) |
+
+## Estado
+
+- **Hecho:** código y 8 pruebas; 24 ejercicios (5 🎯); 0 resueltos en `practice/`.
+- **Falta:** B0′ tanda 4 (edad y ventanas de días → horario del mercado en Nueva York, días hábiles con feriados,
+  cierre de mes); B2 (⚡ velas por sesión).

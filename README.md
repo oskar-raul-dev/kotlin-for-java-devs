@@ -28,6 +28,7 @@ ejercicios graduados **sin soluciones**. Varios ejercicios siguen un caso de pun
 | [`docs/LegacyKotlin.md`](docs/LegacyKotlin.md) | Qué trajo cada versión de 1.0 a 2.x, los tres tracks legacy y cómo correrlos |
 | [`docs/Casos.md`](docs/Casos.md) | Los dos casos de estudio, Banco y Mercado: entidades, datos y qué lección usa cada uno |
 | [`docs/Temario.md`](docs/Temario.md) | Temario por lección: mapeo Java → Kotlin, trampas, versión, caso y ⚡ (en construcción por tandas; el anterior, en [`docs/archive/`](docs/archive/Temario-v1.md)) |
+| [`docs/lessons/`](docs/lessons/README.md) | Guías de lección: por dónde leer cada lección con código, qué archivo muestra qué y qué prueba lo demuestra |
 | [`docs/Temario-Plan.md`](docs/Temario-Plan.md) | Plan de B0: plantilla de lección, tandas, versiones medidas y estado; el prompt de cada tanda está en [`docs/prompts/`](docs/prompts/temario-tanda.md) |
 | [`22-legacy-kotlin19/docs/k2-notes.md`](22-legacy-kotlin19/docs/k2-notes.md) | Qué cambió de verdad al pasar este repo de Kotlin 1.9.22 (K1) a 2.4.21 (K2) |
 
@@ -126,7 +127,9 @@ mysql-connector-j 26.10.0, Hibernate ORM 7.4.15.Final, H2 2.5.252, slf4j-simple 
 
 Paquete raíz: `dev.raul.oskar.learning.kotlin`. Cada subpaquete tiene su `Main.kt` y su `Exercises.md` en
 `<sección>/src/main/kotlin/…/<subpaquete>/`, y sus pruebas en el mismo paquete bajo `<sección>/src/test/kotlin`.
-Las lecciones 1–9 y 14 están en `01-language`; las de bases de datos (10–13), en `04-data`.
+Las lecciones 1–9 y 14 están en `01-language`; las de bases de datos (10–13), en `04-data`. Cada una tiene su
+**guía** en [`docs/lessons/`](docs/lessons/README.md): por dónde empezar a leer, qué muestra cada archivo y qué prueba
+lo demuestra.
 
 | # | Subpaquete | Qué repasa | Ejercicios | 🎯 |
 |---|---|---|---|---|
@@ -399,7 +402,8 @@ kotlin-for-java-devs/
   y se mantienen en sincronía con [`docs/Versions.md`](docs/Versions.md).
 - Cada lección tiene un `Main.kt` (recorrido corto) y la lógica en archivos aparte, probada en `<Lección>Test.kt`.
 - Al terminar algo se actualizan juntos: los conteos de este README, [`CHECKLIST.md`](CHECKLIST.md) (estado y
-  bitácora) y, si cambia una versión, `docs/Versions.md`.
+  bitácora), la guía de la lección en [`docs/lessons/`](docs/lessons/README.md) si cambió su código y, si cambia una
+  versión, `docs/Versions.md`.
 
 ## Agregar una lección
 
@@ -409,4 +413,6 @@ kotlin-for-java-devs/
 4. Escribir `<tema>/Exercises.md` con el mismo encabezado que los demás: 20–30 ejercicios con semáforo, firma
    sugerida y casos mínimos, y 🎯 en los que tocan lo que se está preparando.
 5. Correr con `./gradlew -p <sección> run -Plesson=<tema>` y `./gradlew -p <sección> test --tests '*.<tema>.*'`.
-6. Agregar la fila a la tabla de lecciones y actualizar el índice de secciones y `CHECKLIST.md`.
+6. Escribir su guía en `docs/lessons/<sección>/NN-<tema>.md` a partir de
+   [`_template.md`](docs/lessons/_template.md) y agregarla al [índice de guías](docs/lessons/README.md).
+7. Agregar la fila a la tabla de lecciones y actualizar el índice de secciones y `CHECKLIST.md`.

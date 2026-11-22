@@ -24,7 +24,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | `README.md` (índice general) | ✅ | `LISTO` | Documentos, requisitos, IDE y terminal, índice de secciones, tracks legacy, convenciones (A9) |
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
 | `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, casos de finanzas, guías de lección (propuesta); estado al 2026-11-22 |
-| `docs/lessons/` (guías de lección) | ⬜️ | `PENDIENTE` | Propuesta en la sección 12 del plan (paso B0″): una guía por lección con código, en `docs/lessons/<sección>/NN-<lección>.md` |
+| `docs/lessons/` (guías de lección) | ✅ | `LISTO` | Índice, plantilla y 12 guías (10 de `01-language`, `jdbc`, `jpa`), en `docs/lessons/<sección>/NN-<lección>.md` (B0″) |
 | `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tandas 1 y 2 escritas (15 entradas); faltan las tandas 3 a 10. El anterior, en `docs/archive/Temario-v1.md` |
 | `docs/Temario-Plan.md` y `docs/prompts/temario-tanda.md` | ✅ | `LISTO` | Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
@@ -52,7 +52,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | A8 · Contenedores legacy | ✅ | `./scripts/legacy.sh 19` = nativo (4 pruebas); `arm64` nativo |
 | A9 · Documentación | ✅ | README con índice de secciones, CLAUDE.md reescrito; tag `phase-a` |
 | B0′ · Casos Banco y Mercado | 🟡 | Diseño en `docs/Casos.md` ✅; reemplazo del dominio de pedidos en 6 tandas ⬜️ |
-| B0″ · Guías de lección | ⬜️ | Propuesta en la sección 12 del plan; pendiente de revisión |
+| B0″ · Guías de lección | ✅ | 12 guías en `docs/lessons/`, símbolos y pruebas citados comprobados contra el código |
 
 ## Secciones
 
@@ -335,3 +335,11 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   `22-legacy-kotlin19` en verde con 1.9.22. Sección de estado del plan reescrita (B1 ✅, B0 en la tanda 2, B0′ con el
   diseño hecho) y README al día. Propuesta nueva en el plan (sección 12, paso B0″): guías de lección en
   `docs/lessons/<sección>/NN-<lección>.md`, pendiente de revisión.
+- **2026-11-22** · Decisiones de la revisión: guías de lección en carpetas por sección (`docs/lessons/<sección>/NN-<lección>.md`),
+  escritas antes de B0′; nuevo orden de la fase B: B0″ → B0′ tandas 1 a 4 → B0 tandas 3, 4, 6 y 5 → B0′ tandas 5 y 6
+  → B0 tandas 7 a 10 y revisión. Tag `b0-status-review` en el commit de la revisión de estado.
+- **2026-11-22** · **B0″ cerrado:** `docs/lessons/` con `README.md` (reglas e índice), `_template.md` y 12 guías que
+  describen el código tal como está (10 de `01-language`, `jdbc` y `jpa`), con recorrido sugerido, mapa archivo →
+  símbolos → prueba y estado. Cada símbolo, archivo y nombre de prueba citado se comprobó contra el código con un
+  script, y todos los enlaces resuelven. Regla de sincronía nueva en CLAUDE.md y README ("Agregar una lección").
+  Pruebas sin cambios: 123 de 123 con PostgreSQL y MySQL arriba (0 `SKIPPED`).
