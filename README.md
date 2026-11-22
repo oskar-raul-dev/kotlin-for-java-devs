@@ -310,8 +310,8 @@ docker compose -f docker/mysql/compose.yaml down -v
 
 - `up -d --wait` arranca en segundo plano y espera a que el `healthcheck` diga que la base acepta conexiones.
 - `down -v` borra el contenedor **y su volumen**: la próxima vez la base arranca vacía.
-- PostgreSQL 17.2 escucha en `127.0.0.1:15432` y MySQL 8.4.3 en `127.0.0.1:13306`. Son puertos altos para no
-  chocar con otras bases en 5432/3306. Base, usuario y clave: `learning`.
+- PostgreSQL 17.2 escucha en `127.0.0.1:25432` y MySQL 8.4.3 en `127.0.0.1:23306`. Son puertos del rango 20000
+  para no chocar con otras bases en 5432/3306 ni con los contenedores de otros proyectos, que usan el rango 10000. Base, usuario y clave: `learning`.
 - Para usar otra base están las variables `PG_URL`/`PG_USER`/`PG_PASSWORD` y `MYSQL_URL`/`MYSQL_USER`/`MYSQL_PASSWORD`.
 - **Si un contenedor no está arriba, sus pruebas salen `SKIPPED`**, no fallidas: `./gradlew test` siempre
   se puede correr. SQLite (en memoria) y JPA (H2 en memoria) no necesitan Docker.
@@ -352,8 +352,8 @@ kotlin-for-java-devs/
 │   ├── prompts/                # prompt maestro de cada tanda del temario
 │   └── archive/                # temario anterior (v1)
 ├── docker/
-│   ├── postgres/compose.yaml   # PostgreSQL 17.2 en 15432
-│   ├── mysql/compose.yaml      # MySQL 8.4.3 en 13306
+│   ├── postgres/compose.yaml   # PostgreSQL 17.2 en 25432
+│   ├── mysql/compose.yaml      # MySQL 8.4.3 en 23306
 │   └── legacy-kotlin/          # compose.yaml (k14, k16, k19) y README: el JDK de cada track legacy
 ├── scripts/legacy.sh           # ./scripts/legacy.sh <14|16|19> [tareas de Gradle | shell]
 ├── scripts/version-probes.sh   # en qué versión de Kotlin es estable cada construcción (1.9 a 2.4)

@@ -49,4 +49,4 @@ object PostgresDialect : Dialect {
 }
 
 /** Valores por defecto = docker/postgres/compose.yaml. Se cambian con PG_URL, PG_USER, PG_PASSWORD. */
-val postgresConfig = DbConfig.fromEnv("PG", "jdbc:postgresql://localhost:15432/learning", "learning", "learning")
+val postgresConfig = DbConfig.fromEnv("PG", "jdbc:postgresql://localhost:25432/learning", "learning", "learning")

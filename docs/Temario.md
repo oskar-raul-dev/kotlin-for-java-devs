@@ -1634,7 +1634,7 @@ mano, y mantener la suite rápida.
 |---|---|---|
 | `docker compose up` antes de las pruebas (lo de hoy en `04-data`) | `PostgreSQLContainer("postgres:17.2")` en la prueba | La prueba levanta y tira su base |
 | `@Testcontainers` + `@Container static` | `companion object` con el contenedor | Ver la trampa del campo estático |
-| Puertos fijos (15432, 13306) | `container.jdbcUrl` | Puerto aleatorio del host: nunca se escribe a mano |
+| Puertos fijos (25432, 23306) | `container.jdbcUrl` | Puerto aleatorio del host: nunca se escribe a mano |
 | Un contenedor por clase de prueba | Patrón de contenedor único (un `object` que lo arranca una vez) | Una sola base para toda la suite |
 | `@DynamicPropertySource` (Spring) | Igual, se ve en `09-spring` | |
 

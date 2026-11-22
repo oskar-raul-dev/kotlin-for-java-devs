@@ -51,7 +51,7 @@ probar, junto con los permisos del volumen `gradle-home`).
 ## Bases de datos
 
 Los tracks no las usan todavía. Cuando el track 16 (Spring Boot 2.7) necesite PostgreSQL o MySQL, desde el
-contenedor se llega a los de `docker/postgres` y `docker/mysql` por `host.docker.internal:15432` y `:13306` ⚠️ (por
+contenedor se llega a los de `docker/postgres` y `docker/mysql` por `host.docker.internal:25432` y `:23306` ⚠️ (por
 probar en B5), o uniendo los servicios a la misma red de Docker.
 
 ## Actualizar un digest

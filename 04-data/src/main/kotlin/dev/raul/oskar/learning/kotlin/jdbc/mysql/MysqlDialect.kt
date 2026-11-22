@@ -52,4 +52,4 @@ object MysqlDialect : Dialect {
 }
 
 /** Valores por defecto = docker/mysql/compose.yaml. Se cambian con MYSQL_URL, MYSQL_USER, MYSQL_PASSWORD. */
-val mysqlConfig = DbConfig.fromEnv("MYSQL", "jdbc:mysql://localhost:13306/learning", "learning", "learning")
+val mysqlConfig = DbConfig.fromEnv("MYSQL", "jdbc:mysql://localhost:23306/learning", "learning", "learning")

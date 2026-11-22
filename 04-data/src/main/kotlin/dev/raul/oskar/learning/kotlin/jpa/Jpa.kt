@@ -32,7 +32,7 @@ fun postgresFactory(): EntityManagerFactory {
     return Persistence.createEntityManagerFactory(
         "learning",
         mapOf(
-            "jakarta.persistence.jdbc.url" to (System.getenv("PG_URL") ?: "jdbc:postgresql://localhost:15432/learning"),
+            "jakarta.persistence.jdbc.url" to (System.getenv("PG_URL") ?: "jdbc:postgresql://localhost:25432/learning"),
             "jakarta.persistence.jdbc.user" to (System.getenv("PG_USER") ?: "learning"),
             "jakarta.persistence.jdbc.password" to (System.getenv("PG_PASSWORD") ?: "learning"),
         ),

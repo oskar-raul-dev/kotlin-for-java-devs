@@ -88,8 +88,8 @@ inside a section (`-p <section>`).
 Databases (optional):
 
 ```bash
-docker compose -f docker/postgres/compose.yaml up -d --wait   # PostgreSQL 17.2 on 127.0.0.1:15432
-docker compose -f docker/mysql/compose.yaml up -d --wait      # MySQL 8.4.3 on 127.0.0.1:13306
+docker compose -f docker/postgres/compose.yaml up -d --wait   # PostgreSQL 17.2 on 127.0.0.1:25432
+docker compose -f docker/mysql/compose.yaml up -d --wait      # MySQL 8.4.3 on 127.0.0.1:23306
 docker compose -f docker/<db>/compose.yaml down -v            # also wipes the volume
 ```
 

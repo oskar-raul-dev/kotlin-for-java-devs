@@ -466,3 +466,7 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   de inicialización, `data class` frente a `record`, `sealed` frente a `enum`, `object` y visibilidad). Medido para la
   guía: llamar a un miembro `open` desde el constructor no da aviso del compilador en 2.4.21 y termina en
   `NullPointerException`. 36 enlaces responden; 3 sitios bloquean clientes automáticos (revisados en las búsquedas).
+- **2026-11-22** · **Puertos de las bases en el rango 20000:** PostgreSQL pasa de 15432 a 25432 y MySQL de 13306 a
+  23306, para no chocar con los contenedores de otro proyecto que usan el rango 10000. Cambia en los `compose.yaml`, en
+  los valores por defecto del código (`postgresConfig`, `mysqlConfig`, `postgresFactory`) y en la documentación.
+  Contenedores recreados; 157 pruebas en verde con las dos bases arriba, 0 `SKIPPED`.

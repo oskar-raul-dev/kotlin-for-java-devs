@@ -114,7 +114,8 @@ Tags anotados: `baseline-1.9.22` (curso v1 de proyecto único), `monorepo-1.9.22
 | `b6e9b60` Number the tutorials | `tutorials/01-install` … `05-debug`; 136 comprobaciones en verde |
 | `6247429` Propose study guides with theory and sources | Sección 13 del plan y la guía de `basics` como muestra |
 | `1aed5c7` Adopt the study guide format | Reglas, plantilla y `scripts/check-guide-links.sh` |
-| Write study guides 1: control, strings, oop | Guías de estudio de `control`, `strings` y `oop` |
+| `d0a14f1` Write study guides 1: control, strings, oop | Guías de estudio de `control`, `strings` y `oop` |
+| Move the database ports to the 20000 range | PostgreSQL 25432 y MySQL 23306 |
 
 **Remoto:** `origin` en GitHub desde el 13 de noviembre de 2026. Antes de cada push se repite el escaneo de
 referencias externas sobre `git log -p --all`, y se suben los tags con `git push origin main --follow-tags`.
@@ -216,8 +217,8 @@ con su plugin. La imagen no necesita nada más.
 
 ```text
 docker/
-├── postgres/            ya existe: PostgreSQL 17.2 en 127.0.0.1:15432
-├── mysql/               ya existe: MySQL 8.4.3 en 127.0.0.1:13306
+├── postgres/            ya existe: PostgreSQL 17.2 en 127.0.0.1:25432
+├── mysql/               ya existe: MySQL 8.4.3 en 127.0.0.1:23306
 └── legacy-kotlin/
     ├── README.md        imágenes, digests, cómo correr cada track y cómo hacerlo en nativo
     └── compose.yaml     servicios k14 (JDK 11), k16 (JDK 17), k19 (JDK 21), con el repo montado en /work
