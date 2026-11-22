@@ -1307,11 +1307,12 @@ Bases de datos relacionales. **Build:** 2 · **Caso:** Banco.
 
 **Objetivo:** escribir JDBC sin ceremonia con extensiones de Kotlin, aislar las diferencias entre motores en un
 dialecto y probar todo con una sola batería de contrato.
-**Sección:** `04-data` · **Build:** nivel 2 · **Caso:** Banco · **Estado:** existe (pasa al Banco en B0′, tanda 5)
+**Sección:** `04-data` · **Build:** nivel 2 · **Caso:** Banco · **Estado:** existe (en el Banco desde B0′, tanda 5)
 
-> **Hoy → B0′:** el repositorio de productos (`ProductRepository`, `ProductRepositoryContract`) pasa a
-> `LedgerRepository` con cuentas, asientos y postings, la transferencia en una transacción, la actualización perdida
-> y `SELECT … FOR UPDATE`. Guía: [`01-jdbc.md`](lessons/04-data/01-jdbc.md). Versiones: sqlite-jdbc 3.54.1.0,
+> **B0′, tanda 5 (hecho):** el repositorio de productos pasó a `LedgerRepository` (cuentas, asientos y postings, la
+> transferencia en una transacción con UPDATE relativos) y su contrato `LedgerRepositoryContract` (13 pruebas por
+> motor, incluidas el aislamiento por defecto y la actualización perdida con dos conexiones); `FOR UPDATE` queda para
+> el ⚡. Guía: [`01-jdbc.md`](lessons/04-data/01-jdbc.md). Versiones: sqlite-jdbc 3.54.1.0,
 > PostgreSQL JDBC 42.7.14, mysql-connector-j 26.10.0; PostgreSQL 17.2 y MySQL 8.4.3 en Docker
 > ([`Versions.md`](Versions.md)).
 
@@ -1350,10 +1351,10 @@ la suma de todos los saldos igual antes y después.
 
 **Objetivo:** usar JPA desde Kotlin sin caer en sus trampas (clases `final`, `data class`, ids nulos), entender el
 contexto de persistencia y medir el N+1.
-**Sección:** `04-data` · **Build:** nivel 2 · **Caso:** Banco · **Estado:** existe (pasa al Banco en B0′, tanda 5)
+**Sección:** `04-data` · **Build:** nivel 2 · **Caso:** Banco · **Estado:** existe (en el Banco desde B0′, tanda 5)
 
-> **Hoy → B0′:** `Customer`, `PurchaseOrder` y `OrderLine` pasan a `Account` con `@Version` y `JournalEntry` con
-> `Posting` (cascade, `orphanRemoval`), con el N+1 al listar movimientos. Guía: [`02-jpa.md`](lessons/04-data/02-jpa.md).
+> **B0′, tanda 5 (hecho):** `Customer`, `PurchaseOrder` y `OrderLine` pasaron a `Account` con `@Version` y
+> `JournalEntry` con `Posting` (cascade, `orphanRemoval`), con el N+1 al recorrer las líneas de los asientos. Guía: [`02-jpa.md`](lessons/04-data/02-jpa.md).
 > Versiones: Hibernate ORM 7.4.15 (JPA 3.2), H2 2.5.252 ([`Versions.md`](Versions.md)).
 
 | Java 21 | Kotlin | Nota |

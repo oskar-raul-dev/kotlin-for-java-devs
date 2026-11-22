@@ -1,6 +1,6 @@
 # 01 · `jdbc` — JDBC idiomático, tres motores (SQLite, PostgreSQL, MySQL)
 
-**Sección:** `04-data` · **Paquete:** `dev.raul.oskar.learning.kotlin.jdbc` (+ `.sqlite`, `.postgres`, `.mysql`) · **Caso:** tienda (provisional) → Banco
+**Sección:** `04-data` · **Paquete:** `dev.raul.oskar.learning.kotlin.jdbc` (+ `.sqlite`, `.postgres`, `.mysql`) · **Caso:** Banco
 **Enlaces:** [temario](../../Temario.md#04--jdbc--jdbc-idiomático-tres-motores-sqlite-postgresql-mysql) · [ejercicios](../../../04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jdbc/Exercises.md) · [código](../../../04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jdbc/) · [pruebas](../../../04-data/src/test/kotlin/dev/raul/oskar/learning/kotlin/jdbc/)
 
 ## Cómo correrla
@@ -18,26 +18,31 @@ docker compose -f docker/postgres/compose.yaml up -d --wait   # y/o docker/mysql
 
 1. `Jdbc.kt`: las extensiones que quitan la ceremonia (`mapRows`, `inTransaction`) y `DbConfig` con `fromEnv` e
    `isReachable`.
-2. `Dialect.kt`: lo único que cambia por motor (DDL, upsert).
-3. `Product.kt` y `ProductRepository.kt`: CRUD con `PreparedStatement`, claves generadas, batch, upsert, agregados y
-   una transacción que se revierte por un `CHECK` (`moveStock`).
-4. `sqlite/`, `postgres/`, `mysql/`: cada `*Dialect` y su `Main`.
+2. `Ledger.kt` y `Dialect.kt`: las filas del ledger (`AccountRow`, `MovementRow`) y lo único que cambia por motor
+   (DDL, upsert, aislamiento por defecto, si el motor rechaza la actualización perdida, `sessionSetup`).
+3. `LedgerRepository.kt`: cuentas con saldo materializado y `CHECK (balance >= 0)`; la transferencia como un asiento
+   de doble partida (asiento con clave generada, dos postings en lote y dos UPDATE **relativos**) dentro de
+   `inTransaction`; la clave de idempotencia `UNIQUE`; el invariante débitos = créditos en SQL
+   (`unbalancedEntries`); `COALESCE`, `LIKE` con parámetro, foreign keys y el upsert de tasas.
+4. `sqlite/`, `postgres/`, `mysql/`: cada `*Dialect` y su `Main` (`RETURNING`, `= ANY(array)` y `jsonb` en PG;
+   `LAST_INSERT_ID()`, `@@transaction_isolation` y `GROUP_CONCAT` en MySQL).
 5. `Demo.kt`: el recorrido común.
-6. Pruebas: `ProductRepositoryContract` (abstracta, la batería) y una subclase por motor que solo da el dialecto y la
-   conexión (`null` → `assumeTrue` → `SKIPPED`).
+6. Pruebas: `LedgerRepositoryContract` (abstracta, la batería) y una subclase por motor que da el dialecto y la
+   conexión (`null` → `assumeTrue` → `SKIPPED`). La de SQLite usa un archivo temporal porque el contrato abre una
+   segunda conexión a la misma base.
 
 ## Mapa del código
 
 | Archivo | Qué muestra | Símbolos | Lo prueba |
 |---|---|---|---|
-| `Jdbc.kt` | Extensiones de JDBC | `mapRows`, `inTransaction`, `DbConfig` | `ProductRepositoryContract` (`transaction commits both updates`, `check constraint failure rolls back…`) |
-| `Dialect.kt`, `*/…Dialect.kt` | Diferencias entre motores | `Dialect`, `SqliteDialect`, `PostgresDialect`, `MysqlDialect`, `postgresConfig`, `mysqlConfig` | `SqliteRepositoryTest`, `PostgresRepositoryTest`, `MysqlRepositoryTest` |
-| `Product.kt`, `ProductRepository.kt` | Repositorio JDBC común | `Product`, `ProductRepository` (`insert`, `insertAll`, `findBySku`, `searchByName`, `updatePrice`, `delete`, `upsert`, `count`, `inventoryValue`, `moveStock`) | `ProductRepositoryContract` (las 9 pruebas, en cada motor) |
+| `Jdbc.kt` | Extensiones de JDBC | `mapRows`, `inTransaction`, `DbConfig` | `LedgerRepositoryContract` (`a transfer writes the entry…`, `check constraint failure rolls back…`) |
+| `Ledger.kt`, `Dialect.kt`, `*/…Dialect.kt` | Filas y diferencias entre motores | `AccountRow`, `MovementRow`, `money`, `Dialect`, `SqliteDialect`, `PostgresDialect`, `MysqlDialect`, `postgresConfig`, `mysqlConfig` | `LedgerRepositoryContract` (`the default isolation level depends on the engine`, `read-modify-write loses an update…`) |
+| `LedgerRepository.kt` | El ledger con JDBC | `LedgerRepository` (`openAccount`, `openAccounts`, `findAccount`, `accounts`, `totalBalance`, `transfer`, `movements`, `entriesMatching`, `unbalancedEntries`, `freeze`, `deleteAccount`, `upsertRate`, `rate`, `overwriteBalance`) | `LedgerRepositoryContract` (las 13 pruebas, en cada motor) |
 | `Demo.kt`, `*/Main.kt` | Recorrido común | `runDemo` | Sin prueba propia: es la demo de `run` |
 
 ## Estado
 
-- **Hecho:** código y 27 pruebas (9 × 3 motores); 25 ejercicios compartidos por los tres motores, etiquetados
-  `[todos]`/`[SQLite]`/`[PG]`/`[MySQL]`; 0 resueltos en `practice/`.
-- **Falta:** B0′ tanda 5 (`ProductRepository` → `LedgerRepository` con su contrato: cuentas, asientos,
-  transferencia, `FOR UPDATE` y aislamiento por motor); B2.
+- **Hecho:** código en el caso Banco (B0′ tanda 5) y 39 pruebas (13 × 3 motores); 25 ejercicios compartidos por los
+  tres motores, etiquetados `[todos]`/`[SQLite]`/`[PG]`/`[MySQL]`; 0 resueltos en `practice/`.
+- **Falta:** B0′ tanda 6 (enunciados que todavía crean tablas de clientes y pedidos); B2 (⚡ ledger concurrente con
+  `FOR UPDATE`).

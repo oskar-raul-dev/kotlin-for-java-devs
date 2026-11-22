@@ -51,7 +51,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | A6 · Track `22-legacy-kotlin19` | ✅ | Wrapper propio 9.2.1, Kotlin 1.9.22, 4 pruebas de humo; fuera del composite |
 | A8 · Contenedores legacy | ✅ | `./scripts/legacy.sh 19` = nativo (4 pruebas); `arm64` nativo |
 | A9 · Documentación | ✅ | README con índice de secciones, CLAUDE.md reescrito; tag `phase-a` |
-| B0′ · Casos Banco y Mercado | 🟡 | Diseño en `docs/Casos.md` ✅; tandas 1 a 4 ✅ (código de `01-language` en los casos); tandas 5 (`04-data`) y 6 (enunciados) ⬜️ |
+| B0′ · Casos Banco y Mercado | 🟡 | Diseño en `docs/Casos.md` ✅; tandas 1 a 5 ✅ (todo el código en los casos); tanda 6 (enunciados y ruta 🎯) ⬜️ |
 | B0″ · Guías de lección | ✅ | 12 guías en `docs/lessons/`, símbolos y pruebas citados comprobados contra el código |
 
 ## Secciones
@@ -402,3 +402,12 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   `jooq` (velas y medias con funciones de ventana), `r2dbc` (con el ⚡ de la sección: la misma app con cinco
   accesos) y `sqldelight` (la capa local de `11-multiplatform`). Librerías sin versión fijada quedan ⚠️. Quedan 35
   de 88 entradas.
+- **2026-11-22** · **B0′, tanda 5 (`04-data`):** `jdbc` pasa de productos al ledger del Banco: `LedgerRepository`
+  (cuentas con saldo materializado y `CHECK`, transferencia como asiento de doble partida con UPDATE relativos en
+  `inTransaction`, clave de idempotencia `UNIQUE`, `unbalancedEntries`, foreign keys a nivel de tabla porque MySQL
+  ignora las de columna, upsert de tasas) y `LedgerRepositoryContract` con 13 pruebas por motor, dos nuevas: el
+  aislamiento por defecto (READ COMMITTED, REPEATABLE READ, SERIALIZABLE) y la actualización perdida con dos
+  conexiones (PostgreSQL y MySQL la dejan pasar; SQLite la rechaza). SQLite pasa a un archivo temporal en las pruebas.
+  `jpa` pasa a `Account` con `@Version`, `JournalEntry` y `Posting`, con `LedgerQueries` y siembra en código (se decide
+  que no hace falta `ledger-seed.json`). Probado también contra PostgreSQL. Cuatro enunciados de `jdbc`/`jpa` apuntan
+  al código nuevo. Guías `04-data` reescritas. 153 pruebas (103 + 50), 0 `SKIPPED`.

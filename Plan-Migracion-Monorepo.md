@@ -29,7 +29,7 @@ medias**. El avance por sección y lección está en [`CHECKLIST.md`](CHECKLIST.
 | Fase A (A0–A9) | ✅ tag `phase-a` | — |
 | B1 · Tutoriales | ✅ | — (5 tutoriales, 72 ejercicios, 136 comprobaciones en sus `check.sh`) |
 | B0 · Temario | 🟡 tandas 0 a 6 de 10 | Tandas 7 a 10: 35 de las 88 entradas ([`docs/Temario-Plan.md`](docs/Temario-Plan.md#estado)) |
-| B0′ · Casos Banco y Mercado | 🟡 diseño y tandas 1–4 | Tandas 5 (`04-data`) y 6 (enunciados y ruta 🎯) del reemplazo del dominio de pedidos ([`docs/Casos.md`](docs/Casos.md#plan-de-reemplazo)) |
+| B0′ · Casos Banco y Mercado | 🟡 diseño y tandas 1–5 | Tanda 6 (enunciados y ruta 🎯) del reemplazo del dominio de pedidos ([`docs/Casos.md`](docs/Casos.md#plan-de-reemplazo)) |
 | B0″ · Guías de lección | ✅ | — (índice, plantilla y 12 guías en [`docs/lessons/`](docs/lessons/README.md); se mantienen con cada cambio de código) |
 | B2–B10 | ⬜️ | Todo |
 
@@ -102,7 +102,8 @@ Tags anotados: `baseline-1.9.22` (curso v1 de proyecto único), `monorepo-1.9.22
 | `5298bfe` Write syllabus batch 3 | B0, tanda 3: `generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2`; 12 etiquetas medidas más JSpecify y `default` |
 | `5089107` Write syllabus batch 4 | B0, tanda 4: `02-coroutines` (10 entradas); opt-in de kotlinx-coroutines 1.11.0 medidos |
 | `26dff26` Write syllabus batch 6 | B0, tanda 6: `05-testing`, `06-compiler`, `07-design` (12 entradas) |
-| Write syllabus batch 5 | B0, tanda 5: `03-reactive` y `04-data` (10 entradas) |
+| `9ede67e` Write syllabus batch 5 | B0, tanda 5: `03-reactive` y `04-data` (10 entradas) |
+| Move 04-data to the Bank ledger (B0′ batch 5) | B0′, tanda 5: `LedgerRepository` y su contrato en los tres motores, ledger en JPA; 153 pruebas |
 
 **Remoto:** `origin` en GitHub desde el 13 de noviembre de 2026. Antes de cada push se repite el escaneo de
 referencias externas sobre `git log -p --all`, y se suben los tags con `git push origin main --follow-tags`.
@@ -117,7 +118,7 @@ temario ya está escrito (tandas 1 y 2 de B0), y así el código deja antes el d
    el resto de `01-language`; el código de `01-language` ya está en los casos.
 3. **B0 · tandas 3, 4 y 6** (no dependen de otras) y luego la **5** (espera a la 4). Tandas 3 a 6 ✅ (22 de
    noviembre de 2026).
-4. **B0′ · tandas 5 y 6:** `04-data` con el ledger (se apoya en la tanda 5 de B0); ejercicios, ruta 🎯 y borrado de
+4. **B0′ · tandas 5 y 6:** tanda 5 ✅ (22 de noviembre de 2026); `04-data` con el ledger (se apoya en la tanda 5 de B0); ejercicios, ruta 🎯 y borrado de
    `orders.json`/`sales.csv`. Termina antes de B2.
 5. **B0 · tandas 7, 8, 9 y 10**, con la revisión juntos al final.
 6. **B2–B10** según la [sección 8](#8-fase-b-generar-el-resto).

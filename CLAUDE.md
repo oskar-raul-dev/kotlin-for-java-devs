@@ -117,22 +117,25 @@ all tests with both databases up** (no SKIPPED).
   `kotlin.test` on JUnit 5.
 - `basics/Money.kt` is the one `Money` type of `01-language` (data class, scale validated in `init` and normalized by
   `Money.of`/`ofCents`, `HALF_EVEN`); `oop`, `exceptions` and `json` import it instead of redefining it.
-- `jdbc/` root holds shared code: `ProductRepository`, the `Dialect` interface, `mapRows`/`inTransaction`
-  extensions, and `runDemo`. `jdbc/{sqlite,postgres,mysql}` each supply only a `*Dialect` and `Main`. Tests
-  subclass the abstract `ProductRepositoryContract`, providing `dialect` and `openConnection()`; returning `null`
-  triggers a JUnit `assumeTrue` skip. Engine differences belong in the dialect, not the repository. The three
+- `jdbc/` root holds shared code: the Bank ledger (`LedgerRepository`, rows in `Ledger.kt`), the `Dialect` interface
+  (DDL, upsert, default isolation, `refusesLostUpdate`, `sessionSetup`), `mapRows`/`inTransaction` extensions, and
+  `runDemo`. `jdbc/{sqlite,postgres,mysql}` each supply only a `*Dialect` and `Main`. Tests subclass the abstract
+  `LedgerRepositoryContract`, providing `dialect` and `openConnection()`; returning `null` triggers a JUnit `assumeTrue`
+  skip, and `openConnection()` may be called twice (the lost-update test needs a second connection to the same DB, so
+  SQLite uses a temp file, not `:memory:`). Engine differences belong in the dialect, not the repository. The three
   engines share one `jdbc/Exercises.md` with exercises tagged `[todos]`/`[SQLite]`/`[PG]`/`[MySQL]`.
 - `jpa/` is Hibernate 7 without Spring: `EntityManagerFactory` built by hand from `META-INF/persistence.xml`
   (unit `learning`, H2 by default). `h2Factory(name)` gives each test its own in-memory DB; `postgresFactory()`
   targets Docker; `inTransaction`, `statementCount()` and `resetStatistics()` (for N+1 demos) are extensions in
-  `jpa/Jpa.kt`.
+  `jpa/Jpa.kt`. The model is the ledger (`Account` with `@Version`, `JournalEntry` cascading to `Posting`), seeded in
+  code by `jpa/Seed.kt` (there is no `ledger-seed.json`).
 - Sample data is on the classpath in `01-language/src/main/resources/data/`: the case files `ticks.json`,
   `bank-statement.csv`, `ledger-movements.csv`, `fx-rates.json` are **generated** by the `datagen` package
   (`run -Plesson=datagen`, fixed seed, `java.util.Random`); never edit them by hand: change the generator and
   regenerate (`DatagenTest` compares them byte for byte). `sales.csv` and `orders.json` are the old domain, deleted in
-  B0′ batch 6. The end-to-end example domain is the Bank and Market cases of `docs/Casos.md` (step B0′): `01-language` code
-  is already on them (batches 1–4); `04-data` (batch 5) and the exercise statements and priority route (batch 6) still
-  use the provisional store-orders domain. New examples and exercises must use the cases, all data fictional.
+  B0′ batch 6. The end-to-end example domain is the Bank and Market cases of `docs/Casos.md` (step B0′): all code is already on
+  them (batches 1–5); the exercise statements and priority route (batch 6) still partly use the provisional
+  store-orders domain. New examples and exercises must use the cases, all data fictional.
 
 ## Exercise conventions
 

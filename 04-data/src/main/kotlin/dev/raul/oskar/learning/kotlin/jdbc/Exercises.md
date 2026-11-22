@@ -2,7 +2,7 @@
 
 > **Lecciones:** `jdbc.sqlite`, `jdbc.postgres`, `jdbc.mysql` (y lo común en `jdbc/`) · **Dónde se resuelven:**
 > `jdbc/practice/ExNN<Nombre>.kt`, con pruebas en `src/test/kotlin/.../jdbc/practice/`. Si el ejercicio vale para los tres motores,
-> escribe la prueba como **contrato** abstracto (igual que `ProductRepositoryContract`) y una subclase por motor.
+> escribe la prueba como **contrato** abstracto (igual que `LedgerRepositoryContract`) y una subclase por motor.
 > **Correr:** `./gradlew -p 04-data test --tests '*.jdbc.practice.*'` (con los compose arriba para PG y MySQL; si no, esas pruebas salen `SKIPPED`).
 >
 > **Semáforo:** 🟢 fácil · 🟡 medio · 🟠 difícil · 🔴 muy difícil. **🎯 = prioritario** (ruta recomendada); el resto queda para después.

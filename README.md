@@ -74,8 +74,8 @@ cd 22-legacy-kotlin19 && ./gradlew test                         # track legacy K
 - `--args` pasa argumentos al `main(args)`.
 - `--console=plain` quita la barra de progreso de Gradle, que se mezcla con lo que se escribe en la consola.
 
-Estado actual: **141 pruebas** en la base (103 en `01-language` y 38 en `04-data`), todas en verde, más **4 de humo**
-en `22-legacy-kotlin19`. Las 18 de PostgreSQL y MySQL salen `SKIPPED` si sus contenedores no están arriba.
+Estado actual: **153 pruebas** en la base (103 en `01-language` y 50 en `04-data`), todas en verde, más **4 de humo**
+en `22-legacy-kotlin19`. Las 26 de PostgreSQL y MySQL salen `SKIPPED` si sus contenedores no están arriba.
 
 ## Índice de secciones
 
@@ -143,15 +143,15 @@ genera el paquete `datagen` con semilla fija: `./gradlew -p 01-language run -Ple
 | 7 | `functional` | Tipos función, closures, composición, lambdas con receptor, `reified`, `Result`, scope functions, `fun interface`, pipelines sobre ticks (`groupBy`, `groupingBy`, `partition`, vela con `fold`), secuencias perezosas | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/functional/Exercises.md) | 6 |
 | 8 | `json` | kotlinx-serialization sobre el feed `ticks.json`: `@SerialName`, `explicitNulls`, `ignoreUnknownKeys`, defaults, `MarketEvent` sellado, serializadores para `BigDecimal`/`LocalDate`, árbol `JsonElement` | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/json/Exercises.md) | 4 |
 | 9 | `datetime` | `java.time` con el calendario del Mercado: parseo estricto `MM/dd/uuuu`, día de mercado en Nueva York, sesión y horario de verano, feriados, `Clock` inyectado, ventana de 7 días, cierre de mes | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/datetime/Exercises.md) | 5 |
-| 10 | `jdbc.sqlite` | Repositorio JDBC común + dialecto SQLite (sin servidor) | [25, compartidos](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jdbc/Exercises.md) | — |
-| 11 | `jdbc.postgres` | Mismo repositorio en PostgreSQL + `RETURNING`, `= ANY(array)`, `jsonb` | ↑ | — |
-| 12 | `jdbc.mysql` | Mismo repositorio en MySQL + `ON DUPLICATE KEY`, `LAST_INSERT_ID()`, aislamiento por defecto | ↑ | — |
-| 13 | `jpa` | Hibernate 7 sin Spring: entidades en Kotlin, cascade, `orphanRemoval`, N+1 y `join fetch`, dirty checking, `LazyInitializationException`, `@Version`, UPDATE masivo | [24](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jpa/Exercises.md) | — |
+| 10 | `jdbc.sqlite` | Ledger del Banco con JDBC común (asientos de doble partida, transferencia en una transacción, `CHECK` que revierte) + dialecto SQLite (sin servidor) | [25, compartidos](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jdbc/Exercises.md) | — |
+| 11 | `jdbc.postgres` | Mismo ledger en PostgreSQL (`READ COMMITTED`, actualización perdida) + `RETURNING`, `= ANY(array)`, `jsonb` | ↑ | — |
+| 12 | `jdbc.mysql` | Mismo ledger en MySQL (`REPEATABLE READ`) + `ON DUPLICATE KEY`, `LAST_INSERT_ID()`, foreign keys a nivel de tabla | ↑ | — |
+| 13 | `jpa` | Hibernate 7 sin Spring sobre el ledger: entidades en Kotlin, cascade, `orphanRemoval`, N+1 y `join fetch`, dirty checking, `LazyInitializationException`, `@Version`, UPDATE masivo | [24](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jpa/Exercises.md) | — |
 | 14 | `exceptions` | Sin checked exceptions, `try`/`throw` como expresiones, `require`/`check`/`error`, sin multi-catch (`when` en el catch), `BankException` sellada con `cause` y su traducción a HTTP, `TransferService`, `Result`/`runCatching` (y su trampa con `CancellationException`), validación que acumula errores, `use` y suppressed, `@Throws` para Java | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/exceptions/Exercises.md) | 4 |
 
-`jdbc/` (sin subpaquete) tiene lo compartido: `ProductRepository`, la interfaz `Dialect`, las extensiones
+`jdbc/` (sin subpaquete) tiene lo compartido: el ledger del Banco (`LedgerRepository`), la interfaz `Dialect`, las extensiones
 `mapRows` e `inTransaction`, y el recorrido `runDemo`. Las tres bases pasan **la misma batería de pruebas**
-(`ProductRepositoryContract`), así que las diferencias entre motores quedan aisladas en cada `*Dialect`. Por eso
+(`LedgerRepositoryContract`), así que las diferencias entre motores quedan aisladas en cada `*Dialect`. Por eso
 los tres motores comparten un solo `jdbc/Exercises.md`, con cada ejercicio etiquetado por motor (`[todos]`,
 `[SQLite]`, `[PG]`, `[MySQL]`).
 

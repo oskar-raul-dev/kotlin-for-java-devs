@@ -1,41 +1,45 @@
 package dev.raul.oskar.learning.kotlin.jdbc
 
+import java.math.BigDecimal
 import java.sql.Connection
 import java.sql.SQLException
+import java.time.LocalDate
 
 /** El mismo recorrido para los tres motores: cada Main solo cambia la conexión y el dialecto. */
 fun runDemo(conn: Connection, dialect: Dialect) {
     val meta = conn.metaData
     println("== ${dialect.name}: ${meta.databaseProductName} ${meta.databaseProductVersion} (driver ${meta.driverVersion}) ==")
 
-    val repo = ProductRepository(conn, dialect)
+    val repo = LedgerRepository(conn, dialect)
     repo.recreateSchema()
+    val ana = "ACC-00001234-82"
+    val bea = "ACC-00005678-39"
+    val day = LocalDate.of(2026, 10, 7)
 
-    val laptop = repo.insert(Product("LAP-1", "Laptop 14", Product.money("1200"), 5))
-    println("insert -> id generado ${laptop.id}")
+    repo.openAccounts(listOf(AccountRow(ana, "USD", money("1000.00")), AccountRow(bea, "USD", money("250.00"))))
+    println("openAccounts (batch) -> ${repo.accounts()}")
 
-    repo.insertAll(
-        listOf(
-            Product("MOU-1", "Mouse inalámbrico", Product.money("25.50"), 40),
-            Product("KEY-1", "Teclado mecánico", Product.money("80"), 10),
-        ),
-    )
-    println("insertAll (batch) -> total ${repo.count()} filas")
+    val entry = repo.transfer("k-1", ana, bea, money("100.00"), "Transferencia a $bea", day)
+    println("transfer -> asiento $entry; saldos ${repo.accounts().map { "${it.id}=${it.balance}" }}")
+    println("movimientos de $bea -> ${repo.movements(bea)}")
+    println("asientos desbalanceados -> ${repo.unbalancedEntries()}  (débitos = créditos)")
 
-    repo.upsert(Product("MOU-1", "Mouse inalámbrico", Product.money("22.90"), 50))
-    repo.upsert(Product("MON-1", "Monitor 27", Product.money("310"), 3))
-    println("upsert (1 update + 1 insert) -> ${repo.findAll().map { "${it.sku}:${it.price}x${it.stock}" }}")
-
-    println("searchByName(\"mouse\") -> ${repo.searchByName("mouse").map { it.name }}")
-    println("valor del inventario -> ${repo.inventoryValue()}")
-
-    repo.moveStock("KEY-1", "LAP-1", 4)
-    println("moveStock 4 -> KEY-1=${repo.findBySku("KEY-1")?.stock}, LAP-1=${repo.findBySku("LAP-1")?.stock}")
     try {
-        repo.moveStock("KEY-1", "LAP-1", 100)
+        repo.transfer("k-1", ana, bea, money("1.00"), "Repetida", day)
     } catch (e: SQLException) {
-        println("moveStock 100 falla y se revierte (${e::class.simpleName}): KEY-1=${repo.findBySku("KEY-1")?.stock}, LAP-1=${repo.findBySku("LAP-1")?.stock}")
+        println("clave de idempotencia repetida -> ${e::class.simpleName}, nada cambió: ${repo.findAccount(ana)?.balance}")
+    }
+    try {
+        repo.transfer("k-2", bea, ana, money("5000.00"), "Sin fondos", day)
+    } catch (e: SQLException) {
+        println("sin fondos -> el CHECK revierte todo (${e::class.simpleName}): $bea=${repo.findAccount(bea)?.balance}")
     }
 
-    println("delete MON-1 -> ${repo.delete("MON-1")}, de nuevo -> ${repo.delete("MON-1")}")
+    repo.upsertRate("EUR", BigDecimal("0.9215"))
+    repo.upsertRate("EUR", BigDecimal("0.9208"))
+    println("upsert de tasa (1 insert + 1 update) -> EUR=${repo.rate("EUR")}, filas=${repo.rateCount()}")
+    println("entriesMatching(\"transfer\") -> ${repo.entriesMatching("transfer")}")
+    println("saldo total USD -> ${repo.totalBalance("USD")}")
+    println("freeze $bea -> ${repo.freeze(bea)}; borrar $bea con movimientos -> " +
+        runCatching { repo.deleteAccount(bea) }.fold({ "$it" }, { "falla por la foreign key (${it::class.simpleName})" }))
 }

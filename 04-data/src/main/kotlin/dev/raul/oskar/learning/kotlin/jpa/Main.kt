@@ -2,6 +2,7 @@ package dev.raul.oskar.learning.kotlin.jpa
 
 import jakarta.persistence.OptimisticLockException
 import org.hibernate.LazyInitializationException
+import java.math.BigDecimal
 
 // ./gradlew run -Plesson=jpa                    -> H2 en memoria
 // ./gradlew run -Plesson=jpa --args=postgres    -> PostgreSQL de docker/postgres/compose.yaml
@@ -13,54 +14,46 @@ fun main(args: Array<String>) {
 
         println("== Consultas ==")
         emf.inTransaction { em ->
-            val repo = OrderRepository(em)
-            println("findCustomerByEmail -> ${repo.findCustomerByEmail("ana@example.com")}")
-            println("PAID -> ${repo.ordersByStatus(OrderStatus.PAID)}")
-            println("totales -> ${repo.totalsByCustomer()}")
-            println("página 0 (2) -> ${repo.customersPage(0, 2)}, página 1 -> ${repo.customersPage(1, 2)}")
+            val q = LedgerQueries(em)
+            println("findAccount -> ${q.findAccount(ANA)}")
+            println("OPEN -> ${q.accountsByStatus(AccountStatus.OPEN)}")
+            println("movimiento neto -> ${q.netMovementByAccount()}")
+            println("página 0 (2) -> ${q.accountsPage(0, 2)}, página 1 -> ${q.accountsPage(1, 2)}")
         }
 
         println("\n== N+1 ==")
         emf.resetStatistics()
-        emf.inTransaction { em -> OrderRepository(em).allOrdersNaive().forEach { it.customer!!.name } }
+        emf.inTransaction { em -> LedgerQueries(em).entriesNaive().forEach { it.postings.size } }
         println("sin fetch   -> ${emf.statementCount()} sentencias")
         emf.resetStatistics()
-        emf.inTransaction { em -> OrderRepository(em).allOrdersWithCustomer().forEach { it.customer!!.name } }
+        emf.inTransaction { em -> LedgerQueries(em).entriesWithPostings().forEach { it.postings.size } }
         println("join fetch  -> ${emf.statementCount()} sentencias")
 
         println("\n== Dirty checking ==")
-        val id = emf.inTransaction { em ->
-            val order = OrderRepository(em).ordersByStatus(OrderStatus.NEW).first()
-            order.status = OrderStatus.PAID            // sin em.merge ni save: el commit hace el UPDATE
-            order.id!!
-        }
-        emf.inTransaction { em -> println("después del commit -> ${em.find(PurchaseOrder::class.java, id)}") }
+        emf.inTransaction { em -> LedgerQueries(em).findAccount(BEA)!!.status = AccountStatus.FROZEN }   // sin save: el commit hace el UPDATE
+        emf.inTransaction { em -> println("después del commit -> ${LedgerQueries(em).findAccount(BEA)}") }
 
         println("\n== Lazy fuera de la transacción ==")
-        val detached = emf.inTransaction { em -> em.find(Customer::class.java, 1L) }
+        val detached = emf.inTransaction { em -> LedgerQueries(em).findAccount(ANA)!! }
         try {
-            detached.orders.size
+            detached.postings.size
         } catch (e: LazyInitializationException) {
             println("LazyInitializationException: ${e.message}")
         }
 
         println("\n== Bloqueo optimista ==")
-        val stale = emf.inTransaction { em -> em.find(PurchaseOrder::class.java, id) }
-        emf.inTransaction { em -> em.find(PurchaseOrder::class.java, id).status = OrderStatus.SHIPPED }
+        val stale = emf.inTransaction { em -> LedgerQueries(em).findAccount(ANA)!! }
+        emf.inTransaction { em -> LedgerQueries(em).findAccount(ANA)!!.balance += BigDecimal("1.23") }   // intereses
         try {
             emf.inTransaction { em ->
-                stale.status = OrderStatus.CANCELLED
+                stale.balance -= BigDecimal("10.00")
                 em.merge(stale)                          // version vieja -> falla al hacer flush
             }
         } catch (e: OptimisticLockException) {
-            println("OptimisticLockException: alguien modificó el pedido $id antes")
+            println("OptimisticLockException: alguien modificó la cuenta $ANA antes")
         }
 
         println("\n== UPDATE masivo ==")
-        emf.inTransaction { em ->
-            // Cliente gestionado + cascade: el pedido nuevo se inserta en el commit sin persist explícito.
-            OrderRepository(em).findCustomerByEmail("eva@example.com")!!.placeOrder(PurchaseOrder())
-        }
-        emf.inTransaction { em -> println("cancelados -> ${OrderRepository(em).cancelAllNew()}") }
+        emf.inTransaction { em -> println("congeladas (saldo 0) -> ${LedgerQueries(em).freezeEmptyAccounts()}") }
     }
 }

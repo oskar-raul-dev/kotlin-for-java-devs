@@ -51,7 +51,7 @@ qué prueba lo demuestra, cómo correrlo y qué está hecho y qué falta. No rep
 
 | # | Guía | Caso | Pruebas | Ejercicios |
 |---|---|---|---|---|
-| 01 | [`jdbc`](04-data/01-jdbc.md) — JDBC idiomático, tres motores | Banco | 27 (9 × 3 motores) | 25 |
+| 01 | [`jdbc`](04-data/01-jdbc.md) — JDBC idiomático, tres motores | Banco | 39 (13 × 3 motores) | 25 |
 | 02 | [`jpa`](04-data/02-jpa.md) — Hibernate 7 sin Spring | Banco | 11 | 24 |
 
 El caso es el **destino** según [`Casos.md`](../Casos.md); mientras dure el reemplazo (paso B0′), cada guía dice en

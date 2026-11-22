@@ -15,7 +15,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import jakarta.persistence.Version
 import java.math.BigDecimal
-import java.time.Instant
+import java.time.LocalDate
 
 // JPA en Kotlin, las reglas que importan:
 //  1. NO usar data class para entidades: su equals/hashCode usa todos los campos (incluidas
@@ -24,48 +24,93 @@ import java.time.Instant
 //  3. Clases y propiedades no final: lo hace kotlin("plugin.allopen") para @Entity (proxies lazy).
 //  4. id nullable (`Long? = null`): null = todavía no persistida.
 //  5. equals/hashCode por id, con hashCode constante por clase (patrón recomendado para Hibernate).
+//
+// El modelo es el ledger del Banco (docs/Casos.md): cuentas, asientos de doble partida y sus líneas (postings).
+
+enum class AccountStatus { OPEN, FROZEN }
+
+/** DEBIT aumenta el saldo de la cuenta de efectivo del cliente y CREDIT lo disminuye (convención de Casos.md). */
+enum class Direction { DEBIT, CREDIT }
 
 @Entity
-@Table(name = "customer")
-class Customer(
-    @Column(nullable = false, length = 120)
-    var name: String,
+@Table(name = "account")
+class Account(
+    @Column(nullable = false, unique = true, length = 20)
+    var number: String,
 
-    @Column(nullable = false, unique = true, length = 200)
-    var email: String,
+    @Column(nullable = false, length = 3)
+    var currency: String,
+
+    @Column(nullable = false, precision = 14, scale = 2)
+    var balance: BigDecimal,
+
+    // EnumType.STRING: guarda "FROZEN". ORDINAL guardaría 1 y se rompe al reordenar el enum.
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    var status: AccountStatus = AccountStatus.OPEN,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    // mappedBy: el dueño de la relación es PurchaseOrder.customer (la FK está en purchase_order).
-    @OneToMany(mappedBy = "customer", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val orders: MutableList<PurchaseOrder> = mutableListOf()
+    /** Bloqueo optimista: Hibernate incrementa version en cada UPDATE y falla si alguien se adelantó. */
+    @Version
+    var version: Long? = null
 
-    /** Mantener los dos lados de la relación sincronizados. */
-    fun placeOrder(order: PurchaseOrder): PurchaseOrder {
-        orders += order
-        order.customer = this
-        return order
-    }
+    // mappedBy: el dueño de la relación es Posting.account (la FK está en posting). Sin cascade: las líneas son
+    // del asiento, no de la cuenta.
+    @OneToMany(mappedBy = "account")
+    val postings: MutableList<Posting> = mutableListOf()
 
-    override fun equals(other: Any?) = other is Customer && id != null && id == other.id
-    override fun hashCode() = Customer::class.hashCode()
-    override fun toString() = "Customer(id=$id, name=$name)"   // nunca imprimir colecciones lazy
+    override fun equals(other: Any?) = other is Account && id != null && id == other.id
+    override fun hashCode() = Account::class.hashCode()
+    override fun toString() = "Account($number, $balance $currency, $status, v$version)"   // nunca colecciones lazy
 }
 
-enum class OrderStatus { NEW, PAID, SHIPPED, CANCELLED }
+@Entity
+@Table(name = "journal_entry")
+class JournalEntry(
+    @Column(nullable = false, length = 200)
+    var description: String,
+
+    @Column(nullable = false)
+    var bookedOn: LocalDate,
+) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
+
+    // Las líneas viven y mueren con su asiento: cascade ALL + orphanRemoval.
+    @OneToMany(mappedBy = "entry", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val postings: MutableList<Posting> = mutableListOf()
+
+    /** Mantener los dos lados de las relaciones sincronizados (el asiento y la cuenta ven la línea). */
+    fun post(account: Account, direction: Direction, amount: BigDecimal): JournalEntry {
+        val line = Posting(direction, amount).also { it.entry = this; it.account = account }
+        postings += line
+        account.postings += line
+        return this
+    }
+
+    fun isBalanced(): Boolean {
+        fun sum(d: Direction) = postings.filter { it.direction == d }.fold(BigDecimal.ZERO) { acc, p -> acc + p.amount }
+        return sum(Direction.DEBIT).compareTo(sum(Direction.CREDIT)) == 0
+    }
+
+    override fun equals(other: Any?) = other is JournalEntry && id != null && id == other.id
+    override fun hashCode() = JournalEntry::class.hashCode()
+    override fun toString() = "JournalEntry(id=$id, $description)"
+}
 
 @Entity
-@Table(name = "purchase_order")
-class PurchaseOrder(
-    @Column(nullable = false)
-    var createdAt: Instant = Instant.now(),
-
-    // EnumType.STRING: guarda "PAID". ORDINAL guardaría 1 y se rompe al reordenar el enum.
+@Table(name = "posting")
+class Posting(
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    var status: OrderStatus = OrderStatus.NEW,
+    @Column(nullable = false, length = 6)
+    var direction: Direction,
+
+    @Column(nullable = false, precision = 14, scale = 2)
+    var amount: BigDecimal,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,49 +118,27 @@ class PurchaseOrder(
 
     // ManyToOne es EAGER por defecto en JPA: casi siempre conviene LAZY.
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "customer_id", nullable = false)
-    var customer: Customer? = null
-
-    @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val lines: MutableList<OrderLine> = mutableListOf()
-
-    /** Bloqueo optimista: Hibernate incrementa version en cada UPDATE y falla si alguien se adelantó. */
-    @Version
-    var version: Long? = null
-
-    fun addLine(product: String, quantity: Int, unitPrice: BigDecimal): PurchaseOrder {
-        lines += OrderLine(product, quantity, unitPrice).also { it.order = this }
-        return this
-    }
-
-    fun total(): BigDecimal = lines.fold(BigDecimal.ZERO) { acc, l -> acc + l.unitPrice * l.quantity.toBigDecimal() }
-
-    override fun equals(other: Any?) = other is PurchaseOrder && id != null && id == other.id
-    override fun hashCode() = PurchaseOrder::class.hashCode()
-    override fun toString() = "PurchaseOrder(id=$id, status=$status, version=$version)"
-}
-
-@Entity
-@Table(name = "order_line")
-class OrderLine(
-    @Column(nullable = false, length = 80)
-    var product: String,
-
-    @Column(nullable = false)
-    var quantity: Int,
-
-    @Column(nullable = false, precision = 12, scale = 2)
-    var unitPrice: BigDecimal,
-) {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
+    @JoinColumn(name = "entry_id", nullable = false)
+    var entry: JournalEntry? = null
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "order_id", nullable = false)
-    var order: PurchaseOrder? = null
+    @JoinColumn(name = "account_id", nullable = false)
+    var account: Account? = null
 
-    override fun equals(other: Any?) = other is OrderLine && id != null && id == other.id
-    override fun hashCode() = OrderLine::class.hashCode()
-    override fun toString() = "OrderLine(id=$id, $product x$quantity)"
+    override fun equals(other: Any?) = other is Posting && id != null && id == other.id
+    override fun hashCode() = Posting::class.hashCode()
+    override fun toString() = "Posting(id=$id, $direction $amount)"
+}
+
+/**
+ * Una transferencia como asiento: CREDIT en el origen, DEBIT en el destino, y los saldos materializados al día.
+ * Las cuentas tienen que estar gestionadas (cargadas en la misma transacción): el commit escribe todo.
+ */
+fun transferEntry(from: Account, to: Account, amount: BigDecimal, description: String, day: LocalDate): JournalEntry {
+    require(amount.signum() > 0) { "monto debe ser positivo: $amount" }
+    check(from.status == AccountStatus.OPEN) { "cuenta ${from.number} ${from.status}" }
+    check(from.balance >= amount) { "fondos insuficientes en ${from.number}" }
+    from.balance -= amount
+    to.balance += amount
+    return JournalEntry(description, day).post(from, Direction.CREDIT, amount).post(to, Direction.DEBIT, amount)
 }

@@ -24,7 +24,7 @@ guardarla en un `HashSet` antes y después de persistir.
 
 **06 🟢 Ciclo de vida.** Un listener con `@PrePersist`/`@PreUpdate` que llena `createdAt`/`updatedAt` desde un `Clock`.
 
-**07 🟢 `Embeddable`.** `Address` como `@Embeddable` dentro de `Customer`.
+**07 🟢 `Embeddable`.** Un monto con moneda como `@Embeddable` (`amount` + `currency`) dentro de `Account`.
 
 ## 🟡 Medios
 
@@ -33,7 +33,7 @@ solo actualizas uno.
 
 **09 🟡 N+1 con colecciones.** Listar clientes y sus pedidos: cuenta sentencias sin y con `join fetch`, y luego con `@BatchSize(size = 10)`.
 
-**10 🟡 Proyección a DTO.** `select new …CustomerSummary(c.name, count(o))` con una clase Kotlin; ¿qué tipos exactos exige el constructor?
+**10 🟡 Proyección a DTO.** `select new …AccountSummary(a.number, count(p))` con una clase Kotlin; ¿qué tipos exactos exige el constructor?
 
 **11 🟡 Paginación con `join fetch`.** Combinar paginación con fetch de colecciones: lee el aviso `HHH90003004` y arréglalo con dos consultas (ids, luego fetch).
 
@@ -54,7 +54,7 @@ compara el SQL de una consulta polimórfica.
 
 **18 🟠 Caché de segundo nivel.** Activa una caché (Caffeine/JCache) y muestra con estadísticas aciertos y fallos.
 
-**19 🟠 Auditoría.** Historial de cambios de `PurchaseOrder` con un listener que escribe en otra tabla (o Hibernate Envers en un experimento).
+**19 🟠 Auditoría.** Historial de cambios de `Account` con un listener que escribe en otra tabla (o Hibernate Envers en un experimento).
 
 **20 🟠 Tipo propio.** Un `AttributeConverter<Money, String>` y luego con dos columnas (`@Embeddable`); ¿cuál permite consultar por monto?
 

@@ -151,7 +151,6 @@ buscar.
 | `orders.ndjson` ⚠️ | Mercado | Secuencia de órdenes para alimentar el libro | Órdenes que cruzan, parciales, cancelaciones |
 | `bank-statement.csv` | Banco | Extracto externo de octubre de 2026 de `ACC-00001234-82`: `date,description,amount,reference` (`BNK-…`), con el texto del banco en mayúsculas | 3 fechas con un día de desfase, 2 montos con 0.01 de diferencia, un cargo que el ledger no tiene, un movimiento del ledger que falta, comas y comillas en la descripción (RFC 4180) |
 | `ledger-movements.csv` | Banco | La contraparte para conciliar: los movimientos de esa cuenta según el ledger, `id,date,description,amount` (`JE-…`) | — (es la referencia) |
-| `ledger-seed.json` ⚠️ | Banco | Cuentas y asientos iniciales para `04-data` | — |
 | `fx-rates.json` | Banco | Tasas USD/EUR/MXN por día | Un día sin tasa (hay que tomar la anterior) |
 
 Reemplazan a `orders.json` y `sales.csv`, que se borran al final del reemplazo. `ledger-movements.csv` no estaba en el
@@ -224,7 +223,8 @@ Por tandas, cada una con las pruebas en verde (con PostgreSQL y MySQL arriba) y 
 4. ✅ **`strings`, `collections`, `functional`, `datetime`, `control`:** cuentas `ACC-…` y FIX, libro de órdenes y
    cierres, pipelines y velas sobre ticks, calendario del Mercado, tramos de comisión. Con esto, el código de
    `01-language` ya no usa el dominio de pedidos; quedan sus enunciados (tanda 6) y `04-data` (tanda 5).
-5. **`04-data`:** `LedgerRepository` con su contrato en los tres motores; entidades JPA del ledger.
+5. ✅ **`04-data`:** `LedgerRepository` con su contrato en los tres motores; entidades JPA del ledger (sembradas en
+   código: no hace falta `ledger-seed.json`).
 6. **Ejercicios y ruta 🎯:** reescribir los enunciados afectados (hoy mencionan pedidos sobre todo `oop`, `json` y
    `jdbc`), rehacer la ruta del README y borrar `orders.json` y `sales.csv`.
 
@@ -244,4 +244,5 @@ para no reescribir los enunciados dos veces.
 - [x] Dónde vive el generador de datos: paquete `datagen` en `01-language`, `-Plesson=datagen` (tanda 1).
 - [ ] Formato de las órdenes para el libro: `orders.ndjson` o generadas en las pruebas.
 - [ ] Si el cierre de mes usa la zona del mercado o una zona por cliente.
-- [ ] Si `ledger-seed.json` hace falta o `04-data` siembra los datos en código, como hoy `jpa/Seed.kt`.
+- [x] `ledger-seed.json` no hace falta: `04-data` siembra en código (`jpa/Seed.kt`, y cada prueba de `jdbc` arma sus
+  cuentas) (tanda 5).
