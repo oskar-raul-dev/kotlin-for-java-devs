@@ -3,8 +3,7 @@
 **Sección:** `01-language` · **Paquete:** `dev.raul.oskar.learning.kotlin.basics` · **Caso:** Banco
 **Enlaces:** [temario](../../Temario.md#01--basics--tipos-números-identidad) · [ejercicios](../../../01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/basics/Exercises.md) · [código](../../../01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/basics/) · [pruebas](../../../01-language/src/test/kotlin/dev/raul/oskar/learning/kotlin/basics/BasicsTest.kt)
 
-> **Guía con teoría (muestra de la propuesta de la sección 13 del plan).** Primero la teoría, después el mapa del
-> código y al final las fuentes para profundizar. Enlaces revisados el 22 de noviembre de 2026.
+> Guía de estudio: teoría, mapa del código y fuentes. Enlaces revisados el 2026-11-22.
 
 ## Qué vas a aprender
 

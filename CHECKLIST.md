@@ -461,3 +461,8 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   Java donde el tema lo pide; fuentes en inglés y en español (prioridad inglés, *(es)* marcado); las 11 guías del
   código hecho en una primera tanda y, desde B2, código y guía juntos. Plantilla y reglas de `docs/lessons/`
   actualizadas, regla en CLAUDE.md y `scripts/check-guide-links.sh` (enlaces rotos frente a sitios que bloquean bots).
+- **2026-11-22** · **Guías de estudio, entrega 1 (`control`, `strings`, `oop`):** teoría, fuentes oficiales, lecturas y
+  videos (inglés y español) en cada una, con más profundidad en `oop` (herencia cerrada por defecto, propiedades, orden
+  de inicialización, `data class` frente a `record`, `sealed` frente a `enum`, `object` y visibilidad). Medido para la
+  guía: llamar a un miembro `open` desde el constructor no da aviso del compilador en 2.4.21 y termina en
+  `NullPointerException`. 36 enlaces responden; 3 sitios bloquean clientes automáticos (revisados en las búsquedas).
