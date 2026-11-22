@@ -4,8 +4,7 @@ Qué enseña el curso, lección por lección: el **mapeo Java → Kotlin**, las 
 construcción, el **caso** (Banco o Mercado) y el **⚡** que la cierra. Cubre las 18 secciones del
 [plan](../Plan-Migracion-Monorepo.md#5-secciones-y-lecciones): 5 tutoriales y 83 lecciones.
 
-> **Estado:** escrito completo (tandas 0 a 9 y la parte mecánica de la 10, según [`Temario-Plan.md`](Temario-Plan.md));
-> falta la revisión juntos con la que cierra el paso B0. La [trazabilidad](#trazabilidad) resume cada lección. El temario
+> **Estado:** completo y revisado (22 de noviembre de 2026); cierra el paso B0 según [`Temario-Plan.md`](Temario-Plan.md). La [trazabilidad](#trazabilidad) resume cada lección. El temario
 > anterior de las 14 lecciones originales está en [`archive/Temario-v1.md`](archive/Temario-v1.md).
 
 - Fuente de verdad de conteos y de la ruta prioritaria: [`README.md`](../README.md). Casos: [`Casos.md`](Casos.md).

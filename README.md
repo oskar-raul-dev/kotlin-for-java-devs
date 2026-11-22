@@ -9,7 +9,7 @@ ejercicios graduados **sin soluciones**. Los ejemplos y los ejercicios siguen do
 
 > **Estado:** fase A cerrada (monorepo, Kotlin 2.4.21, track 1.9 con su contenedor) y fase B en curso: los 5
 > tutoriales están listos, todo el código y los ejercicios ya usan los casos Banco y Mercado, y el temario nuevo
-> está escrito completo, a la espera de la revisión. Hay 14 lecciones con código en `01-language` y `04-data`, verificadas en
+> está completo y revisado (B0 cerrado). Hay 14 lecciones con código en `01-language` y `04-data`, verificadas en
 > Kotlin 2.4.21, cada una con su guía en [`docs/lessons/`](docs/lessons/README.md). El avance está en
 > [`CHECKLIST.md`](CHECKLIST.md) y la hoja de ruta en [`Plan-Migracion-Monorepo.md`](Plan-Migracion-Monorepo.md).
 
@@ -28,7 +28,7 @@ ejercicios graduados **sin soluciones**. Los ejemplos y los ejercicios siguen do
 | [`docs/Versions.md`](docs/Versions.md) | Todas las versiones fijadas (base, secciones, tracks, imágenes) y cómo actualizarlas |
 | [`docs/LegacyKotlin.md`](docs/LegacyKotlin.md) | Qué trajo cada versión de 1.0 a 2.x, los tres tracks legacy y cómo correrlos |
 | [`docs/Casos.md`](docs/Casos.md) | Los dos casos de estudio, Banco y Mercado: entidades, datos y qué lección usa cada uno |
-| [`docs/Temario.md`](docs/Temario.md) | Temario por lección: mapeo Java → Kotlin, trampas, versión, caso y ⚡ (escrito completo, pendiente de la revisión de B0; el anterior, en [`docs/archive/`](docs/archive/Temario-v1.md)) |
+| [`docs/Temario.md`](docs/Temario.md) | Temario por lección: mapeo Java → Kotlin, trampas, versión, caso y ⚡ (completo y revisado; el anterior, en [`docs/archive/`](docs/archive/Temario-v1.md)) |
 | [`docs/lessons/`](docs/lessons/README.md) | Guías de lección: por dónde leer cada lección con código, qué archivo muestra qué y qué prueba lo demuestra |
 | [`docs/Temario-Plan.md`](docs/Temario-Plan.md) | Plan de B0: plantilla de lección, tandas, versiones medidas y estado; el prompt de cada tanda está en [`docs/prompts/`](docs/prompts/temario-tanda.md) |
 | [`22-legacy-kotlin19/docs/k2-notes.md`](22-legacy-kotlin19/docs/k2-notes.md) | Qué cambió de verdad al pasar este repo de Kotlin 1.9.22 (K1) a 2.4.21 (K2) |

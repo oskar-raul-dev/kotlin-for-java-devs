@@ -28,7 +28,7 @@ medias**. El avance por sección y lección está en [`CHECKLIST.md`](CHECKLIST.
 |---|---|---|
 | Fase A (A0–A9) | ✅ tag `phase-a` | — |
 | B1 · Tutoriales | ✅ | — (5 tutoriales, 72 ejercicios, 136 comprobaciones en sus `check.sh`) |
-| B0 · Temario | 🟡 escrito; falta la revisión juntos | La revisión juntos (las 88 entradas, la trazabilidad y la revisión de consistencia están hechas) ([`docs/Temario-Plan.md`](docs/Temario-Plan.md#estado)) |
+| B0 · Temario | ✅ | — (88 entradas, los dos 🐉 y la trazabilidad; revisado con el usuario: [`docs/Temario-Plan.md`](docs/Temario-Plan.md#estado)) |
 | B0′ · Casos Banco y Mercado | ✅ | — (las 6 tandas del [reemplazo](docs/Casos.md#plan-de-reemplazo): el dominio de pedidos ya no existe) |
 | B0″ · Guías de lección | ✅ | — (índice, plantilla y 12 guías en [`docs/lessons/`](docs/lessons/README.md); se mantienen con cada cambio de código) |
 | B2–B10 | ⬜️ | Todo |
@@ -108,7 +108,8 @@ Tags anotados: `baseline-1.9.22` (curso v1 de proyecto único), `monorepo-1.9.22
 | `44ecba4` Write syllabus batch 7 | B0, tanda 7: `08-build`, `09-spring`, `10-ktor` (11 entradas) |
 | `338690c` Write syllabus batch 8 | B0, tanda 8: `11-multiplatform`, `12-android` (11 entradas) |
 | `48e17ef` Write syllabus batch 9 | B0, tanda 9: tracks legacy, `25-interview`, `26-kotlin-next` y los dos 🐉 |
-| Close the syllabus mechanically (B0 batch 10) | B0, tanda 10 sin la revisión: trazabilidad y consistencia |
+| `0debc16` Close the syllabus mechanically (B0 batch 10) | B0, tanda 10 sin la revisión: trazabilidad y consistencia |
+| Close B0 and record the review decisions | B0 cerrado con la revisión; preguntas 1 a 3 respondidas; órdenes con generador |
 
 **Remoto:** `origin` en GitHub desde el 13 de noviembre de 2026. Antes de cada push se repite el escaneo de
 referencias externas sobre `git log -p --all`, y se suben los tags con `git push origin main --follow-tags`.
@@ -125,11 +126,10 @@ temario ya está escrito (tandas 1 y 2 de B0), y así el código deja antes el d
    noviembre de 2026).
 4. ~~**B0′ · tandas 5 y 6**~~ ✅ (22 de noviembre de 2026): `04-data` con el ledger (se apoya en la tanda 5 de B0); ejercicios, ruta 🎯 y borrado de
    `orders.json`/`sales.csv`. Termina antes de B2.
-5. **B0 · tandas 7, 8, 9 y 10**, con la revisión juntos al final. Tandas 7 a 9 ✅ y la parte mecánica de la 10 (22 de noviembre de 2026); queda la revisión juntos.
+5. ~~**B0 · tandas 7, 8, 9 y 10**, con la revisión juntos al final~~ ✅ (22 de noviembre de 2026: revisión aprobada).
 6. **B2–B10** según la [sección 8](#8-fase-b-generar-el-resto).
 
-**Preguntas abiertas** ([sección 10](#10-para-decidir-en-la-revisión)): cortes legacy, numeración de secciones, dónde
-van `io`/`datetime`/`json`.
+**Preguntas abiertas:** ninguna; las de la [sección 10](#10-para-decidir-en-la-revisión) quedaron respondidas el 22 de noviembre de 2026.
 
 ---
 
@@ -395,7 +395,7 @@ transversal.
 |---|---|---|
 | **B0′** ✅ | Elegir el caso de finanzas (sección 11) y reemplazar el dominio provisional de pedidos en datos, lecciones y ejercicios 🎯. Caso elegido y diseñado en [`docs/Casos.md`](docs/Casos.md); falta el reemplazo en 6 tandas | Ruta prioritaria del README rehecha |
 | **B0″** ✅ | Guías de lección en `docs/lessons/` ([sección 12](#12-guías-de-lección-docslessons)): plantilla, índice y una guía por cada lección con código | 12 guías (10 de `01-language`, `jdbc`, `jpa`); desde ahí, cada lección nueva nace con la suya |
-| **B0** 🟡 | `docs/Temario.md` completo: cada lección con mapeo Java → Kotlin, trampas, etiquetas de versión y su ⚡. Se hace por tandas según [`docs/Temario-Plan.md`](docs/Temario-Plan.md) | Revisión juntos antes de escribir código |
+| **B0** ✅ | `docs/Temario.md` completo: cada lección con mapeo Java → Kotlin, trampas, etiquetas de versión y su ⚡. Se hace por tandas según [`docs/Temario-Plan.md`](docs/Temario-Plan.md) | Revisión juntos antes de escribir código |
 | **B1** ✅ | `tutorials/`: `install`, `cli`, `repl`, `decompile`, `debug` | 5 tutoriales con sus scripts y un `check.sh` cada uno (136 comprobaciones, 72 ejercicios) |
 | **B2** | Ejercicios de las 12 lecciones actuales llevados a la nueva escala: mínimo 25, 🎤, ⚡ | ~300 → ~330 ejercicios + 12 ⚡ |
 | **B3** | `02-coroutines` (10 lecciones) y `03-reactive` (4) | Código, pruebas, `Exercises.md` |
@@ -430,10 +430,10 @@ lección. Es parecido a `java-champion-review` (79 lecciones). Por eso va por fa
 
 ## 10. Para decidir en la revisión
 
-1. ¿Los tres tracks legacy (**1.4.32**, **1.6.21** con Boot 2.7, **1.9.22**) o prefieres otro corte?
-2. ¿Numeración y nombres de secciones como están arriba?
-3. ¿`io`, `datetime` y `json` se quedan en `01-language`, como `02-language` del repo de Java, o van a una sección
-   `02-stdlib` aparte?
+1. ~~¿Los tres tracks legacy (**1.4.32**, **1.6.21** con Boot 2.7, **1.9.22**) o prefieres otro corte?~~ Los tres (22 de noviembre de 2026).
+2. ~~¿Numeración y nombres de secciones como están arriba?~~ Como están, con los huecos 13–19 (22 de noviembre de 2026).
+3. ~~¿`io`, `datetime` y `json` se quedan en `01-language`, como `02-language` del repo de Java, o van a una sección
+   `02-stdlib` aparte?~~ Se quedan en `01-language` (22 de noviembre de 2026).
 4. ~~¿Tienes Android SDK y Xcode instalados? Define el alcance de B7.~~ Sí (medido el 22 de noviembre de 2026: Android
    SDK con emulador en `~/Library/Android/sdk` y Xcode 27.2): el alcance incluye iOS.
 5. ~~¿Qué caso de la sección 11 reemplaza al dominio provisional?~~ Dos casos, Banco y Mercado, con puente: [`docs/Casos.md`](docs/Casos.md).
