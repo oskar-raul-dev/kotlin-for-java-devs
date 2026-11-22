@@ -10,12 +10,12 @@
 
 ## 🟢 Fáciles
 
-**01 🟢 🎯 `data class` de pedidos.** Escribir `OrderEvent` y `Address` como en `json/Model.kt` (sin
-serialización) y probar `equals`, `copy` y destructuring. ¿Qué pasa con `equals` si agregas una `var` en el cuerpo?
-- Casos: dos eventos iguales, `copy(orderTotal = …)`, `val (ts, email) = event`.
+**01 🟢 🎯 `data class` de ticks.** Escribir `Tick` como en `json/Model.kt` (sin serialización) y probar `equals`,
+`copy` y destructuring. ¿Qué pasa con `equals` si agregas una `var` en el cuerpo?
+- Casos: dos ticks iguales, `copy(price = …)`, `val (seq, ticker) = tick`.
 
-**02 🟢 🎯 Enum con `of`.** `enum class ShippingMethod(val code: String)` con `STANDARD`, `EXPRESS`, `PICKUP`, `FREIGHT` y un
-`companion object { fun of(code: String?): ShippingMethod? }` que tolere mayúsculas y espacios.
+**02 🟢 🎯 Enum con `of`.** `enum class OrderType(val code: String)` con `LIMIT`, `MARKET`, `STOP`, `STOP_LIMIT` y un
+`companion object { fun of(code: String?): OrderType? }` que tolere mayúsculas y espacios.
 - Casos: `"Express"`, `" pickup "`, `"drone"` → `null`, `null` → `null`. Compara con `valueOf` (que lanza).
 
 **03 🟢 Propiedad con validación.** `class Temperature(celsius: Double)` con `var celsius` cuyo setter rechaza menos de −273.15
@@ -38,15 +38,15 @@ e `init` que valida `from <= to`.
 `Review(score: Double)`; una función que la traduce a texto con `when` **sin `else`**. Agrega un caso nuevo y comprueba
 que el compilador te obliga a cubrirlo.
 
-**09 🟡 🎯 Reglas polimórficas.** `interface PricingRule { val name: String; fun applies(o: Order): Boolean }` con tres
-implementaciones (pedido grande, cliente frecuente, envío a otro estado) y un `RuleEngine(rules: List<PricingRule>)`
-que devuelve qué reglas aplicaron a cada pedido.
+**09 🟡 🎯 Reglas polimórficas.** `interface CommissionRule { val name: String; fun applies(o: Order): Boolean }` con tres
+implementaciones (orden grande, cuenta con mucho volumen en el mes, orden a mercado) y un
+`RuleEngine(rules: List<CommissionRule>)` que devuelve qué reglas aplicaron a cada orden.
 - Casos: ningún disparo, uno, todos; agregar una regla nueva sin tocar el motor (abierto/cerrado).
 
 **10 🟡 Clase abstracta plantilla.** `abstract class Report` con `fun render() = header() + body() + footer()`, donde
 solo `body()` es abstracto y `header()` es `open`. Dos subclases.
 
-**11 🟡 `value class` para identificadores.** `CustomerId` y `OrderId` como `@JvmInline value class` para que el compilador
+**11 🟡 `value class` para identificadores.** `AccountId` y `OrderId` como `@JvmInline value class` (como el `TransferId` de la lección) para que el compilador
 impida pasar uno por otro. Valida el formato en `init`.
 
 **12 🟡 Operadores de `Money`.** `data class Money(val cents: Long, val currency: String)` con `plus`, `minus`, `times(Int)`,
@@ -63,7 +63,7 @@ con cuerpo por constante, y `fun parse(symbol: Char): Operation`.
 
 ## 🟠 Difíciles
 
-**16 🟠 Máquina de estados.** `enum class OrderState` (`CART → PLACED → PAID | CANCELLED → SHIPPED`) con un mapa de
+**16 🟠 Máquina de estados.** `enum class OrderState` (`NEW → PARTIALLY_FILLED → FILLED`, y `CANCELLED` o `REJECTED` desde `NEW`) con un mapa de
 transiciones válidas y `fun next(action: OrderAction): OrderState` que lanza `IllegalStateException` en transiciones inválidas.
 Prueba **todas** las combinaciones.
 
@@ -91,5 +91,5 @@ entrega solo a los suscriptores del tipo (y supertipos) correctos, con orden de 
 **23 🔴 Banco con invariantes.** `Account`, `Ledger` y `TransferService` donde **nunca** se puede crear dinero: cada transferencia
 genera dos asientos, el ledger siempre suma cero y una propiedad prueba (1000 transferencias aleatorias con semilla) lo verifica.
 
-**24 🔴 Rediseño de un script.** Escribe primero un `main` monolítico que lea `/data/orders.json`, valide, agrupe y genere un reporte, y luego propón (en `oop/practice`) un diseño con `OrderReport`, `OrderSource`,
-`OrderValidator` y `ReportSink` como interfaces, con implementaciones en memoria y pruebas. Objetivo: que cada pieza se pruebe sola.
+**24 🔴 Rediseño de un script.** Escribe primero un `main` monolítico que lea `/data/ticks.json`, valide, agrupe y genere un reporte, y luego propón (en `oop/practice`) un diseño con `TickReport`, `TickSource`,
+`TickValidator` y `ReportSink` como interfaces, con implementaciones en memoria y pruebas. Objetivo: que cada pieza se pruebe sola.

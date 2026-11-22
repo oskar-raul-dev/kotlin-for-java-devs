@@ -36,4 +36,4 @@
 ## Estado
 
 - **Hecho:** código en el caso Banco (B0′ tanda 5) y 11 pruebas; 24 ejercicios; 0 resueltos en `practice/`.
-- **Falta:** B0′ tanda 6 (enunciados al caso); B2 (⚡ ledger en JPA con reintento ante `OptimisticLockException`).
+- **Falta:** B2 (⚡ ledger en JPA con reintento ante `OptimisticLockException`).

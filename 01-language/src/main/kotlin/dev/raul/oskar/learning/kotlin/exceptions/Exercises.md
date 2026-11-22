@@ -10,8 +10,8 @@
 
 ## 🟢 Fáciles
 
-**01 🟢 🎯 `require` y `check`.** `class Order(total, items)` que valida en `init` con `require` y un `ship()` que con `check` exige
-estado `PAID`. La prueba verifica el **tipo** de excepción y el **mensaje**.
+**01 🟢 🎯 `require` y `check`.** `class Transfer(amount, from, to)` que valida en `init` con `require` y un `settle()` que con `check`
+exige estado `PENDING`. La prueba verifica el **tipo** de excepción y el **mensaje**.
 
 **02 🟢 🎯 `!!` en un PR.** Toma `val year = date!!.split("/")[2].toInt()` y escribe tres versiones sin `!!`: devolviendo `Int?`, lanzando
 una excepción con mensaje claro, y con `Result`. Prueba con `null`, `"03/14/1985"`, `"1985"` y `"03/14/abcd"`.
@@ -39,7 +39,7 @@ JSON (`{"error": "…", "field": "…"}`).
 **10 🟡 Reintentos.** `fun <T> retry(times: Int, delay: Duration, retryOn: (Throwable) -> Boolean, block: () -> T): T` que reintente
 solo los errores transitorios y relance el último con los anteriores como `suppressed`.
 
-**11 🟡 Errores acumulados.** Validar un `OrderEvent` completo devolviendo **todos** los errores (`Validation` de la lección), no solo el primero.
+**11 🟡 Errores acumulados.** Validar una solicitud de transferencia completa (cuentas, monto, moneda, clave de idempotencia) devolviendo **todos** los errores (`Validation` de la lección), no solo el primero.
 
 **12 🟡 Excepciones en lambdas.** ¿Qué pasa si `map { }` lanza a la mitad? ¿Y dentro de una `Sequence` perezosa: cuándo salta? Pruébalo.
 

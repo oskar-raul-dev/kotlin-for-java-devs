@@ -3,14 +3,15 @@
 Curso de Kotlin para un dev Java senior, con miras a **backend web** (Spring, WebFlux, Ktor) y **móvil** (Android,
 Kotlin Multiplatform). La base es **Kotlin 2.4**; aparte hay **tracks legacy** que corren el compilador real de
 1.4, 1.6 y 1.9, porque mucho código en producción sigue ahí. Cada lección tiene ejemplos que corren, pruebas y
-ejercicios graduados **sin soluciones**. Varios ejercicios siguen un caso de punta a punta con pedidos de una tienda
-(provisional: lo va a reemplazar un caso de finanzas).
+ejercicios graduados **sin soluciones**. Los ejemplos y los ejercicios siguen dos casos ficticios de punta a punta
+([`docs/Casos.md`](docs/Casos.md)): un **Banco** (ledger de doble partida, transferencias, conciliación) y un
+**Mercado** (ticks, velas, libro de órdenes).
 
 > **Estado:** fase A cerrada (monorepo, Kotlin 2.4.21, track 1.9 con su contenedor) y fase B en curso: los 5
-> tutoriales están listos, el temario nuevo va en la tanda 2 de 10 y el caso Banco y Mercado está diseñado pero
-> todavía no reemplaza a los pedidos. Hay 14 lecciones con código en `01-language` y `04-data`, verificadas en Kotlin
-> 2.4.21. El avance está en [`CHECKLIST.md`](CHECKLIST.md) y la hoja de ruta en
-> [`Plan-Migracion-Monorepo.md`](Plan-Migracion-Monorepo.md).
+> tutoriales están listos, todo el código y los ejercicios ya usan los casos Banco y Mercado, y el temario nuevo
+> tiene escritas las tandas 0 a 6 de 10. Hay 14 lecciones con código en `01-language` y `04-data`, verificadas en
+> Kotlin 2.4.21, cada una con su guía en [`docs/lessons/`](docs/lessons/README.md). El avance está en
+> [`CHECKLIST.md`](CHECKLIST.md) y la hoja de ruta en [`Plan-Migracion-Monorepo.md`](Plan-Migracion-Monorepo.md).
 
 **Salto rápido:** [Documentos](#documentos) · [Requisitos](#requisitos) · [Cómo se usa](#cómo-se-usa) ·
 [Índice de secciones](#índice-de-secciones) · [Versiones](#versiones) · [Lecciones](#lecciones) ·
@@ -218,54 +219,55 @@ class Ex02SafeIntTest {
 
 ## Ruta prioritaria
 
-43 ejercicios 🎯, ordenados para seguir un caso de punta a punta con pedidos de una tienda: leer el JSON, limpiar
-nulos y fechas, agrupar, contar por día, armar una ventana de días, sacar estadísticas y revisar el manejo de
-errores. Si el tiempo no alcanza, haz primero los marcados con **★**: son 15 y cubren el recorrido completo.
+43 ejercicios 🎯, ordenados para seguir los casos de punta a punta ([`docs/Casos.md`](docs/Casos.md)): los bloques 1
+a 4 con el feed del Mercado (`ticks.json`: leerlo, limpiar nulos y fechas, agrupar por ticker y día, ventanas y
+estadística) y el bloque 5 con una transferencia del Banco (el manejo de errores que se revisa en un PR). Si el tiempo
+no alcanza, haz primero los marcados con **★**: son 15 y cubren el recorrido completo.
 
 **Bloque 1: leer los datos**
 
 | ★ | Lección | # | Ejercicio |
 |---|---|---|---|
-| ★ | `json` | 02 | 🟢 Claves con guiones (`@SerialName`) |
+| ★ | `json` | 02 | 🟢 Claves con guiones (`bid-price` con `@SerialName`) |
 | ★ | `json` | 03 | 🟢 Campo que falta (`explicitNulls`) |
 | | `json` | 01 | 🟢 Ida y vuelta |
-| | `json` | 08 | 🟡 Cargar con tolerancia |
+| | `json` | 08 | 🟡 Cargar `ticks.json` con tolerancia |
 | | `io` | 01 | 🟢 Recurso del classpath |
 | | `io` | 07 | 🟢 Kermit |
-| | `io` | 08 | 🟡 CSV a objetos |
-| | `oop` | 01 | 🟢 `data class` de pedidos |
+| | `io` | 08 | 🟡 CSV a objetos (el extracto bancario) |
+| | `oop` | 01 | 🟢 `data class` de ticks |
 
 **Bloque 2: nulos, cadenas y fechas**
 
 | ★ | Lección | # | Ejercicio |
 |---|---|---|---|
-| ★ | `basics` | 09 | 🟡 Cadena de nulos |
+| ★ | `basics` | 09 | 🟡 Cadena de nulos (un tick incompleto) |
 | ★ | `strings` | 01 | 🟢 Fecha MM/dd/yyyy (sin la trampa de `split`) |
-| ★ | `datetime` | 02 | 🟢 Epoch a fecha |
-| ★ | `datetime` | 03 | 🟢 Edad |
+| ★ | `datetime` | 02 | 🟢 Epoch a fecha (el día de mercado) |
+| ★ | `datetime` | 03 | 🟢 Fecha de liquidación (T+2) |
 | | `basics` | 02 | 🟢 Parseo seguro |
 | | `basics` | 05 | 🟢 Dividir la cuenta |
 | | `basics` | 14 | 🟡 Modos de redondeo |
 | | `basics` | 16 | 🟡 `Nothing` útil |
-| | `strings` | 08 | 🟡 Código de estado |
-| | `strings` | 09 | 🟡 Zip de EE. UU. |
+| | `strings` | 08 | 🟡 Mensaje FIX |
+| | `strings` | 09 | 🟡 Dígitos de control de la cuenta |
 | | `datetime` | 01 | 🟢 Fecha estricta |
 
 **Bloque 3: categorías y conteos**
 
 | ★ | Lección | # | Ejercicio |
 |---|---|---|---|
-| ★ | `control` | 02 | 🟢 Tramo de edad |
-| ★ | `oop` | 02 | 🟢 Enum con `of` |
-| ★ | `functional` | 09 | 🟡 `flatMap` de categorías |
-| ★ | `collections` | 09 | 🟡 Conteo por categoría y día |
+| ★ | `control` | 02 | 🟢 Tramo de volumen |
+| ★ | `oop` | 02 | 🟢 Enum con `of` (tipos de orden) |
+| ★ | `functional` | 09 | 🟡 `flatMap` de etiquetas |
+| ★ | `collections` | 09 | 🟡 Conteo por ticker y día |
 | | `control` | 01 | 🟢 Tramo de monto |
 | | `collections` | 01 | 🟢 Contador con mapa |
 | | `collections` | 02 | 🟢 Solo lectura no es inmutable |
-| | `collections` | 08 | 🟡 Historial por usuario |
+| | `collections` | 08 | 🟡 Historial por cuenta |
 | | `functional` | 01 | 🟢 `map`, `filter`, `sumOf` |
 | | `functional` | 02 | 🟢 `mapNotNull` |
-| | `functional` | 08 | 🟡 `groupBy` + `mapValues` |
+| | `functional` | 08 | 🟡 `groupBy` + `mapValues` (precio promedio por ticker) |
 | | `functional` | 10 | 🟡 `fold` con acumulador rico |
 | | `datetime` | 09 | 🟡 Agrupar por día local |
 
@@ -274,7 +276,7 @@ errores. Si el tiempo no alcanza, haz primero los marcados con **★**: son 15 y
 | ★ | Lección | # | Ejercicio |
 |---|---|---|---|
 | ★ | `datetime` | 08 | 🟡 Ventana de 7 días (¿incluye el día dado?) |
-| ★ | `collections` | 10 | 🟡 Ventana de 7 días con `TreeMap` |
+| ★ | `collections` | 10 | 🟡 Volumen de 7 días con `TreeMap` |
 | ★ | `functional` | 16 | 🟠 Estadística en una pasada |
 | | `control` | 08 | 🟡 Primer índice que cumple |
 | | `control` | 11 | 🟡 Ventana deslizante |
@@ -284,16 +286,16 @@ errores. Si el tiempo no alcanza, haz primero los marcados con **★**: son 15 y
 | ★ | Lección | # | Ejercicio |
 |---|---|---|---|
 | ★ | `exceptions` | 02 | 🟢 `!!` en un PR |
-| ★ | `exceptions` | 01 | 🟢 `require` y `check` |
+| ★ | `exceptions` | 01 | 🟢 `require` y `check` en una transferencia |
 | | `exceptions` | 08 | 🟡 Envolver sin perder la causa |
 | | `exceptions` | 09 | 🟡 Jerarquía sellada a HTTP |
 | | `oop` | 08 | 🟡 `sealed` para resultados |
-| | `oop` | 09 | 🟡 Reglas polimórficas |
+| | `oop` | 09 | 🟡 Reglas de comisión polimórficas |
 
 **Después:** todo lo 🟠 y 🔴 salvo la estadística en una pasada, y las lecciones `jdbc` y `jpa`. Entre los difíciles,
-los que cierran el caso son `functional` 17 (días atípicos), `collections` 21 (ventana con sumas acumuladas), `jdbc` 24 (la
-misma ventana con funciones de ventana SQL), `oop` 24 y `exceptions` 24 (rediseño y revisión de un `main`
-monolítico).
+los que cierran el caso son `functional` 17 (días atípicos de volumen), `collections` 21 (ventana con sumas
+acumuladas), `jdbc` 24 (la misma ventana con funciones de ventana SQL), `oop` 24 y `exceptions` 24 (rediseño y
+revisión de un `main` monolítico sobre `ticks.json`).
 
 ## Bases de datos con Docker
 

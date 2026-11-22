@@ -35,5 +35,5 @@
 ## Estado
 
 - **Hecho:** código en el caso Banco (B0′ tanda 3) y 12 pruebas; 25 ejercicios (5 🎯); 0 resueltos en `practice/`.
-- **Falta:** B0′ tanda 6 (enunciados al caso); B2 (ejercicios a la escala nueva, 🎤 y ⚡ calculadora de precisión
+- **Falta:** B2 (ejercicios a la escala nueva, 🎤 y ⚡ calculadora de precisión
   arbitraria).

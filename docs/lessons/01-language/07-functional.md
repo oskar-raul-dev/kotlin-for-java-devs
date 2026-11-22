@@ -30,4 +30,4 @@
 ## Estado
 
 - **Hecho:** código en el caso Mercado (B0′ tanda 4) y 9 pruebas; enunciados ya sobre `Tick`; 24 ejercicios (6 🎯); 0 resueltos en `practice/`.
-- **Falta:** B0′ tanda 6 (revisar la ruta 🎯 con los enunciados nuevos); B2 (⚡ librería de operadores de `Sequence`).
+- **Falta:** B2 (⚡ librería de operadores de `Sequence`).

@@ -32,4 +32,4 @@
 ## Estado
 
 - **Hecho:** código en el caso Mercado (B0′ tanda 4) y 9 pruebas; 24 ejercicios (5 🎯); 0 resueltos en `practice/`.
-- **Falta:** B0′ tanda 6 (enunciados al caso); B2 (⚡ `HashMap` propio).
+- **Falta:** B2 (⚡ `HashMap` propio).

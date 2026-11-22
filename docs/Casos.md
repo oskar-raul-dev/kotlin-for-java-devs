@@ -153,7 +153,7 @@ buscar.
 | `ledger-movements.csv` | Banco | La contraparte para conciliar: los movimientos de esa cuenta según el ledger, `id,date,description,amount` (`JE-…`) | — (es la referencia) |
 | `fx-rates.json` | Banco | Tasas USD/EUR/MXN por día | Un día sin tasa (hay que tomar la anterior) |
 
-Reemplazan a `orders.json` y `sales.csv`, que se borran al final del reemplazo. `ledger-movements.csv` no estaba en el
+Reemplazaron a `orders.json` y `sales.csv`, borrados en la tanda 6. `ledger-movements.csv` no estaba en el
 diseño: se agregó en la tanda 1 porque el extracto necesita una contraparte para conciliar (`io` y su ⚡).
 `orders.ndjson` y `ledger-seed.json` siguen pendientes (ver abajo).
 
@@ -225,7 +225,7 @@ Por tandas, cada una con las pruebas en verde (con PostgreSQL y MySQL arriba) y 
    `01-language` ya no usa el dominio de pedidos; quedan sus enunciados (tanda 6) y `04-data` (tanda 5).
 5. ✅ **`04-data`:** `LedgerRepository` con su contrato en los tres motores; entidades JPA del ledger (sembradas en
    código: no hace falta `ledger-seed.json`).
-6. **Ejercicios y ruta 🎯:** reescribir los enunciados afectados (hoy mencionan pedidos sobre todo `oop`, `json` y
+6. ✅ **Ejercicios y ruta 🎯:** reescribir los enunciados afectados (hoy mencionan pedidos sobre todo `oop`, `json` y
    `jdbc`), rehacer la ruta del README y borrar `orders.json` y `sales.csv`.
 
 El número de pruebas puede cambiar (las de pedidos se reemplazan, no se traducen una a una): el README y el

@@ -10,15 +10,15 @@
 
 ## 🟢 Fáciles
 
-**01 🟢 🎯 Tramo de monto.** Clasificar un pedido por monto con `when` y rangos: `< 1000` → `SMALL`, `1000..9999` → `MEDIUM`,
+**01 🟢 🎯 Tramo de monto.** Clasificar una transferencia del Banco por monto con `when` y rangos: `< 1000` → `SMALL`, `1000..9999` → `MEDIUM`,
 `10000..99999` → `LARGE`, más → `JUMBO`; negativo → excepción.
 - Firma: `fun bracket(amount: Int): String`
 - Casos: los bordes 999, 1000, 9999, 10000, 99999, 100000, −1.
 
-**02 🟢 🎯 Tramo de edad.** Edad a categoría `"18-25"`, `"26-35"`, `"36-50"`, `"51-65"`, `"65+"`;
-menor de 18 o `null` → `"unknown"`.
-- Firma: `fun ageBucket(age: Int?): String`
-- Casos: todos los bordes, `null`, 17, 200.
+**02 🟢 🎯 Tramo de volumen.** Títulos operados en el mes a tramo de comisión: `"T1"` (menos de 10 000), `"T2"` (menos de
+100 000), `"T3"` (menos de 1 000 000), `"T4"` (el resto); negativo o `null` → `"unknown"`.
+- Firma: `fun volumeTier(shares: Long?): String`
+- Casos: todos los bordes, `null`, −1, 0.
 
 **03 🟢 Máximo sin `max`.** El mayor de una lista con un `for`; lista vacía → `null`.
 - Firma: `fun largest(xs: List<Int>): Int?`

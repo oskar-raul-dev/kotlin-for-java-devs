@@ -51,7 +51,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | A6 · Track `22-legacy-kotlin19` | ✅ | Wrapper propio 9.2.1, Kotlin 1.9.22, 4 pruebas de humo; fuera del composite |
 | A8 · Contenedores legacy | ✅ | `./scripts/legacy.sh 19` = nativo (4 pruebas); `arm64` nativo |
 | A9 · Documentación | ✅ | README con índice de secciones, CLAUDE.md reescrito; tag `phase-a` |
-| B0′ · Casos Banco y Mercado | 🟡 | Diseño en `docs/Casos.md` ✅; tandas 1 a 5 ✅ (todo el código en los casos); tanda 6 (enunciados y ruta 🎯) ⬜️ |
+| B0′ · Casos Banco y Mercado | ✅ | Diseño en `docs/Casos.md` ✅; las 6 tandas ✅: código, enunciados y ruta 🎯 en los casos |
 | B0″ · Guías de lección | ✅ | 12 guías en `docs/lessons/`, símbolos y pruebas citados comprobados contra el código |
 
 ## Secciones
@@ -411,3 +411,10 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   `jpa` pasa a `Account` con `@Version`, `JournalEntry` y `Posting`, con `LedgerQueries` y siembra en código (se decide
   que no hace falta `ledger-seed.json`). Probado también contra PostgreSQL. Cuatro enunciados de `jdbc`/`jpa` apuntan
   al código nuevo. Guías `04-data` reescritas. 153 pruebas (103 + 50), 0 `SKIPPED`.
+- **2026-11-22** · **B0′, tanda 6 (ejercicios y ruta 🎯) — B0′ cerrado:** los enunciados que usaban pedidos, clientes,
+  envíos, estados de EE. UU., zips, edades o ventas pasan al Banco y al Mercado en `oop`, `collections`, `strings`,
+  `json`, `io`, `exceptions`, `datetime`, `control`, `basics`, `jdbc` y `jpa` (mismos números, firmas y dificultad;
+  `strings` 08 y 09 pasan a mensaje FIX y dígitos de control de la cuenta; `control` 02 a tramos de volumen; `datetime`
+  03 a fecha de liquidación T+2 y 14 a antigüedad de la cuenta). Ruta prioritaria del README rehecha (43 🎯, 15 ★, los
+  mismos ejercicios con los títulos nuevos), presentación y estado del README al día, y `orders.json` y `sales.csv`
+  borrados. 153 pruebas (103 + 50), 0 `SKIPPED`.

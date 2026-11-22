@@ -31,4 +31,4 @@
 ## Estado
 
 - **Hecho:** código en los casos (B0′ tanda 4) y 8 pruebas; 24 ejercicios (5 🎯); 0 resueltos en `practice/`.
-- **Falta:** B0′ tanda 6 (enunciados que todavía hablan de edades, como el 03 y el 14); B2 (⚡ velas por sesión).
+- **Falta:** B2 (⚡ velas por sesión).

@@ -46,10 +46,10 @@ centavos que sobran van a los primeros.
 
 ## 🟡 Medios
 
-**09 🟡 🎯 Cadena de nulos.** Con `data class Address(val city: String?, val state: String?, val zip: String?)`,
-armar `"Miami, FL 33101"` con lo que haya, **sin `!!`**.
-- Firma: `fun format(address: Address?): String`
-- Casos: todo presente; sin zip → `"Miami, FL"`; solo estado → `"FL"`; `null` → `"(sin dirección)"`.
+**09 🟡 🎯 Cadena de nulos.** Con `data class Quote(val ticker: String?, val bid: String?, val ask: String?)` (un tick
+incompleto del feed), armar `"ACME 99.83/99.85"` con lo que haya, **sin `!!`**.
+- Firma: `fun format(quote: Quote?): String`
+- Casos: todo presente; sin ask → `"ACME 99.83/—"`; solo ticker → `"ACME"`; `null` → `"(sin cotización)"`.
 
 **10 🟡 Doubles casi iguales.** Comparar con tolerancia relativa y absoluta.
 - Firma: `fun approxEquals(a: Double, b: Double, rel: Double = 1e-9, abs: Double = 1e-12): Boolean`

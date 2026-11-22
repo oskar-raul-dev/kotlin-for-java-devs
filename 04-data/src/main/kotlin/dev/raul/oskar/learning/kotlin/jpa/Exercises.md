@@ -10,7 +10,7 @@
 
 ## 🟢 Fáciles
 
-**01 🟢 Primera entidad.** `Product` con id generado, `@Column(nullable = false, unique = true)` y `BigDecimal` con `precision`/`scale`.
+**01 🟢 Primera entidad.** `FxRate` (moneda y tasa) con id generado, `@Column(nullable = false, unique = true)` y `BigDecimal` con `precision`/`scale`.
 Persistir, buscar con `find` y comprobar el SQL generado con `hibernate.show_sql=true`.
 
 **02 🟢 ¿Por qué no `data class`?** Escribe una entidad como `data class` y demuestra con una prueba el problema de `hashCode` al
@@ -18,7 +18,7 @@ guardarla en un `HashSet` antes y después de persistir.
 
 **03 🟢 Enum como texto.** Cambia a `EnumType.ORDINAL`, reordena el enum y muestra el dato corrupto que lee una prueba. Vuelve a `STRING`.
 
-**04 🟢 Consultas JPQL.** Clientes por nombre con `like`, ordenados, con parámetros con nombre.
+**04 🟢 Consultas JPQL.** Asientos por descripción con `like`, ordenados, con parámetros con nombre.
 
 **05 🟢 `find` contra `getReference`.** ¿Cuándo va cada una a la base? Cuenta sentencias con `statementCount()`.
 
@@ -31,7 +31,7 @@ guardarla en un `HashSet` antes y después de persistir.
 **08 🟡 Relación bidireccional.** `Author` 1-N `Book`: métodos `addBook`/`removeBook` que mantengan los dos lados; prueba qué pasa si
 solo actualizas uno.
 
-**09 🟡 N+1 con colecciones.** Listar clientes y sus pedidos: cuenta sentencias sin y con `join fetch`, y luego con `@BatchSize(size = 10)`.
+**09 🟡 N+1 con colecciones.** Listar cuentas y sus postings: cuenta sentencias sin y con `join fetch`, y luego con `@BatchSize(size = 10)`.
 
 **10 🟡 Proyección a DTO.** `select new …AccountSummary(a.number, count(p))` con una clase Kotlin; ¿qué tipos exactos exige el constructor?
 
@@ -64,7 +64,7 @@ compara el SQL de una consulta polimórfica.
 
 **22 🔴 Repositorio genérico.** `JpaRepository<T, ID>` propio con `findById`, `save`, `delete`, `findAll(spec)` usando `reified` y Criteria.
 
-**23 🔴 Persistencia de pedidos y reportes.** Modela pedidos, líneas y reportes diarios; una consulta JPQL que devuelva las ventas diarias por estado
+**23 🔴 Ticks y reportes diarios.** Modela ticks y velas diarias como entidades; una consulta JPQL que devuelva el volumen diario por ticker
 y compárala con la de SQL del ejercicio 24 de JDBC. ¿Dónde pondrías la agregación en producción y por qué?
 
 **24 🔴 Rendimiento de escritura.** Insertar 100 000 entidades: con `IDENTITY` frente a `SEQUENCE` + `hibernate.jdbc.batch_size`,

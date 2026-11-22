@@ -36,5 +36,5 @@
 ## Estado
 
 - **Hecho:** código en los casos (B0′ tanda 3) y 10 pruebas; 24 ejercicios (4 🎯); 0 resueltos en `practice/`.
-- **Falta:** B0′ tanda 6 (enunciados que todavía hablan de envíos y clientes); B2 (⚡ evaluador de expresiones con
+- **Falta:** B2 (⚡ evaluador de expresiones con
   `sealed`).

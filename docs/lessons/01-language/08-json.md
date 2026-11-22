@@ -35,5 +35,4 @@ Datos: `data/ticks.json`, generado por `datagen` (ver [`Casos.md`](../../Casos.m
 ## Estado
 
 - **Hecho:** código en el caso Mercado (B0′ tandas 2 y 3) y 9 pruebas; 24 ejercicios (4 🎯); 0 resueltos en `practice/`.
-- **Falta:** B0′ tanda 6 (reescribir los enunciados que todavía hablan de
-  pedidos); B2 (⚡ serializador binario).
+- **Falta:** B2 (⚡ serializador binario).

@@ -23,7 +23,7 @@
 - Firma: `fun vowels(text: String): Int`
 
 **04 🟢 Plantilla de reporte.** Raw string con `trimIndent` y una lista con `joinToString` dentro de la plantilla.
-- Firma: `fun receipt(customer: String, items: List<Pair<String, Int>>): String`
+- Firma: `fun receipt(account: String, items: List<Pair<String, Int>>): String` (cada ítem: ticker y cantidad)
 
 **05 🟢 Truncar con elipsis.** Si pasa de `max`, cortar y terminar en `…` sin superar `max` caracteres.
 - Firma: `fun ellipsize(text: String, max: Int): String`
@@ -38,13 +38,15 @@
 
 ## 🟡 Medios
 
-**08 🟡 🎯 Código de estado.** Validar estados de EE. UU. de dos letras (`"CA"`, `"ca"` se normaliza) contra un `Set`;
-devolver `null` si no es válido.
-- Firma: `fun normalizeState(raw: String?): String?`
-- Casos: espacios, minúsculas, `"C A"`, `"XX"`, `null`.
+**08 🟡 🎯 Mensaje FIX.** Parsear `35=D|55=ACME|54=1|38=10|44=100.00` a una `data class NewOrder(ticker, side, quantity, price)`,
+validando cada tag (54: 1 compra, 2 venta; 38: entero positivo; 44: precio con dos decimales); `null` si falta o falla uno.
+- Firma: `fun parseNewOrder(raw: String?): NewOrder?`
+- Casos: tags en otro orden, `54=3`, `38=0`, `44=abc`, partir con `split("\\|")` (la trampa) y con `split("|")`, `null`.
 
-**09 🟡 🎯 Zip de EE. UU.** Regex para `"12345"` y `"12345-6789"`; extraer el zip de 5 dígitos de una dirección libre.
-- Firmas: `fun isZip(s: String): Boolean`, `fun zip5(address: String): String?`
+**09 🟡 🎯 Dígitos de control de la cuenta.** Validar `ACC-00001234-82` con control = 98 − (número × 100 mod 97), como el
+IBAN, y generar el número completo a partir de los 8 dígitos.
+- Firmas: `fun isValidAccount(s: String): Boolean`, `fun accountFor(number: Int): String`
+- Casos: `ACC-00001234-82` y `ACC-00005678-39` válidos, un dígito cambiado, sin guiones, `ACC-1234-82`.
 
 **10 🟡 Compresión RLE.** `"aaabccdddd"` ↔ `"a3b1c2d4"`.
 - Firmas: `fun rle(s: String): String`, `fun unrle(s: String): String`
@@ -53,7 +55,7 @@ devolver `null` si no es válido.
 **11 🟡 Palabras más frecuentes.** Las `k` palabras más frecuentes, ignorando mayúsculas y signos, con desempate alfabético.
 - Firma: `fun topWords(text: String, k: Int): List<Pair<String, Int>>`
 
-**12 🟡 Camel y snake.** `"orderTotal"` ↔ `"order_total"` ↔ `"order-total"`.
+**12 🟡 Camel y snake.** `"bidPrice"` ↔ `"bid_price"` ↔ `"bid-price"`.
 - Firmas: `fun toSnake(s: String): String`, `fun toCamel(s: String): String`
 - Casos: acrónimos (`"parseURLValue"`), números.
 

@@ -31,4 +31,4 @@
 ## Estado
 
 - **Hecho:** código en los casos (B0′ tanda 4) y 7 pruebas; 24 ejercicios (3 🎯); 0 resueltos en `practice/`.
-- **Falta:** B0′ tanda 6 (enunciados al caso); B2 (⚡ códec estilo FIX).
+- **Falta:** B2 (⚡ códec estilo FIX).

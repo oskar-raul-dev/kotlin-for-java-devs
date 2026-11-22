@@ -44,5 +44,5 @@ docker compose -f docker/postgres/compose.yaml up -d --wait   # y/o docker/mysql
 
 - **Hecho:** código en el caso Banco (B0′ tanda 5) y 39 pruebas (13 × 3 motores); 25 ejercicios compartidos por los
   tres motores, etiquetados `[todos]`/`[SQLite]`/`[PG]`/`[MySQL]`; 0 resueltos en `practice/`.
-- **Falta:** B0′ tanda 6 (enunciados que todavía crean tablas de clientes y pedidos); B2 (⚡ ledger concurrente con
+- **Falta:** B2 (⚡ ledger concurrente con
   `FOR UPDATE`).

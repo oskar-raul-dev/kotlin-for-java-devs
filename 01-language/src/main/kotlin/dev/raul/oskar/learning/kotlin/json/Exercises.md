@@ -8,14 +8,14 @@
 
 **Prioritarios (🎯):** 01, 02, 03, 08.
 
-> Recordatorio: `Json` se construye una vez y se reutiliza. Los datos de ejemplo están en `src/main/resources/data/orders.json`.
+> Recordatorio: `Json` se construye una vez y se reutiliza. Los datos de ejemplo están en `src/main/resources/data/ticks.json`.
 
 ## 🟢 Fáciles
 
-**01 🟢 🎯 Ida y vuelta.** `@Serializable data class Customer(val id: String, val name: String, val email: String?)`: serializar,
+**01 🟢 🎯 Ida y vuelta.** `@Serializable data class Account(val id: String, val currency: String, val alias: String?)`: serializar,
 deserializar y comprobar igualdad.
 
-**02 🟢 🎯 Claves con guiones.** Un JSON con `"order-total"` y `"customer-email"` mapeado con `@SerialName`. ¿Qué error da si lo olvidas?
+**02 🟢 🎯 Claves con guiones.** Un JSON con `"bid-price"` y `"ask-price"` mapeado con `@SerialName`. ¿Qué error da si lo olvidas?
 Captura la `SerializationException` en una prueba y revisa el mensaje.
 
 **03 🟢 🎯 Campo que falta.** Con el `Json` por defecto, un `String?` sin valor por defecto que falta en el JSON, ¿falla o da `null`?
@@ -23,7 +23,7 @@ Pruébalo, luego con `explicitNulls = false`, luego con `= null` como default. D
 
 **04 🟢 Claves desconocidas.** Deserializar un JSON con un campo extra con y sin `ignoreUnknownKeys`.
 
-**05 🟢 Listas y mapas.** `List<Customer>` y `Map<String, Int>` directo a JSON y de vuelta.
+**05 🟢 Listas y mapas.** `List<Account>` y `Map<String, Int>` directo a JSON y de vuelta.
 
 **06 🟢 Pretty print.** Un `Json` con `prettyPrint = true` y `prettyPrintIndent = "  "` (era experimental en 1.6.x y pedía `@OptIn`; en 1.13 ya no).
 
@@ -41,10 +41,10 @@ Pista: parsear primero a `JsonArray` y decodificar cada elemento con `decodeFrom
 
 **11 🟡 Serializador de `Instant`.** Como `epochMillis` (`Long`) en un caso y como texto ISO-8601 en otro.
 
-**12 🟡 Serializador de fecha `MM/dd/yyyy`.** Para que un campo `"order-date": "03/14/2026"` llegue ya como `LocalDate?`, devolviendo `null` en fechas inválidas
+**12 🟡 Serializador de fecha `MM/dd/yyyy`.** Para que un campo `"settle-date": "10/26/2026"` llegue ya como `LocalDate?`, devolviendo `null` en fechas inválidas
 **sin** romper todo el documento. ¿Es buena idea tragarse el error? Argumenta en un comentario como si fuera un comentario de PR.
 
-**13 🟡 Árbol JSON.** Sin clases: sumar `order-total` por `address.state`, ignorando los que no tienen estado.
+**13 🟡 Árbol JSON.** Sin clases: sumar `volume` por `ticker` en `ticks.json`, ignorando los que no tienen volumen.
 
 **14 🟡 Construir con el DSL.** Un reporte `{"generatedAt": …, "alerts": [{…}], "summary": {…}}` con `buildJsonObject`.
 

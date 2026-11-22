@@ -132,10 +132,9 @@ all tests with both databases up** (no SKIPPED).
 - Sample data is on the classpath in `01-language/src/main/resources/data/`: the case files `ticks.json`,
   `bank-statement.csv`, `ledger-movements.csv`, `fx-rates.json` are **generated** by the `datagen` package
   (`run -Plesson=datagen`, fixed seed, `java.util.Random`); never edit them by hand: change the generator and
-  regenerate (`DatagenTest` compares them byte for byte). `sales.csv` and `orders.json` are the old domain, deleted in
-  B0′ batch 6. The end-to-end example domain is the Bank and Market cases of `docs/Casos.md` (step B0′): all code is already on
-  them (batches 1–5); the exercise statements and priority route (batch 6) still partly use the provisional
-  store-orders domain. New examples and exercises must use the cases, all data fictional.
+  regenerate (`DatagenTest` compares them byte for byte). (The old `sales.csv` and `orders.json` were deleted in
+  B0′ batch 6.) The end-to-end example domain is the Bank and Market cases of `docs/Casos.md` (step B0′): code, exercise statements and the README
+  priority route are all on them (batches 1–6; the provisional store-orders domain is gone). New examples and exercises must use the cases, all data fictional.
 
 ## Exercise conventions
 

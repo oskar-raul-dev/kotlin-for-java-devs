@@ -30,4 +30,4 @@
 ## Estado
 
 - **Hecho:** código en los casos (B0′ tanda 4) y 6 pruebas; 24 ejercicios (4 🎯); 0 resueltos en `practice/`.
-- **Falta:** B0′ tanda 6 (enunciados al caso); B2 (⚡ matcher por búsqueda binaria).
+- **Falta:** B2 (⚡ matcher por búsqueda binaria).

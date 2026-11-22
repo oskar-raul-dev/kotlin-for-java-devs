@@ -12,7 +12,7 @@
 
 ## 🟢 Fáciles
 
-**01 🟢 🎯 Recurso del classpath.** Leer `/data/orders.json` y devolver la cantidad
+**01 🟢 🎯 Recurso del classpath.** Leer `/data/ticks.json` y devolver la cantidad
 de caracteres; si el recurso no existe, `requireNotNull` con un mensaje claro.
 - Firma: `fun resourceText(name: String): String`
 

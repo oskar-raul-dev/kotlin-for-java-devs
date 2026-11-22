@@ -37,5 +37,5 @@
 ## Estado
 
 - **Hecho:** código en el caso Banco (B0′ tanda 3) y 16 pruebas; 24 ejercicios (4 🎯); 0 resueltos en `practice/`.
-- **Falta:** B0′ tanda 6 (enunciados al caso); B2 (⚡ `TransferService` completo: idempotencia de verdad, tabla de
+- **Falta:** B2 (⚡ `TransferService` completo: idempotencia de verdad, tabla de
   solicitud → resultado → HTTP).

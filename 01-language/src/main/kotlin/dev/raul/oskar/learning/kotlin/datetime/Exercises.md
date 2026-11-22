@@ -15,10 +15,13 @@
 **01 🟢 🎯 Fecha estricta.** Parsear `MM/dd/uuuu` con `ResolverStyle.STRICT`; `02/30/2020` y `13/01/2020` → `null`.
 ¿Por qué `yyyy` en vez de `uuuu` rompe el modo estricto? Pruébalo.
 
-**02 🟢 🎯 Epoch a fecha.** `timestamp` en milisegundos (como en `OrderEvent`) a `LocalDate` en UTC y en `America/Los_Angeles`.
-Encuentra un timestamp que dé días distintos en cada zona.
+**02 🟢 🎯 Epoch a fecha.** El `ts` en milisegundos de `ticks.json` a `LocalDate` en UTC y en `America/New_York` (el día de
+mercado). Encuentra un `ts` que dé días distintos en cada zona.
 
-**03 🟢 🎯 Edad.** Edad cumplida a una fecha con `Period`, incluido el caso del 29 de febrero.
+**03 🟢 🎯 Fecha de liquidación.** La fecha T+2 de una operación: dos días de mercado después, saltando fines de semana y
+feriados.
+- Firma: `fun settlementDate(trade: LocalDate, days: Int = 2, holidays: Set<LocalDate> = emptySet()): LocalDate`
+- Casos: un jueves (cae el lunes), un viernes, un feriado en el medio, `days = 0`.
 
 **04 🟢 Días entre fechas.** Con `ChronoUnit.DAYS.between` y con `Period`: ¿por qué `Period.between(...).days` no es el total de días?
 
@@ -48,8 +51,9 @@ Muestra cómo `ZonedDateTime.of` resuelve cada caso y cómo elegir el otro offse
 
 **13 🟡 Reuniones entre zonas.** Una reunión a las 9:00 de Bogotá: hora en Madrid, Nueva York y Tokio, en una fecha de invierno y otra de verano.
 
-**14 🟡 Edad mínima.** Validar que alguien tenga al menos 18 años **a la fecha del evento** (no a hoy).
-- Firma: `fun isAdultAt(dob: LocalDate, eventDay: LocalDate): Boolean`
+**14 🟡 Antigüedad mínima.** Validar que una cuenta tenga al menos seis meses de abierta **a la fecha de la transferencia**
+(no a hoy), con `Period`, incluido el caso de una cuenta abierta un 31.
+- Firma: `fun isSeasoned(openedOn: LocalDate, transferDay: LocalDate): Boolean`
 
 **15 🟡 Expiración.** Un token válido por 15 minutos: `isExpired(issuedAt: Instant, clock: Clock)`; prueba el instante exacto del borde.
 
@@ -73,7 +77,7 @@ mostrar qué cambia al cambiar la zona de la sesión (`SET TIME ZONE`). Usa el c
 
 **22 🔴 Recurrencias.** "El último viernes de cada mes" y "cada 2 semanas el martes" entre dos fechas, con excepciones.
 
-**23 🔴 Ventanas de negocio.** El número de horas hábiles (lunes a viernes, 8–17, en una zona) entre dos `Instant`, con festivos y DST.
+**23 🔴 Ventanas de negocio.** El número de horas hábiles (lunes a viernes, 09:30–16:00 en `America/New_York`) entre dos `Instant`, con festivos y DST.
 
 **24 🔴 kotlinx-datetime.** Reescribe 5 ejercicios con `kotlinx-datetime` (agrega la dependencia en un experimento aparte) y compara
 la API con `java.time`: ¿qué gana y qué pierde en un proyecto solo JVM?
