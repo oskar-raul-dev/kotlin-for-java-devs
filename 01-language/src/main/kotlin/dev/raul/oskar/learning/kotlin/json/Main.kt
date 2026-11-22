@@ -1,5 +1,6 @@
 package dev.raul.oskar.learning.kotlin.json
 
+import dev.raul.oskar.learning.kotlin.basics.Money
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encodeToString
 import java.math.BigDecimal
@@ -38,6 +39,7 @@ fun main() {
 
     println("\n== Serializadores propios ==")
     println(prettyJson.encodeToString(DailyClose("ACME", LocalDate.of(2026, 10, 26), BigDecimal("100.42"))))
+    println(strictJson.encodeToString(Fee("ORD-1", Money.of("1.00"))))
 
     println("\n== Árbol JSON ==")
     println("volumen total = ${totalVolume(text)}")

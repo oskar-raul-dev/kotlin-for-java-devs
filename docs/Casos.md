@@ -29,9 +29,11 @@ data class Money(val amount: BigDecimal, val currency: Currency) : Comparable<Mo
 
 - **`data class`, no `value class`**: una `value class` solo envuelve una propiedad y aquí son dos (monto y moneda).
   Que una `value class Money` no pueda llevar la moneda es en sí un ejercicio de `oop` 🎤.
-- **Escala normalizada en el `init`** a la de la moneda (`Currency.defaultFractionDigits`: 2 para USD y EUR). Así se
+- **Escala fija** a la de la moneda (`Currency.defaultFractionDigits`: 2 para USD y EUR). Así se
   evita la trampa de Java que también vive en Kotlin: `BigDecimal("1.0") == BigDecimal("1.00")` es `false`
   (`equals` compara la escala; `compareTo` no).
+  Como un `init` no puede reasignar un `val`, el constructor **valida** la escala y las fábricas (`Money.of`,
+  `Money.ofCents`) la **normalizan** (decidido en la tanda 3; código en `basics/Money.kt`).
 - Operadores `plus`, `minus`, `times` (por cantidad) y `unaryMinus`; sumar monedas distintas lanza
   `IllegalArgumentException` con `require`.
 - Redondeo **`HALF_EVEN`** (bancario) por defecto; `HALF_UP` aparece solo para comparar.
@@ -217,7 +219,8 @@ Por tandas, cada una con las pruebas en verde (con PostgreSQL y MySQL arriba) y 
 1. ✅ **Datos y generador:** `ticks.json`, `bank-statement.csv`, `ledger-movements.csv`, `fx-rates.json` y el
    paquete `datagen` (22 de noviembre de 2026).
 2. ✅ **`json` e `io`:** modelo `Tick`/`MarketEvent`, conciliación exacta del extracto contra `ledger-movements.csv`.
-3. **`basics`, `oop` y `exceptions`:** `Money`, `Order` sellado, `BankException`, `TransferService`.
+3. ✅ **`basics`, `oop` y `exceptions`:** `Money`, `Order` sellado, `BankException`, `TransferService` (y el
+   serializador de `Money` en `json`).
 4. **`strings`, `collections`, `functional`, `datetime`, `control`:** los ejemplos y pruebas que mencionan pedidos.
 5. **`04-data`:** `LedgerRepository` con su contrato en los tres motores; entidades JPA del ledger.
 6. **Ejercicios y ruta 🎯:** reescribir los enunciados afectados (hoy mencionan pedidos sobre todo `oop`, `json` y

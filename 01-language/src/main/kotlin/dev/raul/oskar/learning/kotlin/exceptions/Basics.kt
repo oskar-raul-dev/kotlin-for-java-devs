@@ -1,6 +1,7 @@
 package dev.raul.oskar.learning.kotlin.exceptions
 
 import java.io.IOException
+import java.math.BigDecimal
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -42,11 +43,13 @@ class Wallet(private var balance: Long) {
     }
 }
 
-fun parseAge(raw: String?): Int {
-    val text = requireNotNull(raw) { "edad nula" }        // desde aquí text es String
-    val age = requireNotNull(text.trim().toIntOrNull()) { "edad no numérica: '$text'" }
-    require(age in 0..150) { "edad fuera de rango: $age" }
-    return age
+/** El monto de una solicitud de transferencia, tal como llega (puede ser null o basura). */
+fun parseAmount(raw: String?): BigDecimal {
+    val text = requireNotNull(raw) { "monto nulo" }        // desde aquí text es String
+    val amount = requireNotNull(text.trim().toBigDecimalOrNull()) { "monto no numérico: '$text'" }
+    require(amount.signum() > 0) { "monto debe ser positivo: $amount" }
+    require(amount.scale() <= 2) { "más de dos decimales: $amount" }
+    return amount
 }
 
 /** No hay multi-catch (catch (A | B e)): se captura el padre y se distingue con when. */

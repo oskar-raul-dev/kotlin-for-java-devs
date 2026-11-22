@@ -74,7 +74,7 @@ cd 22-legacy-kotlin19 && ./gradlew test                         # track legacy K
 - `--args` pasa argumentos al `main(args)`.
 - `--console=plain` quita la barra de progreso de Gradle, que se mezcla con lo que se escribe en la consola.
 
-Estado actual: **134 pruebas** en la base (96 en `01-language` y 38 en `04-data`), todas en verde, más **4 de humo**
+Estado actual: **140 pruebas** en la base (102 en `01-language` y 38 en `04-data`), todas en verde, más **4 de humo**
 en `22-legacy-kotlin19`. Las 18 de PostgreSQL y MySQL salen `SKIPPED` si sus contenedores no están arriba.
 
 ## Índice de secciones
@@ -134,10 +134,10 @@ genera el paquete `datagen` con semilla fija: `./gradlew -p 01-language run -Ple
 
 | # | Subpaquete | Qué repasa | Ejercicios | 🎯 |
 |---|---|---|---|---|
-| 1 | `basics` | Tipos numéricos, conversiones explícitas, overflow, `BigDecimal` con operadores, `Char`, `==` frente a `===`, `Any`/`Unit`/`Nothing`, smart casts | [25](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/basics/Exercises.md) | 5 |
+| 1 | `basics` | Tipos numéricos, conversiones explícitas, overflow, `BigDecimal` (escala, redondeo, nunca desde `Double`), `Money` del Banco con operadores y moneda, `Char`, `==` frente a `===`, `Any`/`Unit`/`Nothing`, smart casts | [25](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/basics/Exercises.md) | 5 |
 | 2 | `control` | `if`/`when` como expresiones, rangos (`..`, `until`, `downTo`, `step`), bucles, etiquetas `break@`, algoritmos de pizarra (gcd, primos, búsqueda binaria, two-sum, paréntesis) | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/control/Exercises.md) | 4 |
 | 3 | `strings` | Plantillas, raw strings, `buildString`, `substringBefore/After`, regex con grupos con nombre, `replace` con lambda. **La trampa de `split("\\/")`** | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/strings/Exercises.md) | 3 |
-| 4 | `oop` | Constructores, `init`, setters privados, `open`/`abstract`, interfaces con default, `sealed` + `when` exhaustivo, enums con `companion` y `of`, `object`, `data class`, `value class`, operadores, delegación `by`, `lazy` | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/oop/Exercises.md) | 4 |
+| 4 | `oop` | Cuentas con `init`, setters privados, `open`/`abstract`; `Order` sellado + `when` exhaustivo; enums con `companion` y `of`; `object`, `data class`, `value class` (`TransferId`), operadores, delegación `by`, `lazy` | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/oop/Exercises.md) | 4 |
 | 5 | `io` | `Path` + `kotlin.io.path`, `useLines`, `use {}`, recursos del classpath, CSV con comillas, conciliación exacta del extracto bancario, consola testeable, Kermit | [23](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/io/Exercises.md) | 3 |
 | 6 | `collections` | Solo lectura frente a mutable, listas, sets, mapas (`getOrPut`), `TreeMap`, `ArrayDeque`, `PriorityQueue`, arrays | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/collections/Exercises.md) | 5 |
 | 7 | `functional` | Tipos función, closures, composición, lambdas con receptor, `reified`, `Result`, scope functions, `fun interface`, pipelines (`groupBy`, `groupingBy`, `partition`), secuencias perezosas | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/functional/Exercises.md) | 6 |
@@ -147,7 +147,7 @@ genera el paquete `datagen` con semilla fija: `./gradlew -p 01-language run -Ple
 | 11 | `jdbc.postgres` | Mismo repositorio en PostgreSQL + `RETURNING`, `= ANY(array)`, `jsonb` | ↑ | — |
 | 12 | `jdbc.mysql` | Mismo repositorio en MySQL + `ON DUPLICATE KEY`, `LAST_INSERT_ID()`, aislamiento por defecto | ↑ | — |
 | 13 | `jpa` | Hibernate 7 sin Spring: entidades en Kotlin, cascade, `orphanRemoval`, N+1 y `join fetch`, dirty checking, `LazyInitializationException`, `@Version`, UPDATE masivo | [24](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jpa/Exercises.md) | — |
-| 14 | `exceptions` | Sin checked exceptions, `try`/`throw` como expresiones, `require`/`check`/`error`, sin multi-catch (`when` en el catch), jerarquía sellada con `cause`, `Result`/`runCatching` (y su trampa con `CancellationException`), validación que acumula errores, `use` y suppressed, `@Throws` para Java | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/exceptions/Exercises.md) | 4 |
+| 14 | `exceptions` | Sin checked exceptions, `try`/`throw` como expresiones, `require`/`check`/`error`, sin multi-catch (`when` en el catch), `BankException` sellada con `cause` y su traducción a HTTP, `TransferService`, `Result`/`runCatching` (y su trampa con `CancellationException`), validación que acumula errores, `use` y suppressed, `@Throws` para Java | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/exceptions/Exercises.md) | 4 |
 
 `jdbc/` (sin subpaquete) tiene lo compartido: `ProductRepository`, la interfaz `Dialect`, las extensiones
 `mapRows` e `inTransaction`, y el recorrido `runDemo`. Las tres bases pasan **la misma batería de pruebas**

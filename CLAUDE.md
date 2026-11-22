@@ -115,6 +115,8 @@ all tests with both databases up** (no SKIPPED).
   `datetime`, `json` (plus `datagen`, the data generator, which is not a lesson); `04-data` has `jdbc.*` and `jpa`. Each lesson has a `Main.kt` (demo only), logic in separate
   `.kt` files so it is testable, an `Exercises.md`, and a mirrored `src/test/.../<lesson>/<Lesson>Test.kt` using
   `kotlin.test` on JUnit 5.
+- `basics/Money.kt` is the one `Money` type of `01-language` (data class, scale validated in `init` and normalized by
+  `Money.of`/`ofCents`, `HALF_EVEN`); `oop`, `exceptions` and `json` import it instead of redefining it.
 - `jdbc/` root holds shared code: `ProductRepository`, the `Dialect` interface, `mapRows`/`inTransaction`
   extensions, and `runDemo`. `jdbc/{sqlite,postgres,mysql}` each supply only a `*Dialect` and `Main`. Tests
   subclass the abstract `ProductRepositoryContract`, providing `dialect` and `openConnection()`; returning `null`

@@ -1,5 +1,6 @@
 package dev.raul.oskar.learning.kotlin.oop
 
+import dev.raul.oskar.learning.kotlin.basics.Money
 import java.util.concurrent.atomic.AtomicLong
 
 // object, companion, data class, value class, delegación y sobrecarga de operadores.
@@ -11,28 +12,38 @@ object IdGenerator {
     fun reset() = counter.set(0)
 }
 
-/** data class: equals/hashCode/toString/copy/componentN generados. */
-data class Customer(val id: String, val name: String, val email: String? = null) {
-    // Las propiedades del cuerpo NO entran en equals/hashCode.
-    var visits: Int = 0
+/** data class: equals/hashCode/toString/copy/componentN generados. Posición de un cliente en un ticker. */
+data class Position(val ticker: String, val quantity: Long, val averageCost: Money) {
+    // Las propiedades del cuerpo NO entran en equals/hashCode/toString/copy.
+    var lastPrice: Money? = null
 }
 
 /** Constructor privado + fábrica en companion: el único camino crea objetos válidos. */
-class Email private constructor(val value: String) {
+class Ticker private constructor(val symbol: String) {
     companion object {
-        fun parse(raw: String): Email? =
-            raw.trim().lowercase().takeIf { it.matches(Regex("""[^@\s]+@[^@\s]+\.\w+""")) }?.let(::Email)
+        private val SYMBOL = Regex("[A-Z]{1,5}")
+
+        fun parse(raw: String): Ticker? = raw.trim().uppercase().takeIf { SYMBOL.matches(it) }?.let(::Ticker)
     }
 
-    override fun toString() = value
+    override fun toString() = symbol
 }
 
-/** value class: un tipo distinto en compilación, sin objeto extra en ejecución. */
+/**
+ * value class: un tipo distinto en compilación, sin objeto extra en ejecución. Una función que recibe un
+ * TransferId no acepta por error una clave de idempotencia u otro String cualquiera.
+ */
 @JvmInline
-value class Cents(val value: Long) {
-    operator fun plus(other: Cents) = Cents(value + other.value)
-    operator fun times(n: Int) = Cents(value * n)
-    override fun toString() = "%d.%02d".format(value / 100, value % 100)
+value class TransferId(val value: String) {
+    init {
+        require(PATTERN.matches(value)) { "id de transferencia inválido: $value" }
+    }
+
+    companion object {
+        private val PATTERN = Regex("""TRF-\d{6}""")   // en el companion: se compila una vez, no en cada init
+
+        fun of(number: Long): TransferId = TransferId("TRF-%06d".format(number))
+    }
 }
 
 /** Operadores: plus, minus, compareTo, get, contains... con la palabra `operator`. */

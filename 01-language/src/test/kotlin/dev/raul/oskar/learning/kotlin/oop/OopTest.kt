@@ -1,10 +1,12 @@
 package dev.raul.oskar.learning.kotlin.oop
 
+import dev.raul.oskar.learning.kotlin.basics.Money
 import java.math.BigDecimal
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -16,71 +18,82 @@ class OopTest {
 
     @Test
     fun `init block validates constructor arguments`() {
-        assertFailsWith<IllegalArgumentException> { LockedAccount(" ") }
+        assertFailsWith<IllegalArgumentException> { EscrowAccount(" ") }
         assertFailsWith<IllegalArgumentException> {
-            SavingsAccount("S", BigDecimal("-1"), BigDecimal.ZERO)
+            SavingsAccount("S", Money.of("-1"), BigDecimal.ZERO)
         }
     }
 
     @Test
     fun `overridden overdraft changes withdraw behaviour`() {
-        val savings = SavingsAccount("S", BigDecimal("100"), BigDecimal("0.1"))
-        val checking = CheckingAccount("C", BigDecimal("100"), BigDecimal("50"))
-        assertFailsWith<IllegalStateException> { savings.withdraw(BigDecimal("101")) }
-        checking.withdraw(BigDecimal("150"))
-        assertEquals(BigDecimal("-50"), checking.balance)
+        val savings = SavingsAccount("S", Money.of("100"), BigDecimal("0.01"))
+        val checking = CheckingAccount("C", Money.of("100"), Money.of("50"))
+        assertFailsWith<IllegalStateException> { savings.withdraw(Money.of("101")) }
+        checking.withdraw(Money.of("150"))
+        assertEquals(Money.of("-50"), checking.balance)
+        assertEquals(Money.of("1.00"), savings.interest())
     }
 
     @Test
-    fun `polymorphic transfer`() {
-        val from = CheckingAccount("C", BigDecimal("10"), BigDecimal("100"))
-        val to = SavingsAccount("S", BigDecimal.ZERO, BigDecimal("0.1"))
+    fun `polymorphic transfer and account status`() {
+        val from = CheckingAccount("C", Money.of("10"), Money.of("100"))
+        val to = SavingsAccount("S", Money.zero(), BigDecimal("0.01"))
         assertTrue(to.isEmpty)
-        transfer(from, to, BigDecimal("60"))
-        assertEquals(BigDecimal("60"), to.balance)
-        assertFailsWith<UnsupportedOperationException> { transfer(LockedAccount("L"), to, BigDecimal.ONE) }
+        transfer(from, to, Money.of("60"))
+        assertEquals(Money.of("60"), to.balance)
+        assertFailsWith<UnsupportedOperationException> { transfer(EscrowAccount("E"), to, Money.of("1")) }
+        to.freeze()
+        to.deposit(Money.of("1"))                                   // congelada: recibe pero no paga
+        assertFailsWith<IllegalStateException> { to.withdraw(Money.of("1")) }
     }
 
     @Test
     fun `sealed hierarchy and default methods`() {
-        assertEquals(6.0, Rectangle(2.0, 3.0).area())
-        assertEquals("Soy rectángulo", Rectangle(1.0, 1.0).describe())
-        assertEquals("Soy un triángulo de base 4.0", Triangle(4.0, 1.0).describe())
-        assertEquals(16.0, totalArea(listOf(Rectangle(2.0, 3.0), Triangle(4.0, 5.0))))
+        val limit = LimitOrder("ORD-1", "ACME", Side.BUY, 10, Money.of("100.00"))
+        val market = MarketOrder("ORD-2", "ORBX", Side.SELL, 5)
+        assertEquals(Money.of("1000.00"), limit.notional())
+        assertEquals("orden de ACME", limit.describe())             // método por defecto de la interfaz
+        assertEquals("orden a mercado de ORBX", market.describe())  // sobrescrito
+        assertEquals("SELL 5 al precio que haya", priceHint(market))
+        assertEquals(Money.of("1000.00"), committed(listOf(limit, market)))
+        assertFailsWith<IllegalArgumentException> { MarketOrder("ORD-3", "ACME", Side.BUY, 0) }
     }
 
     @Test
-    fun `enum factory in companion`() {
-        assertEquals(ShippingMethod.EXPRESS, ShippingMethod.of("EXPRESS"))
-        assertNull(ShippingMethod.of(null))
-        assertNull(ShippingMethod.of("drone"))
-        assertFailsWith<IllegalArgumentException> { ShippingMethod.ofOrThrow("drone") }
-        assertEquals(0.35, ShippingMethod.FREIGHT.costFactor())
-        assertEquals(1.0, ShippingMethod.EXPRESS.costFactor())
-        assertEquals(Direction.NORTH, Direction.WEST.turnRight())
+    fun `enum factory in companion and bodies per constant`() {
+        assertEquals(AccountType.LIABILITY, AccountType.of("LIABILITY"))
+        assertNull(AccountType.of(null))
+        assertNull(AccountType.of("equity"))
+        assertFailsWith<IllegalArgumentException> { AccountType.ofOrThrow("equity") }
+        assertTrue(AccountType.INCOME.closesAtMonthEnd())
+        assertFalse(AccountType.ASSET.closesAtMonthEnd())
+        assertEquals(Side.SELL, Side.BUY.opposite())
+        assertTrue(AccountStatus.FROZEN.acceptsDeposits && !AccountStatus.FROZEN.acceptsWithdrawals)
     }
 
     @Test
     fun `data class equality ignores body properties`() {
-        val a = Customer("1", "Ana").apply { visits = 5 }
-        val b = Customer("1", "Ana")
+        val a = Position("ACME", 10, Money.of("100.10")).apply { lastPrice = Money.of("101.00") }
+        val b = Position("ACME", 10, Money.of("100.10"))
         assertEquals(a, b)
         assertNotSame(a, b)
-        assertEquals("ana@x.com", a.copy(email = "ana@x.com").email)
+        assertNull(a.copy(quantity = 15).lastPrice)                 // copy tampoco lleva lo del cuerpo
     }
 
     @Test
     fun `object singleton and private constructor factory`() {
-        assertEquals("order-1", IdGenerator.next("order"))
-        assertEquals("order-2", IdGenerator.next("order"))
-        assertEquals("ana@example.com", Email.parse(" ANA@Example.com ")?.value)
-        assertNull(Email.parse("sin arroba"))
+        assertEquals("TRF-1", IdGenerator.next("TRF"))
+        assertEquals("TRF-2", IdGenerator.next("TRF"))
+        assertEquals("ACME", Ticker.parse(" acme ")?.symbol)
+        assertNull(Ticker.parse("ACME1"))
+        assertNull(Ticker.parse("TOOLONG"))
     }
 
     @Test
     fun `operators and value classes`() {
-        assertEquals("59.98", (Cents(1999) * 3 + Cents(1)).toString())
-        assertEquals(Cents(5998), Cents(1999) * 3 + Cents(1))
+        assertEquals("TRF-000042", TransferId.of(42).value)
+        assertEquals(TransferId("TRF-000042"), TransferId.of(42))
+        assertFailsWith<IllegalArgumentException> { TransferId("42") }
         assertEquals(Vector2(4, 6), Vector2(1, 2) + Vector2(3, 4))
         assertEquals(2, Vector2(1, 2)[1])
         assertTrue(Vector2(1, 9) < Vector2(2, 0))
@@ -102,6 +115,6 @@ class OopTest {
     @Test
     fun `generic with upper bound`() {
         assertEquals(9, maxOf3(3, 9, 1))
-        assertEquals("uva", maxOf3("pera", "uva", "manzana"))
+        assertEquals("ORBX", maxOf3("ORBX", "ACME", "NUBE"))
     }
 }

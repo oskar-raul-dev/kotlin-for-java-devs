@@ -1,35 +1,52 @@
 package dev.raul.oskar.learning.kotlin.oop
 
-// Enums con propiedades, métodos, abstractos por constante y fábrica en companion object.
+// Enums con propiedades, métodos, cuerpo por constante y fábrica en companion object.
 
-enum class ShippingMethod(val code: String, val maxDays: Int) {
-    STANDARD("standard", 7),
-    EXPRESS("express", 2),
-    FREIGHT("freight", 30) {
-        override fun costFactor() = 0.35          // cuerpo propio por constante
-    };                                            // ; obligatorio antes de miembros
+/** Tipos de cuenta del ledger de doble partida (docs/Casos.md). */
+enum class AccountType(val code: String, val increasesWithDebit: Boolean) {
+    ASSET("asset", true),
+    LIABILITY("liability", false),
+    INCOME("income", false) {
+        override fun closesAtMonthEnd() = true          // cuerpo propio por constante
+    },
+    EXPENSE("expense", true) {
+        override fun closesAtMonthEnd() = true
+    };                                                  // ; obligatorio antes de miembros
 
-    open fun costFactor(): Double = 1.0
+    /** Las cuentas de resultados (ingresos y gastos) se saldan en el cierre de mes; las de balance, no. */
+    open fun closesAtMonthEnd(): Boolean = false
 
-    // companion object = miembros "static". ShippingMethod.of(...) desde Kotlin.
+    // companion object = miembros "static". AccountType.of(...) desde Kotlin.
     companion object {
         private val byCode = entries.associateBy { it.code }   // entries: Kotlin 1.9 (antes values())
 
-        fun of(code: String?): ShippingMethod? = code?.lowercase()?.let { byCode[it] }
+        fun of(code: String?): AccountType? = code?.lowercase()?.let { byCode[it] }
 
-        fun ofOrThrow(code: String): ShippingMethod =
-            of(code) ?: throw IllegalArgumentException("método de envío desconocido: $code")
+        fun ofOrThrow(code: String): AccountType =
+            of(code) ?: throw IllegalArgumentException("tipo de cuenta desconocido: $code")
     }
 }
 
-enum class Direction { NORTH, EAST, SOUTH, WEST;
+enum class AccountStatus {
+    OPEN, FROZEN, CLOSED;
 
-    fun turnRight(): Direction = entries[(ordinal + 1) % entries.size]
+    val acceptsDeposits: Boolean get() = this != CLOSED
+    val acceptsWithdrawals: Boolean get() = this == OPEN
+}
+
+enum class Side {
+    BUY, SELL;
+
+    fun opposite(): Side = when (this) {
+        BUY -> SELL
+        SELL -> BUY
+    }
 }
 
 /** when sobre enum también es exhaustivo. */
-fun label(method: ShippingMethod): String = when (method) {
-    ShippingMethod.STANDARD -> "Envío estándar"
-    ShippingMethod.EXPRESS -> "Envío exprés"
-    ShippingMethod.FREIGHT -> "Carga pesada"
+fun label(type: AccountType): String = when (type) {
+    AccountType.ASSET -> "Activo"
+    AccountType.LIABILITY -> "Pasivo"
+    AccountType.INCOME -> "Ingreso"
+    AccountType.EXPENSE -> "Gasto"
 }

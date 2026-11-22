@@ -23,12 +23,15 @@ fun checkedAdd(a: Int, b: Int): Int = Math.addExact(a, b)
 /** String -> número sin excepción: toIntOrNull devuelve null si no se puede. */
 fun parseOrDefault(text: String, default: Int = 0): Int = text.trim().toIntOrNull() ?: default
 
-/** Dinero: siempre BigDecimal construido desde String, nunca desde Double. */
-fun money(text: String): BigDecimal = BigDecimal(text).setScale(2, RoundingMode.HALF_EVEN)
+/** BigDecimal desde Double arrastra el error binario: BigDecimal(0.1) = 0.1000000000000000055511151231257827… */
+fun fromDouble(d: Double): BigDecimal = BigDecimal(d)
+
+/** Desde String es exacto. Para dinero, ver Money.kt (que nunca acepta Double). */
+fun fromText(text: String): BigDecimal = BigDecimal(text)
 
 /** En Kotlin los operadores +, -, *, / funcionan con BigDecimal (operator overloading). */
-fun addTax(amount: BigDecimal, rate: BigDecimal): BigDecimal =
-    (amount + amount * rate).setScale(2, RoundingMode.HALF_EVEN)
+fun commission(notional: BigDecimal, rate: BigDecimal, mode: RoundingMode = RoundingMode.HALF_EVEN): BigDecimal =
+    (notional * rate).setScale(2, mode)
 
 /** BigDecimal.equals compara escala ("1.0" != "1.00"); compareTo no. */
 fun sameAmount(a: BigDecimal, b: BigDecimal): Boolean = a.compareTo(b) == 0

@@ -51,7 +51,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | A6 · Track `22-legacy-kotlin19` | ✅ | Wrapper propio 9.2.1, Kotlin 1.9.22, 4 pruebas de humo; fuera del composite |
 | A8 · Contenedores legacy | ✅ | `./scripts/legacy.sh 19` = nativo (4 pruebas); `arm64` nativo |
 | A9 · Documentación | ✅ | README con índice de secciones, CLAUDE.md reescrito; tag `phase-a` |
-| B0′ · Casos Banco y Mercado | 🟡 | Diseño en `docs/Casos.md` ✅; tandas 1 (datos) y 2 (`json`, `io`) ✅; tandas 3 a 6 ⬜️ |
+| B0′ · Casos Banco y Mercado | 🟡 | Diseño en `docs/Casos.md` ✅; tandas 1 (datos), 2 (`json`, `io`) y 3 (`basics`, `oop`, `exceptions`) ✅; tandas 4 a 6 ⬜️ |
 | B0″ · Guías de lección | ✅ | 12 guías en `docs/lessons/`, símbolos y pruebas citados comprobados contra el código |
 
 ## Secciones
@@ -357,3 +357,11 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   `split(",")` parte las descripciones) y concilia exacto (`reconcileExact`: 21 conciliadas, 6 y 6 sin pareja, que es
   lo que resuelve el ⚡ con tolerancias). Ejercicios `json` 08 e `io` 07 y 08 apuntan a los datos nuevos (el resto de
   los enunciados, en la tanda 6). Guías `05-io` y `08-json` reescritas. 134 pruebas (96 + 38), 0 `SKIPPED`.
+- **2026-11-22** · **B0′, tanda 3 (`basics`, `oop`, `exceptions`):** `basics/Money.kt` con el `Money` de `Casos.md`
+  (`data class`; el `init` valida la escala y `Money.of`/`ofCents` la normalizan, porque un `init` no puede reasignar
+  un `val`; `HALF_EVEN`; operadores que exigen la misma moneda), que importan `oop`, `exceptions` y `json`. `oop`:
+  cuentas con `Money` y `AccountStatus`, `EscrowAccount`, `AccountType` con cuerpo por constante, `Side`, `Order`
+  sellado (`LimitOrder`, `MarketOrder`), `Position`, `Ticker`, `TransferId` (`value class` con `init`).
+  `exceptions`: `BankException` sellada (las cinco de `Casos.md` más `FxUnavailable` para envolver la causa),
+  `TransferService` con `require`/`check`, `checkBalanced`, `httpStatusFor` y `TransferRequest` validada acumulando
+  errores. `json`: `MoneyAsString` y `Fee`. Guías `01`, `04`, `08` y `10` al día. 140 pruebas (102 + 38), 0 `SKIPPED`.

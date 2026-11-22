@@ -132,10 +132,11 @@ El lenguaje y su stdlib desde Java. **Build:** 1 · **Caso:** Ambos.
 
 **Objetivo:** saber dónde quedaron los primitivos, el boxing y `null`, y manejar dinero con `BigDecimal` sin las
 trampas de escala, redondeo y `Double`.
-**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Banco · **Estado:** existe (pasa al Banco en B0′)
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Banco · **Estado:** existe (en el Banco desde B0′, tanda 3)
 
-> **Hoy → B0′:** el código usa `BigDecimal` suelto (`money`, `addTax`, `sameAmount`) y ejemplos genéricos; con el
-> reemplazo pasa a `Money` de [`Casos.md`](Casos.md#money). Los 25 ejercicios actuales se conservan y se completan.
+> **B0′, tanda 3 (hecho):** `Money` de [`Casos.md`](Casos.md#money) en `Money.kt` (lo importan `oop`, `exceptions` y
+> `json`); `Numbers.kt` conserva `BigDecimal` suelto para las trampas (`fromDouble`, `commission`, `sameAmount`). Los
+> 25 ejercicios actuales se conservan y se completan. Guía: [`01-basics.md`](lessons/01-language/01-basics.md).
 
 | Java | Kotlin | Nota |
 |---|---|---|
@@ -260,10 +261,11 @@ falsa) que dan exactamente el error y la posición esperados.
 
 **Objetivo:** modelar dominio con clases, `data class`, jerarquías selladas, enums y objetos, y saber qué cambia
 frente a Java en herencia, visibilidad e igualdad.
-**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** existe (pasa a los casos en B0′)
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** existe (en los casos desde B0′, tanda 3)
 
-> **Hoy → B0′:** `ShippingMethod`, `Customer` y las formas geométricas pasan a `Order` sellado, `AccountType`,
-> `Money` y `Account`. Las cuentas de ahorro y de cheques de hoy ya están cerca del Banco.
+> **B0′, tanda 3 (hecho):** `ShippingMethod`, `Customer`, `Email`, `Cents` y las formas geométricas pasaron a
+> `AccountType`/`AccountStatus`/`Side`, `Position`, `Ticker`, `TransferId` y `Order` sellado; las cuentas usan `Money`.
+> Guía: [`04-oop.md`](lessons/01-language/04-oop.md).
 
 | Java | Kotlin | Nota |
 |---|---|---|
@@ -437,7 +439,7 @@ jerarquías selladas y serializadores propios.
 **Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** existe (en el Mercado desde B0′, tanda 2)
 
 > **B0′, tanda 2 (hecho):** `OrderEvent`, `Address` y `Payment` pasaron a `Tick` y a `MarketEvent` sellado (`Trade`,
-> `Quote`, `Halt`), leídos de `ticks.json`; falta el serializador de `Money` (tanda 3). Versión: kotlinx-serialization
+> `Quote`, `Halt`), leídos de `ticks.json`; el serializador de `Money` (`MoneyAsString`) llegó en la tanda 3. Versión: kotlinx-serialization
 > **1.13.0** ([`Versions.md`](Versions.md)). Guía: [`08-json.md`](lessons/01-language/08-json.md).
 
 | Java (Jackson) | Kotlin (kotlinx-serialization 1.13.0) | Nota |
@@ -517,10 +519,11 @@ daría otro resultado) y con el tick fuera de horario de `ticks.json`.
 
 **Objetivo:** manejar errores sin checked exceptions: precondiciones de la stdlib, jerarquías selladas, `Result` y
 errores como valores, y saber cuándo usar cada uno.
-**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Banco · **Estado:** existe (pasa al Banco en B0′)
+**Sección:** `01-language` · **Build:** nivel 1 · **Caso:** Banco · **Estado:** existe (en el Banco desde B0′, tanda 3)
 
-> **Hoy → B0′:** `OrderException`, `OrderService` y el cliente de inventario pasan a `BankException` sellada y
-> `TransferService`; la validación de `Applicant` pasa a validar una `Transfer`.
+> **B0′, tanda 3 (hecho):** `OrderException`, `OrderService` y el cliente de inventario pasaron a `BankException`
+> sellada, `TransferService` y `FxRateClient`; la validación de `Applicant` pasó a `TransferRequest`. Guía:
+> [`10-exceptions.md`](lessons/01-language/10-exceptions.md).
 
 | Java | Kotlin | Nota |
 |---|---|---|

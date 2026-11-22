@@ -1,6 +1,7 @@
 package dev.raul.oskar.learning.kotlin.basics
 
 import java.math.BigDecimal
+import java.math.RoundingMode
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -33,13 +34,42 @@ class BasicsTest {
     fun `BigDecimal equals compares scale, compareTo does not`() {
         assertNotEquals(BigDecimal("1.0"), BigDecimal("1.00"))
         assertTrue(sameAmount(BigDecimal("1.0"), BigDecimal("1.00")))
-        assertEquals(BigDecimal("0.30"), money("0.1") + money("0.2"))
+        assertEquals(BigDecimal("0.3"), fromText("0.1") + fromText("0.2"))
         assertNotEquals(0.3, 0.1 + 0.2)
     }
 
     @Test
-    fun `tax uses banker rounding`() {
-        assertEquals(BigDecimal("119.00"), addTax(money("100"), BigDecimal("0.19")))
+    fun `BigDecimal from a double carries the binary error`() {
+        assertNotEquals(BigDecimal("0.1"), fromDouble(0.1))
+        assertTrue(fromDouble(0.1).toPlainString().startsWith("0.1000000000000000055511"))
+    }
+
+    @Test
+    fun `commission uses banker rounding by default`() {
+        // 0.125 -> 0.12 con HALF_EVEN (el 2 es par) y 0.13 con HALF_UP
+        assertEquals(BigDecimal("0.12"), commission(BigDecimal("125"), BigDecimal("0.001")))
+        assertEquals(BigDecimal("0.13"), commission(BigDecimal("125"), BigDecimal("0.001"), RoundingMode.HALF_UP))
+    }
+
+    @Test
+    fun `money factories normalize the scale and the constructor validates it`() {
+        assertEquals(Money.of("1.00"), Money.of("1.0"))               // data class segura: misma escala siempre
+        assertEquals("19.99 USD", Money.ofCents(1999).toString())
+        assertEquals(Money.of("2.34"), Money.of("2.345"))             // HALF_EVEN
+        assertEquals(Money.of("2.35"), Money.of("2.345", mode = RoundingMode.HALF_UP))
+        assertFailsWith<IllegalArgumentException> { Money(BigDecimal("1.5"), Money.USD) }
+    }
+
+    @Test
+    fun `money operators require the same currency`() {
+        val price = Money.of("100.00")
+        assertEquals(Money.of("1001.00"), price * 10 + Money.ofCents(100))
+        assertEquals(Money.of("-100.00"), -price)
+        assertEquals(Money.of("4.32"), Money.of("1234.56").times(BigDecimal("0.0035")))   // 4.32096 -> 4.32
+        assertTrue(Money.of("99.99") < price)
+        assertTrue((Money.zero() - price).isNegative)
+        assertFailsWith<IllegalArgumentException> { price + Money.of("1", Money.EUR) }
+        assertFailsWith<IllegalArgumentException> { price < Money.of("1", Money.EUR) }
     }
 
     @Test

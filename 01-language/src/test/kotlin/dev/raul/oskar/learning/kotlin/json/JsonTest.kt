@@ -1,5 +1,6 @@
 package dev.raul.oskar.learning.kotlin.json
 
+import dev.raul.oskar.learning.kotlin.basics.Money
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -69,6 +70,17 @@ class JsonTest {
         val encoded = strictJson.encodeToString(close)
         assertEquals("""{"ticker":"ACME","date":"2026-10-26","close":"100.40"}""", encoded)
         assertEquals(close, strictJson.decodeFromString<DailyClose>(encoded))
+    }
+
+    @Test
+    fun `money travels as a string with its currency`() {
+        val fee = Fee("ORD-1", Money.of("1.00"))
+        val encoded = strictJson.encodeToString(fee)
+        assertEquals("""{"orderId":"ORD-1","amount":"1.00 USD"}""", encoded)
+        assertEquals(fee, strictJson.decodeFromString<Fee>(encoded))
+        assertFailsWith<IllegalArgumentException> {             // escala equivocada: error, no redondeo silencioso
+            strictJson.decodeFromString<Fee>("""{"orderId":"ORD-1","amount":"1.5 USD"}""")
+        }
     }
 
     @Test
