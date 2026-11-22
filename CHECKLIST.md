@@ -444,3 +444,7 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   legacy (1.4.32, 1.6.21, 1.9.22), la numeración de secciones con sus huecos, e `io`/`datetime`/`json` en
   `01-language`; las órdenes del libro se generan en código (`datagen`), sin `orders.ndjson`. No quedan preguntas
   abiertas en el plan.
+- **2026-11-22** · **Generador de órdenes:** `datagen/OrderData.kt` con `orderStream(seed, count, ticker, midCents)`, una
+  secuencia perezosa y determinista de comandos `Place` (con límite o a mercado) y `Cancel` (siempre de una orden con
+  límite anterior), con precios que se cruzan alrededor del medio y cantidades que dejan ejecuciones parciales. Sin
+  archivo: las pruebas lo llaman al vuelo. `OrderDataTest` (4 pruebas). 157 pruebas (107 + 50), 0 `SKIPPED`.

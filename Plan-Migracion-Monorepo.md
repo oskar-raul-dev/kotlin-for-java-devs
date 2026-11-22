@@ -109,7 +109,8 @@ Tags anotados: `baseline-1.9.22` (curso v1 de proyecto único), `monorepo-1.9.22
 | `338690c` Write syllabus batch 8 | B0, tanda 8: `11-multiplatform`, `12-android` (11 entradas) |
 | `48e17ef` Write syllabus batch 9 | B0, tanda 9: tracks legacy, `25-interview`, `26-kotlin-next` y los dos 🐉 |
 | `0debc16` Close the syllabus mechanically (B0 batch 10) | B0, tanda 10 sin la revisión: trazabilidad y consistencia |
-| Close B0 and record the review decisions | B0 cerrado con la revisión; preguntas 1 a 3 respondidas; órdenes con generador |
+| `77120bb` Close B0 and record the review decisions | B0 cerrado con la revisión; preguntas 1 a 3 respondidas; órdenes con generador |
+| Add the order generator to datagen | `orderStream`: comandos `Place`/`Cancel` con semilla, sin archivo; 157 pruebas |
 
 **Remoto:** `origin` en GitHub desde el 13 de noviembre de 2026. Antes de cada push se repite el escaneo de
 referencias externas sobre `git log -p --all`, y se suben los tags con `git push origin main --follow-tags`.

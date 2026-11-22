@@ -45,7 +45,8 @@ qué prueba lo demuestra, cómo correrlo y qué está hecho y qué falta. No rep
 | 09 | [`datetime`](01-language/09-datetime.md) — `java.time` correcto | Ambos | 8 | 24 |
 | 10 | [`exceptions`](01-language/10-exceptions.md) — Sin checked exceptions, errores como valores | Banco | 16 | 24 |
 
-`datagen` no es una lección y no tiene guía: genera los datos de los casos (ver [`Casos.md`](../Casos.md#datos)).
+`datagen` no es una lección y no tiene guía: genera los datos de los casos y las órdenes del libro (`orderStream`) (ver
+[`Casos.md`](../Casos.md#datos)).
 
 ### `04-data`
 

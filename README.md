@@ -75,7 +75,7 @@ cd 22-legacy-kotlin19 && ./gradlew test                         # track legacy K
 - `--args` pasa argumentos al `main(args)`.
 - `--console=plain` quita la barra de progreso de Gradle, que se mezcla con lo que se escribe en la consola.
 
-Estado actual: **153 pruebas** en la base (103 en `01-language` y 50 en `04-data`), todas en verde, más **4 de humo**
+Estado actual: **157 pruebas** en la base (107 en `01-language` y 50 en `04-data`), todas en verde, más **4 de humo**
 en `22-legacy-kotlin19`. Las 26 de PostgreSQL y MySQL salen `SKIPPED` si sus contenedores no están arriba.
 
 ## Índice de secciones
@@ -131,7 +131,8 @@ Paquete raíz: `dev.raul.oskar.learning.kotlin`. Cada subpaquete tiene su `Main.
 Las lecciones 1–9 y 14 están en `01-language`; las de bases de datos (10–13), en `04-data`. Cada una tiene su
 **guía** en [`docs/lessons/`](docs/lessons/README.md): por dónde empezar a leer, qué muestra cada archivo y qué prueba
 lo demuestra. Los datos de los casos (`ticks.json`, `bank-statement.csv`, `ledger-movements.csv`, `fx-rates.json`) los
-genera el paquete `datagen` con semilla fija: `./gradlew -p 01-language run -Plesson=datagen`.
+genera el paquete `datagen` con semilla fija: `./gradlew -p 01-language run -Plesson=datagen`. Las órdenes del libro
+no van en un archivo: las pruebas las piden al vuelo con `orderStream(seed, count)`.
 
 | # | Subpaquete | Qué repasa | Ejercicios | 🎯 |
 |---|---|---|---|---|
