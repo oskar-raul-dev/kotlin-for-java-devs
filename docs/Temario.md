@@ -2685,19 +2685,127 @@ Legacy: Android clásico y Boot 2.3–2.4 (Kotlin 1.4.32). **Build:** 6 · **Cas
 
 ### 20 · `language14` — Lo que no existía todavía
 
-> ⬜️ **Pendiente (tanda 9).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** leer y mantener código Kotlin 1.4 (Android de 2019–2021, Spring Boot 2.3–2.4) sabiendo qué del Kotlin
+actual todavía no existía y qué se escribía distinto.
+**Sección:** `20-legacy-kotlin14` · **Build:** nivel 6 · **Caso:** — · **Estado:** nueva
+
+| Kotlin 2.4 (base) | Kotlin 1.4.32 | Nota |
+|---|---|---|
+| `sealed interface`, `@JvmInline value class` | No existen (`inline class` experimental) | `[1.5]` en la referencia |
+| `fun f(): Result<T>` | No compila como tipo de retorno | `[1.5]` |
+| `lowercase()`, `Char.code` | Experimentales; se usa `toLowerCase()` y `toInt()` | `toLowerCase()` es error desde 2.1 |
+| `buildList { }`, `kotlin.time.Duration` | Experimentales | `[1.6]` |
+| `data object`, `entries`, `..<` | No existen | `[1.9]` |
+| `kotlin.io.path.readText()` | Experimental (y en `kotlin-stdlib-jdk7`) | `[1.5]` |
+| `jvmToolchain(21)` | No existe (llegó en 1.5.30): el JDK lo pone el entorno | El contenedor `k14` usa Temurin 11 |
+
+**Trampas:**
+- El `jvmTarget` por defecto de 1.4 es 1.6: sin cambiarlo, el bytecode no usa métodos `default` ni `invokedynamic`.
+- Código que compila en 1.4 puede no compilar hoy (`toLowerCase()`, `capitalize()`): la migración no es solo subir el
+  número.
+- El backend JVM de 1.4 no es el IR: el bytecode (y los nombres sintéticos) difieren del de las versiones nuevas.
+- `kotlin-test-junit5` para 1.4 puede no existir: el track usaría JUnit 4 ⚠️.
+- Un IntelliJ actual puede no importar bien Gradle 6.8: el track se trabaja por CLI y contenedor ⚠️.
+
+**Caso:** — (código de la época: una mini app de cotizaciones escrita como en 2020).
+
+**🎤 Entrevista:** ¿qué cambió en Kotlin desde 1.4? · ¿Qué cuidarías al tocar un servicio en Kotlin 1.4? · ¿Por qué
+`toLowerCase()` ya no compila?
+
+**⚡ Inventario de lo que no existía:** cada construcción de la referencia con etiqueta `[1.5]` o posterior escrita
+como se escribía en 1.4 · **Se verifica con:** las pruebas del track en verde con Kotlin 1.4.32 en el contenedor
+`k14`, y `scripts/version-probes.sh` confirmando que la versión moderna de cada ejemplo no compila en 1.4.
 
 ### 20 · `coroutines14` — `BroadcastChannel`, `ConflatedBroadcastChannel`
 
-> ⬜️ **Pendiente (tanda 9).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** reconocer las APIs de corrutinas de la época de 1.4 (`BroadcastChannel`, `ConflatedBroadcastChannel`) y
+reemplazarlas por `SharedFlow` y `StateFlow` sin cambiar el comportamiento.
+**Sección:** `20-legacy-kotlin14` · **Build:** nivel 6 · **Caso:** Mercado · **Estado:** nueva
+
+| Kotlin 2.4 (kotlinx-coroutines 1.11.0) | Kotlin 1.4.32 (kotlinx-coroutines de la época ⚠️) | Nota |
+|---|---|---|
+| `MutableSharedFlow(replay, extraBufferCapacity)` | `BroadcastChannel(capacity)` + `openSubscription()` | Medido: en 1.11.0 es deprecación con **error** |
+| `MutableStateFlow(valor)` | `ConflatedBroadcastChannel(valor)` + `.value` | Medido: deprecación con error en 1.11.0 |
+| `stateIn` / `shareIn` | `broadcastIn` | |
+| `channelFlow`, `callbackFlow` | Los mismos (ya existían) | |
+| `Flow` estable | `Flow` estable desde la 1.3.x | Los operadores con opt-in cambiaron mucho desde entonces |
+
+**Trampas:**
+- Una suscripción de `BroadcastChannel` (`openSubscription()`) que no se cancela queda abierta y retiene memoria.
+- `ConflatedBroadcastChannel` y `StateFlow` no son iguales: `StateFlow` descarta valores repetidos (`equals`), el canal
+  no.
+- Al migrar a `SharedFlow` hay que decidir `replay` y el buffer: con los valores por defecto se pierden emisiones sin
+  suscriptores.
+- El código de la época compila contra su versión de la librería; con la actual, ni siquiera compila (error).
+- Mezclar el `actor` de entonces con `SharedFlow` duplica el estado.
+
+**Caso:** el último precio de cada ticker y las alertas del Mercado, escritos como en 2020 y migrados.
+
+**🎤 Entrevista:** ¿por qué se deprecó `BroadcastChannel`? · `ConflatedBroadcastChannel` frente a `StateFlow` · ¿Qué
+cuidarías al migrar a `SharedFlow`?
+
+**⚡ Migración del feed de la época:** el tablero de precios con `BroadcastChannel` y `ConflatedBroadcastChannel`
+migrado a `SharedFlow` y `StateFlow` · **Se verifica con:** la misma batería de pruebas (en tiempo virtual) en verde
+antes (track 14) y después (base 2.4), incluida la diferencia de valores repetidos documentada en una prueba.
 
 ### 20 · `android14` — Synthetics y kapt (solo lectura y demo JVM)
 
-> ⬜️ **Pendiente (tanda 9).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** reconocer en código Android viejo los *synthetics* de `kotlin-android-extensions` y kapt, y saber por qué
+se reemplazaron (ViewBinding, KSP), sin necesidad de compilar Android en el track.
+**Sección:** `20-legacy-kotlin14` · **Build:** nivel 6 · **Caso:** — · **Estado:** nueva
+
+| Kotlin 2.4 (base) | Kotlin 1.4.32 | Nota |
+|---|---|---|
+| ViewBinding o Compose | Synthetics: `import kotlinx.android.synthetic.main.activity_main.*` | El plugin `kotlin-android-extensions` se deprecó y luego se quitó ⚠️ |
+| KSP | kapt | kapt genera stubs Java de todo el módulo (`06 · ksp`) |
+| `kotlin-parcelize` | `@Parcelize` dentro de `kotlin-android-extensions` | Cambió de plugin |
+| Corrutinas con `lifecycleScope` | `AsyncTask` o RxJava (`03 · rxjava`) | |
+
+**Trampas:**
+- Los synthetics en un `Fragment` devuelven una vista nula después de `onDestroyView`: un NPE frecuente en esas apps.
+- Los synthetics de todos los layouts comparten un espacio de nombres: dos vistas con el mismo id en layouts distintos
+  se confunden.
+- kapt hace lento el build y no entiende bien algunos tipos de Kotlin.
+- Lo que el track muestra es **lectura** de código y una demo en la JVM: sin el plugin de Android no se compila una app.
+- Migrar synthetics a ViewBinding toca cada pantalla: conviene hacerlo por pantalla, no de golpe.
+
+**Caso:** — (fragmentos de una app vieja de saldo, como se escribían en 2020).
+
+**🎤 Entrevista:** ¿qué eran los synthetics y por qué se quitaron? · kapt frente a KSP · ¿Cómo migrarías una app con
+synthetics?
+
+**⚡ Guía de migración de una pantalla:** una pantalla con synthetics y kapt, su versión con ViewBinding y KSP, y la
+explicación del cambio · **Se verifica con:** la versión nueva compilando en `12-android` y una prueba de Robolectric que
+pasa con las dos versiones de la pantalla.
 
 ### 20 · `migration14` — De 1.4 a 1.6
 
-> ⬜️ **Pendiente (tanda 9).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** subir un proyecto de Kotlin 1.4 a 1.6 (y de ahí a 2.x) por saltos chicos, sabiendo qué rompe cada salto.
+**Sección:** `20-legacy-kotlin14` · **Build:** nivel 6 · **Caso:** — · **Estado:** nueva
+
+| Kotlin 2.4 (base) | Kotlin 1.4 → 1.6 | Nota |
+|---|---|---|
+| Backend JVM IR | 1.5 lo hace el backend por defecto | Bytecode distinto; algunos plugins viejos fallan |
+| `when` sobre `sealed` o `enum` exhaustivo como sentencia | Aviso en 1.6, error desde 1.7 | Medido en la referencia |
+| `-opt-in=…` | `-Xopt-in=…` | El opt-in se estabilizó en el camino |
+| `lowercase()`, `uppercase()` | `toLowerCase()` se depreca en 1.5 | Error desde 2.1 |
+| `kotlin.io.path` en la stdlib | En `kotlin-stdlib-jdk7` hasta 1.7 | Ojo con las dependencias |
+
+**Trampas:**
+- Saltar de 1.4 a 2.4 de una vez mezcla todos los cambios: un error ya no dice de qué salto viene.
+- Subir Kotlin sin subir las librerías (coroutines, serialization) da errores de metadata incompatible.
+- El plugin de Gradle de cada versión pide un rango de Gradle: subir Kotlin puede obligar a subir Gradle.
+- Las deprecaciones avisan en un salto y rompen en el siguiente: hay que limpiarlas en cada paso, no al final.
+- Un `when` que era aviso en 1.6 es error en 1.7: código que "compilaba con avisos" deja de compilar.
+
+**Caso:** — (la mini app de cotizaciones de `language14`).
+
+**🎤 Entrevista:** ¿cómo migrarías un proyecto Kotlin viejo? · ¿Qué rompe más al subir de versión? · ¿Por qué saltos
+chicos?
+
+**⚡ Migración paso a paso:** la mini app de 1.4 subida a 1.6, 1.9 y 2.4, con un commit por salto de versión · **Se
+verifica con:** las mismas pruebas en verde en cada commit (con el compilador real de cada versión, en su contenedor),
+y un registro por salto con lo que se rompió y cómo se arregló.
 
 ---
 
@@ -2707,15 +2815,94 @@ Legacy: Spring Boot 2.7 con `javax` (Kotlin 1.6.21). **Build:** 6 · **Caso:** B
 
 ### 21 · `language16` — Kotlin 1.6 frente a 2.4
 
-> ⬜️ **Pendiente (tanda 9).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** trabajar en código Kotlin 1.6 (el de Spring Boot 2.7, todavía muy común) sabiendo qué falta respecto de la
+base y qué cambió de comportamiento.
+**Sección:** `21-legacy-kotlin16` · **Build:** nivel 6 · **Caso:** — · **Estado:** nueva
+
+| Kotlin 2.4 (base) | Kotlin 1.6.21 | Nota |
+|---|---|---|
+| `when` exhaustivo como sentencia: error | Aviso | `[1.7]` en la referencia |
+| `min()`, `max()` no nulos | Ocultos; se usa `minOrNull()` | `[1.7]` |
+| `T & Any` | Experimental | `[1.7]` |
+| `data object`, `entries`, `..<` | No existen | `[1.9]` |
+| K2 (smart casts, `invokedynamic`) | K1 | `[2.0]` |
+| `buildList`, `Duration`, `readln()` | Recién estables | `[1.6]` |
+
+**Trampas:**
+- `xs.min()` no compila en 1.6 (estaba oculto): el código de la época usa `minOrNull()`, que hoy sigue valiendo.
+- Un `when` incompleto que en 1.6 solo avisa rompe el build al subir a 1.7.
+- Spring Boot 2.7 fija la versión de Kotlin por su gestión de dependencias: subir Kotlin a mano puede chocar con ella.
+- Las inferencias de K1 y K2 difieren: código ambiguo en 1.6 puede elegir otra sobrecarga en 2.x.
+- El track corre en JDK 17 (contenedor `k16`): algunas librerías de la época no corren en 21.
+
+**Caso:** — (el código de `boot27`).
+
+**🎤 Entrevista:** ¿qué le falta a Kotlin 1.6 que usarías hoy? · ¿Qué se rompe al subir de 1.6 a 1.7? · ¿Por qué
+tanto código sigue en 1.6?
+
+**⚡ Inventario de 1.6:** las construcciones `[1.7]` a `[2.4]` escritas como en 1.6 · **Se verifica con:** pruebas del
+track en verde con Kotlin 1.6.21 en `k16`, y `version-probes.sh` confirmando que cada versión moderna no compila en
+1.6.
 
 ### 21 · `boot27` — Spring Boot 2.7 con `javax`, WebFlux + corrutinas de la época
 
-> ⬜️ **Pendiente (tanda 9).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** mantener una aplicación Spring Boot 2.7 en Kotlin 1.6 (`javax.*`, WebFlux con las corrutinas de la época),
+que es lo que se encuentra en muchos servicios en producción.
+**Sección:** `21-legacy-kotlin16` · **Build:** nivel 6 · **Caso:** Banco · **Estado:** nueva
+
+| Kotlin 2.4 + Spring Boot 3 (base) | Kotlin 1.6.21 + Spring Boot 2.7 ⚠️ | Nota |
+|---|---|---|
+| `jakarta.persistence.*`, `jakarta.validation.*` | `javax.persistence.*`, `javax.validation.*` | El cambio de paquete es el corazón de la migración |
+| `@ConfigurationProperties` con constructor, sin anotación extra | `@ConstructorBinding` necesario para las inmutables | |
+| Hibernate 6 / 7 | Hibernate 5.6 | Otras APIs y otro dialecto |
+| Spring Security 6 (`SecurityFilterChain`) | Spring Security 5.7 (`WebSecurityConfigurerAdapter` deprecado) | |
+| Corrutinas actuales en WebFlux | Las de la época (`kotlinx-coroutines-reactor` viejo) | |
+
+**Trampas:**
+- Sin `@ConstructorBinding`, una `data class` de `@ConfigurationProperties` no se enlaza en Boot 2.x (falla al arrancar).
+- Mezclar dependencias `jakarta` en una app Boot 2.7 da `ClassNotFoundException` en runtime, no al compilar.
+- Las librerías nuevas ya no publican versiones para `javax`: actualizar una dependencia puede ser imposible sin migrar.
+- Spring Boot 2.7 está fuera de soporte gratuito: los parches de seguridad son un motivo concreto para migrar ⚠️.
+- La base de datos del track se accede desde el contenedor `k16`: la URL no es `localhost` sino el host de Docker ⚠️.
+
+**Caso:** la API de transferencias del Banco de `09 · boot`, escrita para Boot 2.7.
+
+**🎤 Entrevista:** ¿qué cambia entre Boot 2.7 y 3? · ¿Qué es `javax` → `jakarta` y por qué duele? · ¿Cómo mantienes un
+servicio que no puedes migrar todavía?
+
+**⚡ La API de transferencias en Boot 2.7:** la API de `09 · boot` con `javax`, `@ConstructorBinding` y Hibernate 5.6 ·
+**Se verifica con:** las mismas pruebas de contrato de la API de `09-spring` en verde contra esta versión, en el
+contenedor `k16` con PostgreSQL.
 
 ### 21 · `migration16` — Boot 2.7 → 3, `javax` → `jakarta`
 
-> ⬜️ **Pendiente (tanda 9).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** migrar una aplicación de Spring Boot 2.7 (Kotlin 1.6, `javax`) a Boot 3 (Kotlin 2.x, `jakarta`) con un
+plan, herramientas y pruebas que protejan el comportamiento.
+**Sección:** `21-legacy-kotlin16` · **Build:** nivel 6 · **Caso:** Banco · **Estado:** nueva
+
+| Boot 3 (destino) | Boot 2.7 (origen) | Nota |
+|---|---|---|
+| `jakarta.*` | `javax.*` | OpenRewrite automatiza buena parte del cambio ⚠️ |
+| JDK 17 como mínimo | JDK 8 o 11 posibles | Subir el JDK antes que Spring |
+| Kotlin moderno | Kotlin 1.6 | Boot 3 exige un Kotlin más nuevo ⚠️ |
+| Hibernate 6+ | Hibernate 5.6 | Cambian consultas y tipos |
+| `SecurityFilterChain` | `WebSecurityConfigurerAdapter` | |
+
+**Trampas:**
+- Migrar Spring, Kotlin, Hibernate y el JDK en un solo paso hace imposible saber qué rompió qué.
+- Un reemplazo de texto `javax` → `jakarta` toca también `javax.crypto` o `javax.sql`, que **no** cambian.
+- Hibernate 6 cambia el SQL generado y algunos tipos: las pruebas tienen que correr contra la base real, no H2.
+- Las librerías sin versión `jakarta` bloquean la migración: hay que inventariarlas al principio.
+- Sin pruebas de contrato antes de empezar, no hay forma de saber si la API sigue igual.
+
+**Caso:** la API de transferencias del Banco de `boot27`, llevada de vuelta a la versión de `09 · boot`.
+
+**🎤 Entrevista:** ¿cómo planificarías una migración a Boot 3? · ¿Qué no debe cambiar en `javax` → `jakarta`? · ¿Qué
+pruebas pondrías antes de empezar?
+
+**⚡ Ida y vuelta de la API:** la API de `09-spring` portada a Boot 2.7 (`boot27`) y migrada de nuevo a Boot 3 por
+pasos · **Se verifica con:** las mismas pruebas de contrato en verde en Boot 2.7, en cada paso intermedio y en Boot 3,
+con un commit por paso.
 
 ---
 
@@ -2725,15 +2912,96 @@ Legacy: el último K1 y la migración a K2 (Kotlin 1.9.22). **Build:** 6 · **Ca
 
 ### 22 · `language19` — Kotlin 1.9 frente a 2.4
 
-> ⬜️ **Pendiente (tanda 9).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** trabajar en código Kotlin 1.9 (el último K1) sabiendo qué trae ya de lo moderno y qué cambia al pasar a
+K2.
+**Sección:** `22-legacy-kotlin19` · **Build:** nivel 6 · **Caso:** — · **Estado:** existe (track con prueba de humo)
+
+| Kotlin 2.4 (base) | Kotlin 1.9.22 | Nota |
+|---|---|---|
+| `data object`, `entries`, `..<` | Ya existen | `[1.9]` |
+| Guardas en `when`, `$$"…"`, `break` en lambdas inline | No existen | `[2.2]` |
+| Smart cast con `x is B \|\| x is C` | No (K1: "unresolved reference") | `[2.0]`, medido |
+| Lambdas con `invokedynamic` | Una clase por lambda | `Legacy19SmokeTest` lo fija |
+| *Context parameters* | *Context receivers* experimentales | `[2.4]` y `[rm 2.4]` |
+| `kotlinc` 2.4 con `-language-version 1.9` | — | Medido: rechazado; por eso el track usa el compilador real |
+
+**Trampas:**
+- El `toString()` de una lambda cambia al pasar a K2: el track lo usa a propósito en su prueba de humo.
+- El plugin de Gradle de 1.9.22 usa APIs que Gradle 10 quita: el track se queda en Gradle 9.2.1.
+- `kotlin-test-junit5` 1.9.22 en Gradle 9 necesita el BOM de JUnit y el launcher (gotcha de CLAUDE.md).
+- Código que en 1.9 compila sin avisos puede dar avisos nuevos en K2 (`!!` innecesario por los smart casts nuevos).
+- Los *context receivers* experimentales de 1.9 no compilan en 2.4.
+
+**Caso:** — (el propio track y su prueba de humo).
+
+**🎤 Entrevista:** ¿qué tiene 1.9 que no tenía 1.6? · ¿Qué cambia K2? · ¿Por qué un track con el compilador real y no
+`-language-version`?
+
+**⚡ Lo de 2.x que 1.9 no compila:** el catálogo de `01 · kotlin2` corrido en el track · **Se verifica con:** cada
+ejemplo de 2.x fallando al compilar en el track (prueba que espera el error) y su versión 1.9 equivalente pasando.
 
 ### 22 · `k2migration` — Lo que cambió en el paso A7 y por qué (`k2-notes.md`)
 
-> ⬜️ **Pendiente (tanda 9).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** entender qué cambió de verdad al pasar este repo de Kotlin 1.9.22 a 2.4.21 y aplicar lo aprendido a otro
+proyecto.
+**Sección:** `22-legacy-kotlin19` · **Build:** nivel 6 · **Caso:** — · **Estado:** nueva
+
+| Kotlin 2.4.21 (después) | Kotlin 1.9.22 (antes) | Nota ([`k2-notes.md`](../22-legacy-kotlin19/docs/k2-notes.md)) |
+|---|---|---|
+| Aviso "Unnecessary non-null assertion" | Sin aviso | K2 hace smart cast después de `assertNotNull` |
+| Aviso sobre `java.lang.Long::class.java` | Sin aviso | Se usa `Long::class.javaObjectType` |
+| Aviso de `==` entre arreglos | Sin aviso | La prueba de `collections` lo suprime a propósito |
+| `…$$Lambda/0x…` | `Function1<…>` | `toString()` de las lambdas |
+| Opt-ins que ya no hacen falta | `@OptIn` necesarios | Por ejemplo, `explicitNulls` de kotlinx-serialization |
+
+**Trampas:**
+- Migrar el compilador y las librerías a la vez esconde de dónde viene cada cambio: este repo lo hizo por subpasos.
+- Los avisos nuevos de K2 parecen ruido pero suelen señalar código muerto o comprobaciones redundantes.
+- Lo que no cubren las pruebas (un `toString()` en un log) cambia sin que nadie se entere.
+- Compilar con `-Werror` hace que un aviso nuevo de K2 rompa el build.
+- Las herramientas que leen bytecode (agentes, ofuscadores) pueden no entender las lambdas `invokedynamic`.
+
+**Caso:** — (este repo: el paso A7).
+
+**🎤 Entrevista:** ¿qué rompe K2 en un proyecto real? · ¿Cómo planificarías el paso a K2? · ¿Por qué cambian los avisos?
+
+**⚡ Bitácora de migración de otro proyecto:** un proyecto chico de 1.9 migrado a 2.4 siguiendo los pasos de A7 ·
+**Se verifica con:** las pruebas en verde antes y después, cada aviso nuevo de K2 resuelto y anotado en una tabla como
+la de `k2-notes.md`, y la salida de los `Main` comparada antes y después.
 
 ### 22 · `compat` — `apiVersion`, `languageVersion`, compatibilidad binaria y `@Metadata`
 
-> ⬜️ **Pendiente (tanda 9).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** controlar la compatibilidad entre versiones de Kotlin (`-language-version`, `-api-version`, versión de
+metadata) para publicar y consumir librerías sin romper a nadie.
+**Sección:** `22-legacy-kotlin19` · **Build:** nivel 6 · **Caso:** — · **Estado:** nueva
+
+| Situación | Resultado (medido) | Nota |
+|---|---|---|
+| `kotlinc` 2.4.21 con `-language-version 1.9` | Error: "no longer supported; use version 2.0 or greater" | El mismo con `-api-version 1.9` |
+| `-language-version 2.0` o `2.1` | Aviso de deprecación | 2.2 a 2.4 sin aviso; 2.5 experimental |
+| Librería compilada con 2.4.21, usada desde 2.3.21 | Compila | Un compilador lee la metadata de **una** versión más nueva |
+| La misma librería desde 2.2.21, 2.0.21 o 1.9.22 | Error: "incompatible version of Kotlin… metadata is 2.4.0" | |
+| Librería compilada con 1.9.22, usada desde 2.4.21 | Compila | Hacia atrás no hay problema |
+
+**Trampas:**
+- Publicar una librería compilada con el último Kotlin rompe a los usuarios que están dos versiones atrás: para eso
+  está `-api-version`/`-language-version` (dentro del rango que el compilador acepta).
+- `-language-version` no convierte al compilador nuevo en el viejo: no reproduce K1 ni sus errores.
+- La versión de la stdlib en runtime tiene que ser al menos la de la `-api-version`: una stdlib vieja en el classpath
+  da `NoSuchMethodError`.
+- `@Metadata` y `META-INF/*.kotlin_module` llevan la información de Kotlin: herramientas que los borran rompen el
+  consumo desde Kotlin (aunque Java siga funcionando).
+- La compatibilidad binaria de la API pública (firmas, parámetros por defecto) se rompe sin querer: hace falta una
+  herramienta de validación de API ⚠️.
+
+**Caso:** — (las mediciones de esta entrada, hechas con los `kotlinc` instalados).
+
+**🎤 Entrevista:** ¿qué hacen `-language-version` y `-api-version`? · ¿Qué versión de Kotlin elegirías para compilar
+una librería pública? · ¿Qué es la versión de metadata?
+
+**⚡ Matriz de compatibilidad:** una librería chica compilada con 1.9, 2.0, 2.2 y 2.4 y consumida desde cada uno de
+esos compiladores · **Se verifica con:** un script que reproduce la matriz completa (compila y usa en cada
+combinación) y su tabla de resultados, que coincide con la medida aquí.
 
 ---
 
@@ -2743,11 +3011,65 @@ Simulacros y revisión de PRs. **Build:** 1 · **Caso:** Ambos.
 
 ### 25 · `livecoding` — Simulacros en Kotlin
 
-> ⬜️ **Pendiente (tanda 9).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** resolver problemas en vivo en Kotlin con soltura (estructura, casos borde, explicación en voz alta) en
+el tiempo de una entrevista.
+**Sección:** `25-interview` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+
+| Java 21 | Kotlin | Nota |
+|---|---|---|
+| `Map<K, List<V>>` con `computeIfAbsent` | `groupBy`, `getOrPut` | Menos líneas en la pizarra |
+| `for (int i = 0; …)` | `for (i in xs.indices)`, `withIndex()`, `windowed` | |
+| `record` para el resultado | `data class` o `Pair` | Un `Pair` con nombres pobres confunde: mejor una `data class` |
+| `Deque`, `PriorityQueue` | `ArrayDeque`, `PriorityQueue` de `java.util` | |
+| Validación con `if`/`throw` | `require`, `check` | |
+
+**Trampas:**
+- Una solución de una línea con cinco operadores encadenados es difícil de explicar y de depurar en vivo.
+- Olvidar los casos borde (lista vacía, un elemento, empates) es lo que más se nota en una entrevista.
+- `Int` desborda igual que en Java: sumas de montos o de volumen van en `Long`.
+- Usar `!!` para ir rápido deja una mala impresión: mejor `requireNotNull` con un mensaje.
+- No hablar mientras se escribe: el entrevistador evalúa también el razonamiento.
+
+**Caso:** problemas con los datos de los casos (emparejar órdenes, conciliar movimientos, ventanas de precios, validar
+cuentas).
+
+**🎤 Entrevista:** — (la lección entera es práctica de entrevista).
+
+**⚡ Cinco simulacros cronometrados:** cinco problemas de 35 minutos cada uno, con enunciado, pruebas ocultas y una
+rúbrica · **Se verifica con:** las pruebas de cada simulacro (casos normales y borde) y el tiempo registrado de cada
+intento.
 
 ### 25 · `prreview` — Leer un PR: `!!`, `lateinit` abusado, scope functions anidadas, `data class` mutables, `runCatching`
 
-> ⬜️ **Pendiente (tanda 9).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** revisar un PR de Kotlin y encontrar lo que un revisor con experiencia marca: `!!`, `lateinit` abusado,
+scope functions anidadas, `data class` mutables y `runCatching` que se traga la cancelación.
+**Sección:** `25-interview` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+
+| Lo que aparece en el PR | Lo que se pide | Lección |
+|---|---|---|
+| `user!!.account!!.balance` | Decidir la nulabilidad: `?.`, `?:`, `requireNotNull` | `basics`, `exceptions` |
+| `lateinit var` en todo | Constructor o `by lazy`; `lateinit` solo para inyección o pruebas | `oop`, `delegation` |
+| `apply { also { let { … } } }` | Máximo un nivel, o variables con nombre | `functional`, `idioms` |
+| `data class` con `var` usada como clave de un mapa | `val`; claves inmutables | `oop`, `collections` |
+| `runCatching { suspendCall() }` | Relanzar `CancellationException` | `exceptions`, `02 · cancellation` |
+| Entidad JPA como `data class` | Clase normal con `equals` por id | `04 · jpa` |
+
+**Trampas:**
+- Una `data class` con `var` en un `HashSet` "desaparece" del set al cambiar un campo (cambia su `hashCode`).
+- `lateinit` en un campo que puede no inicializarse convierte un error de diseño en una excepción en runtime.
+- `runCatching` alrededor de código con corrutinas rompe la cancelación estructurada sin que se note en las pruebas
+  felices.
+- Comentar estilo y no comportamiento: lo que importa en la revisión son los errores, no los espacios.
+- Pedir cambios sin decir por qué: un buen comentario de PR explica el riesgo concreto.
+
+**Caso:** PRs sobre el `TransferService` del Banco y el feed del Mercado con errores sembrados.
+
+**🎤 Entrevista:** ¿qué buscas primero en un PR de Kotlin? · ¿Qué tiene de malo `runCatching` en una corrutina? ·
+¿Cuándo está bien `lateinit`?
+
+**⚡ Diez PRs para revisar:** diez PRs con errores sembrados, cada uno con pruebas que fallan mientras el error siga ·
+**Se verifica con:** las pruebas de cada PR (por ejemplo, una prueba de cancelación que falla con `runCatching`) que
+pasan después de la corrección, y comentarios de revisión escritos como en un PR real.
 
 ---
 
@@ -2757,14 +3079,63 @@ Radar de la siguiente versión. **Build:** 1 (fuera del composite) · **Caso:** 
 
 ### 26 · `kotlin25` — Lo nuevo de 2.5 cuando salga estable
 
-> ⬜️ **Pendiente (tanda 9).** Estado: nueva. Fuente: plan, sección 5.
+**Objetivo:** seguir lo que trae Kotlin 2.5 cuando salga estable (lenguaje, stdlib, compilador) y medirlo con la
+misma referencia que el resto del curso.
+**Sección:** `26-kotlin-next` · **Build:** nivel 1 (fuera del composite) · **Caso:** — · **Estado:** nueva
+
+| Kotlin 2.4 (base) | Kotlin 2.5 | Nota |
+|---|---|---|
+| `-language-version 2.5` en `kotlinc` 2.4.21 | Medido: aviso "experimental, no backwards compatibility guarantees" | Se puede probar antes de que salga |
+| Lo experimental en 2.4 (`[exp 2.4]`: contratos, atómicos, `deleteRecursively`…) | ⚠️ por medir en 2.5 | La referencia se amplía con su columna |
+| Clases `expect`/`actual` en Beta | ⚠️ | |
+
+**Trampas:**
+- Lo experimental de una versión puede cambiar o desaparecer en la siguiente (como los *context receivers*).
+- `-language-version 2.5` con un compilador 2.4 no es Kotlin 2.5: activa lo que 2.4 ya implementa de 2.5.
+- La sección vive fuera del composite para no arrastrar a la base a una versión no estable.
+- Subir la base a 2.5 es una decisión del plan (y de `Versions.md`), no un efecto de esta lección.
+
+**Caso:** — (los ejemplos de los casos que use cada novedad).
+
+**🎤 Entrevista:** ¿cómo sigues la evolución de un lenguaje? · ¿Usarías una característica experimental en producción?
+
+**⚡** — El plan no le asigna miniproyecto: es un radar. Al salir 2.5, la tarea es medir sus construcciones con
+`version-probes.sh` y sumar la columna 2.5 a la referencia.
 
 ---
 
 ## 🐉 Jefes finales
 
-> ⬜️ **Pendiente (tanda 9).** Fuente: plan, sección 5: el mini `kotlinx.coroutines` (`02` + `06`) y el producto
-> full-stack con el puente de liquidación de [`Casos.md`](Casos.md#el-puente-liquidación) (`04` + `09`/`10` + `11`/`12` + `08`).
+Proyectos que cruzan secciones; se hacen al final, cuando las lecciones que combinan ya están hechas.
+
+### 🐉 1 · Mini `kotlinx.coroutines` (`02` + `06`)
+
+**Qué es:** una librería de corrutinas propia sobre la stdlib (`createCoroutine`, `Continuation`), sin kotlinx:
+dispatcher, `Job` con jerarquía padre-hijo, cancelación cooperativa, `Channel` y un `Flow` frío. Extiende el ⚡ de
+`02 · internals` (scheduler propio) y usa lo de `06 · bytecode` para mostrar la máquina de estados que genera.
+
+**Caso:** el feed del Mercado (productor de ticks, consumidores de velas) corriendo sobre la mini librería en vez de
+kotlinx.
+
+**Se verifica con:** un subconjunto de las pruebas de la librería real reescritas contra la mini (estructura de
+`Job`, cancelación que se propaga, `Channel` *rendezvous* y con buffer, `Flow` que no corre hasta `collect`), el
+pipeline del feed dando las mismas velas que con kotlinx, y la máquina de estados decompilada de una función de la
+librería comentada en la lección.
+
+### 🐉 2 · Producto full-stack (`04` + `09`/`10` + `11`/`12` + `08`)
+
+**Qué es:** el producto de los dos casos unidos por el [puente de liquidación](Casos.md#el-puente-liquidación): un
+backend (WebFlux o Ktor) que recibe órdenes del Mercado, las empareja y liquida cada ejecución como asiento en el
+ledger del Banco, y un cliente KMP (Android, escritorio y web) que opera, ve su saldo y su portafolio, funciona sin red
+y sincroniza. Con CI y empaquetado nativo del backend.
+
+**Caso:** los dos: la compra exige saldo (el chequeo que cruza los casos), cada ejecución genera su `JournalEntry` y
+la app muestra precios en vivo por WebSocket.
+
+**Se verifica con:** una prueba de punta a punta (backend con Testcontainers + cliente con su repositorio compartido)
+donde una compra sin saldo se rechaza antes de entrar al libro, una compra con saldo termina en un asiento balanceado
+y una posición; la suma de saldos del ledger se conserva en una prueba de carga; la app sincroniza una operación hecha
+sin red exactamente una vez; y el pipeline de CI construye el binario nativo del backend y corre todas las pruebas.
 
 ---
 

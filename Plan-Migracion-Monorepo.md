@@ -28,7 +28,7 @@ medias**. El avance por sección y lección está en [`CHECKLIST.md`](CHECKLIST.
 |---|---|---|
 | Fase A (A0–A9) | ✅ tag `phase-a` | — |
 | B1 · Tutoriales | ✅ | — (5 tutoriales, 72 ejercicios, 136 comprobaciones en sus `check.sh`) |
-| B0 · Temario | 🟡 tandas 0 a 8 de 10 | Tandas 9 y 10: 13 de las 88 entradas ([`docs/Temario-Plan.md`](docs/Temario-Plan.md#estado)) |
+| B0 · Temario | 🟡 tandas 0 a 9 de 10 | Tanda 10: trazabilidad, revisión de consistencia y la revisión juntos (las 88 entradas están escritas) ([`docs/Temario-Plan.md`](docs/Temario-Plan.md#estado)) |
 | B0′ · Casos Banco y Mercado | ✅ | — (las 6 tandas del [reemplazo](docs/Casos.md#plan-de-reemplazo): el dominio de pedidos ya no existe) |
 | B0″ · Guías de lección | ✅ | — (índice, plantilla y 12 guías en [`docs/lessons/`](docs/lessons/README.md); se mantienen con cada cambio de código) |
 | B2–B10 | ⬜️ | Todo |
@@ -106,7 +106,8 @@ Tags anotados: `baseline-1.9.22` (curso v1 de proyecto único), `monorepo-1.9.22
 | `fdbb8c1` Move 04-data to the Bank ledger (B0′ batch 5) | B0′, tanda 5: `LedgerRepository` y su contrato en los tres motores, ledger en JPA; 153 pruebas |
 | `1f36e73` Rewrite the exercises for the cases (B0′ batch 6) | B0′ cerrado: enunciados y ruta 🎯 en los casos, `orders.json` y `sales.csv` borrados |
 | `44ecba4` Write syllabus batch 7 | B0, tanda 7: `08-build`, `09-spring`, `10-ktor` (11 entradas) |
-| Write syllabus batch 8 | B0, tanda 8: `11-multiplatform`, `12-android` (11 entradas) |
+| `338690c` Write syllabus batch 8 | B0, tanda 8: `11-multiplatform`, `12-android` (11 entradas) |
+| Write syllabus batch 9 | B0, tanda 9: tracks legacy, `25-interview`, `26-kotlin-next` y los dos 🐉 |
 
 **Remoto:** `origin` en GitHub desde el 13 de noviembre de 2026. Antes de cada push se repite el escaneo de
 referencias externas sobre `git log -p --all`, y se suben los tags con `git push origin main --follow-tags`.
@@ -123,7 +124,7 @@ temario ya está escrito (tandas 1 y 2 de B0), y así el código deja antes el d
    noviembre de 2026).
 4. ~~**B0′ · tandas 5 y 6**~~ ✅ (22 de noviembre de 2026): `04-data` con el ledger (se apoya en la tanda 5 de B0); ejercicios, ruta 🎯 y borrado de
    `orders.json`/`sales.csv`. Termina antes de B2.
-5. **B0 · tandas 7, 8, 9 y 10**, con la revisión juntos al final. Tandas 7 y 8 ✅ (22 de noviembre de 2026).
+5. **B0 · tandas 7, 8, 9 y 10**, con la revisión juntos al final. Tandas 7 a 9 ✅ (22 de noviembre de 2026); queda la 10.
 6. **B2–B10** según la [sección 8](#8-fase-b-generar-el-resto).
 
 **Preguntas abiertas** ([sección 10](#10-para-decidir-en-la-revisión)): cortes legacy, numeración de secciones, dónde

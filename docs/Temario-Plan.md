@@ -163,7 +163,8 @@ estable en la versión anterior medida"; `[≤ 1.4]` = ya estable en la versión
 | `kotlin.io.path.deleteRecursively` | no | no | no | no | exp | exp | exp | exp | exp | exp | exp | `[exp 2.4]` (pide `@OptIn(ExperimentalPathApi::class)`) |
 | `@JvmExposeBoxed` | no | no | no | no | no | no | no | no | exp | exp | exp | `[exp 2.4]` |
 | Lambdas con `invokedynamic` | — | — | — | — | — | clase | — | — | — | — | indy | `[2.0]` (tutorial `decompile`, `k2-notes`) |
-| `-language-version 1.9` en un `kotlinc` 2.4 | — | — | — | — | — | — | — | — | — | — | rechazado | (tutorial `cli`) |
+| `-language-version 1.9` en un `kotlinc` 2.4 | — | — | — | — | — | — | — | — | — | — | rechazado | (tutorial `cli`). Tanda 9: 2.0 y 2.1 con aviso de deprecación, 2.2 a 2.4 sin aviso, 2.5 "experimental"; `-api-version 1.9` también rechazada |
+| Usar una librería compilada con 2.4.21 (metadata 2.4.0) | — | — | — | — | — | error | error | — | error | ok | ok | Un compilador lee la metadata de **una** versión más nueva (2.3 sí, 2.2 no); 2.4.21 usa sin problema una librería de 1.9.22 (tanda 9) |
 | REPL de `kotlinc` | — | — | — | — | — | ok | — | deprecado, lenguaje 1.9 | — | — | no arranca | (tutorial `repl`) |
 | `MutableList.removeFirst()` compilado contra JDK 21 | — | — | — | — | — | `List.removeFirst` | — | — | — | — | `List.removeFirst` | Sin aviso: llama al método de Java 21 (`javap`; lección `collections`) |
 
@@ -185,7 +186,7 @@ limpia y cuál pide opt-in en esa versión, compilando un ejemplo de una línea 
 | `Dispatchers.IO.limitedParallelism(n)` y `limitedParallelism(n, "nombre")`, `Executor.asCoroutineDispatcher()` | `newSingleThreadContext` (`@ExperimentalCoroutinesApi`; además delicada) |
 | `Channel`, `select { onReceive }` | `produce` (`@ExperimentalCoroutinesApi`); `actor` y `ticker` (`@ObsoleteCoroutinesApi`) |
 | `buffer`, `conflate`, `flowOn`, `callbackFlow` | `debounce`, `sample` (`@FlowPreview`); `chunked`, `flatMapMerge`, `flatMapLatest` (`@ExperimentalCoroutinesApi`) |
-| `MutableStateFlow.update`, `stateIn`, `shareIn`, `Mutex.withLock`, `Semaphore.withPermit` | — |
+| `MutableStateFlow.update`, `stateIn`, `shareIn`, `Mutex.withLock`, `Semaphore.withPermit` | `BroadcastChannel`, `ConflatedBroadcastChannel`: deprecados **con error** (tanda 9) |
 
 **Reflexión sin `kotlin-reflect`** (stdlib 2.4.21, tanda 6): `simpleName`, `qualifiedName` y las referencias a
 propiedades (`Tick::price.name`, `.get(…)`) funcionan; `Tick::class.members` lanza `KotlinReflectionNotSupportedError`
@@ -208,5 +209,5 @@ suspension point is inside a critical section"); `withContext` dentro de `flow {
 | 6 | ✅ | 2026-11-22 | `05-testing` (4), `06-compiler` (4), `07-design` (4). Kotest, MockK, AssertK, Testcontainers, KSP y Arrow sin versión fijada (⚠️ hasta B8/B9). Medido: qué plugins trae `kotlinc/lib` por versión (power-assert y Compose desde 2.0), power-assert funcionando en 2.4.21, y qué reflexión anda sin `kotlin-reflect`. ⚡ del plan: Mini MockK (`mockk`), generador KSP (`ksp`), rescate de legado (`idioms`); el resto, nuevos |
 | 7 | ✅ | 2026-11-22 | `08-build` (4), `09-spring` (4), `10-ktor` (3). Solo Gradle tiene versión fijada (9.9.1); Spring Boot, Ktor, detekt, ktlint, Kover, Dokka y los plugins de empaquetado quedan ⚠️ hasta B9/B10. ⚡ del plan: el plugin de convención que genera el índice del README (`gradle`), la API reactiva frente a MVC (`webflux`) y el chat por WebSockets, aquí precios y alertas (`server`); el resto, nuevos |
 | 8 | ✅ | 2026-11-22 | `11-multiplatform` (4) y `12-android` (7). Medido: Android SDK (con emulador) y Xcode 27.2 instalados, así que el alcance incluye iOS; las clases `expect`/`actual` siguen en Beta en 2.4.21. AGP, Compose Multiplatform, kotlinx-datetime y las librerías de AndroidX quedan ⚠️. ⚡ del plan: módulo compartido (`shared`) y app offline-first con sincronización (`androiddata`); el resto, nuevos |
-| 9 | ⬜️ | | |
+| 9 | ✅ | 2026-11-22 | Tracks `20` (4), `21` (3), `22` (3), `25-interview` (2), `26-kotlin-next` (1) y los dos 🐉. En las lecciones de lenguaje de los tracks la tabla compara con la base 2.4, no con Java. Medido: el rango de `-language-version` de `kotlinc` 2.4.21, la compatibilidad de la metadata entre versiones (una versión hacia adelante) y `BroadcastChannel` deprecado con error en coroutines 1.11.0. ⚡ del plan: migración paso a paso (`migration14`), ida y vuelta de la API (`migration16`), matriz de compatibilidad (`compat`), cinco simulacros (`livecoding`); `kotlin25` no lleva ⚡ |
 | 10 | ⬜️ | | |

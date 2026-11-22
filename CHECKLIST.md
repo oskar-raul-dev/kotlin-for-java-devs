@@ -25,7 +25,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
 | `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, casos de finanzas, guías de lección (propuesta); estado al 2026-11-22 |
 | `docs/lessons/` (guías de lección) | ✅ | `LISTO` | Índice, plantilla y 12 guías (10 de `01-language`, `jdbc`, `jpa`), en `docs/lessons/<sección>/NN-<lección>.md` (B0″) |
-| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tandas 1 a 8 escritas (75 entradas); faltan las tandas 9 y 10. El anterior, en `docs/archive/Temario-v1.md` |
+| `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tandas 0 a 9 escritas (las 88 entradas y los dos 🐉); falta la tanda 10 (cierre y revisión juntos). El anterior, en `docs/archive/Temario-v1.md` |
 | `docs/Temario-Plan.md` y `docs/prompts/temario-tanda.md` | ✅ | `LISTO` | Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
 | `docs/LegacyKotlin.md` | ✅ | `LISTO` | Versiones 1.0 → 2.x, los tres tracks, cómo correrlos y trampas |
@@ -429,3 +429,10 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   `androiddata` (con el ⚡ del plan: app offline-first), `di`, `background` y `androidtesting`, sobre la app del cliente
   (saldo, transferencias, portafolio y precios). Medido: Android SDK y Xcode 27.2 instalados (alcance con iOS, pregunta
   4 del plan) y las clases `expect`/`actual` todavía en Beta en 2.4.21. Quedan 13 de 88 entradas.
+- **2026-11-22** · **B0, tanda 9 (tracks legacy, `25-interview`, `26-kotlin-next`, 🐉):** 13 entradas y los dos jefes
+  finales (mini `kotlinx.coroutines`; producto full-stack con el puente de liquidación). Medido: `kotlinc` 2.4.21
+  rechaza `-language-version 1.9` y `-api-version 1.9`, avisa la deprecación de 2.0 y 2.1 y marca 2.5 como
+  experimental; una librería compilada con 2.4.21 se puede usar desde 2.3.21 pero no desde 2.2.21 ni antes (la
+  metadata se lee una versión hacia adelante), y 2.4.21 usa librerías de 1.9.22; `BroadcastChannel` y
+  `ConflatedBroadcastChannel` están deprecados con error en kotlinx-coroutines 1.11.0. Con esto están escritas las 88
+  entradas; queda la tanda 10.
