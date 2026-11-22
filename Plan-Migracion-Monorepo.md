@@ -12,16 +12,47 @@ Redactado el **10 de noviembre de 2026**. Lo marcado con ⚠️ se verifica al e
 [Secciones](#5-secciones-y-lecciones) · [Ejercicios](#6-ejercicios-niveles-de-java-champion) ·
 [Fase A: migrar](#7-fase-a-migrar-lo-que-hay) · [Fase B: contenido](#8-fase-b-generar-el-resto) ·
 [Riesgos](#9-riesgos-y-pendientes) · [Para decidir](#10-para-decidir-en-la-revisión) ·
-[Caso de punta a punta](#11-caso-de-punta-a-punta-ideas-de-reemplazo)
+[Caso de punta a punta](#11-caso-de-punta-a-punta-ideas-de-reemplazo) ·
+[Guías de lección](#12-guías-de-lección-docslessons)
 
 ---
 
 ## Estado y próximos pasos
 
-Actualizado el **13 de noviembre de 2026**, al cerrar A9: **la fase A está cerrada**. El avance detallado por sección y lección está en
-[`CHECKLIST.md`](CHECKLIST.md).
+Actualizado el **22 de noviembre de 2026**. La fase A está cerrada y la fase B va en curso: **B1 cerrado, B0 y B0′ a
+medias**. El avance por sección y lección está en [`CHECKLIST.md`](CHECKLIST.md).
 
-**Hecho (fase A completa, pasos A0–A9):**
+### Dónde vamos
+
+| Paso | Estado | Qué falta |
+|---|---|---|
+| Fase A (A0–A9) | ✅ tag `phase-a` | — |
+| B1 · Tutoriales | ✅ | — (5 tutoriales, 72 ejercicios, 136 comprobaciones en sus `check.sh`) |
+| B0 · Temario | 🟡 tandas 0, 1 y 2 de 10 | Tandas 3 a 10: 73 de las 88 entradas ([`docs/Temario-Plan.md`](docs/Temario-Plan.md#estado)) |
+| B0′ · Casos Banco y Mercado | 🟡 diseño hecho | Las 6 tandas de reemplazo del dominio de pedidos ([`docs/Casos.md`](docs/Casos.md)); hoy quedan 17 archivos de `src/` con pedidos |
+| B0″ · Guías de lección | 📝 propuesta | Revisar la [sección 12](#12-guías-de-lección-docslessons) y decidir |
+| B2–B10 | ⬜️ | Todo |
+
+### La base del curso v1, verificada en Kotlin 2.x
+
+**Verificado el 22 de noviembre de 2026**, desde cero (`./gradlew clean test --rerun-tasks --warning-mode=all`):
+
+- `01-language` y `04-data` compilan con **Kotlin 2.4.21**, JDK 21 (toolchain) y Gradle 9.9.1, **sin avisos** del
+  compilador ni deprecaciones de Gradle.
+- **123 pruebas, 0 fallidas**: 85 de 85 en `01-language`; 38 en `04-data`, con las 18 de PostgreSQL y MySQL `SKIPPED`
+  ese día porque los puertos 15432 y 13306 estaban tomados por contenedores de otro proyecto. Esas 18 pasaron con
+  2.4.21 el 13 de noviembre (A7, 0 SKIPPED) y se repiten antes del próximo commit con código.
+- Los 12 `Main` corren: `basics`, `control`, `strings`, `oop`, `io`, `collections`, `functional`, `exceptions`,
+  `datetime`, `json`, `jdbc.sqlite` y `jpa`.
+- `22-legacy-kotlin19` sigue en verde con Kotlin 1.9.22 (4 pruebas de humo).
+
+**Qué significa "migrado":** el código del curso v1 compila y se comporta igual en K2 (A7 comparó la salida de los
+`Main` con la de 1.9.22) y se corrigieron los 3 avisos nuevos de K2
+([`k2-notes.md`](22-legacy-kotlin19/docs/k2-notes.md)). **No** significa que el código ya enseñe lo de 2.x: eso llega
+con el temario (etiquetas `[2.0]`…`[2.4]`), la lección `kotlin2` (B4) y los ejercicios nuevos (B2). El dominio sigue
+siendo el provisional de pedidos hasta B0′.
+
+### Historial de la fase A
 
 | Commit | Qué |
 |---|---|
@@ -53,20 +84,32 @@ digest, `arm64` nativo en Apple Silicon) con las mismas 4 pruebas que en nativo.
 Tags anotados: `baseline-1.9.22` (curso v1 de proyecto único), `monorepo-1.9.22` (fin de A5), `monorepo-2.4.21`
 (fin de A7), `legacy-kotlin19` (fin de A6), `legacy-containers` (fin de A8) y `phase-a` (fin de A9 y de la fase A).
 
+### Historial de la fase B
+
+| Commit | Qué |
+|---|---|
+| `017c9d3` Add cli and repl tutorials | B1: `cli` y `repl` con sus `check.sh` |
+| `3919d39` Add install, decompile and debug tutorials | B1 cerrado: 5 tutoriales |
+| `890e295` Plan the syllabus rewrite (B0 batch 0) and measure version tags | B0: `docs/Temario-Plan.md`, prompt por tanda, `scripts/version-probes.sh`, tanda 0 |
+| `b1e3280` Write syllabus batch 1 | B0, tanda 1: tutoriales y `basics`, `control`, `strings`, `oop`, `io` |
+| `984b5d0` Write syllabus batch 2 | B0, tanda 2: `collections`, `functional`, `json`, `datetime`, `exceptions` |
+
 **Remoto:** `origin` en GitHub desde el 13 de noviembre de 2026. Antes de cada push se repite el escaneo de
 referencias externas sobre `git log -p --all`, y se suben los tags con `git push origin main --follow-tags`.
 
-**Pendiente, en el orden en que se va a hacer:**
+### Pendiente, en el orden en que se va a hacer
 
-1. **B0′ · Casos Banco y Mercado** (en curso): diseño acordado en [`docs/Casos.md`](docs/Casos.md); falta
-   reemplazar el dominio provisional de pedidos en 6 tandas (datos, `json`/`io`, `basics`/`oop`/`exceptions`, el resto
-   de `01-language`, `04-data`, ejercicios y ruta 🎯).
-2. **B0 · Temario** (en curso): plan y tandas en [`docs/Temario-Plan.md`](docs/Temario-Plan.md); tanda 0 lista, siguen las tandas 1 a 10.
-3. **Fase B (B0–B10)**: temario completo, el resto de tutoriales, ejercicios con la escala de `java-champion-review`, corrutinas y
-   reactivo, tracks legacy, web, móvil y el resto de secciones.
+1. **B0 · Temario, tandas 3 a 10.** Las tandas 3, 4 y 6 no dependen de otras y van primero; la 5 espera a la 4, la
+   7 a la 4 y la 5, y la 10 cierra con la revisión juntos.
+2. **B0″ · Guías de lección** ([sección 12](#12-guías-de-lección-docslessons)): si se aprueba, plantilla, índice y
+   las guías de las 12 lecciones con código, antes de B0′ para que el reemplazo tenga un mapa de partida.
+3. **B0′ · Casos Banco y Mercado:** las 6 tandas de reemplazo (datos, `json`/`io`, `basics`/`oop`/`exceptions`, el
+   resto de `01-language`, `04-data`, ejercicios y ruta 🎯), cada una con sus pruebas en verde con las dos bases
+   arriba y actualizando las guías de las lecciones que toque. Termina antes de B2.
+4. **B2–B10** según la [sección 8](#8-fase-b-generar-el-resto).
 
 **Preguntas abiertas** ([sección 10](#10-para-decidir-en-la-revisión)): cortes legacy, numeración de secciones, dónde
-van `io`/`datetime`/`json`, y Android SDK y Xcode.
+van `io`/`datetime`/`json`, Android SDK y Xcode, y la estructura de las guías de lección.
 
 ---
 
@@ -330,7 +373,8 @@ transversal.
 
 | Fase | Contenido | Entregable |
 |---|---|---|
-| **B0′** | Elegir el caso de finanzas (sección 11) y reemplazar el dominio provisional de pedidos en datos, lecciones y ejercicios 🎯 | Ruta prioritaria del README rehecha |
+| **B0′** 🟡 | Elegir el caso de finanzas (sección 11) y reemplazar el dominio provisional de pedidos en datos, lecciones y ejercicios 🎯. Caso elegido y diseñado en [`docs/Casos.md`](docs/Casos.md); falta el reemplazo en 6 tandas | Ruta prioritaria del README rehecha |
+| **B0″** 📝 | Guías de lección en `docs/lessons/` ([sección 12](#12-guías-de-lección-docslessons)): plantilla, índice y una guía por cada lección con código | 12 guías (10 de `01-language`, `jdbc`, `jpa`); desde ahí, cada lección nueva nace con la suya |
 | **B0** 🟡 | `docs/Temario.md` completo: cada lección con mapeo Java → Kotlin, trampas, etiquetas de versión y su ⚡. Se hace por tandas según [`docs/Temario-Plan.md`](docs/Temario-Plan.md) | Revisión juntos antes de escribir código |
 | **B1** ✅ | `tutorials/`: `install`, `cli`, `repl`, `decompile`, `debug` | 5 tutoriales con sus scripts y un `check.sh` cada uno (136 comprobaciones, 72 ejercicios) |
 | **B2** | Ejercicios de las 12 lecciones actuales llevados a la nueva escala: mínimo 25, 🎤, ⚡ | ~300 → ~330 ejercicios + 12 ⚡ |
@@ -373,6 +417,9 @@ lección. Es parecido a `java-champion-review` (79 lecciones). Por eso va por fa
 4. ¿Tienes Android SDK y Xcode instalados? Define el alcance de B7.
 5. ~~¿Qué caso de la sección 11 reemplaza al dominio provisional?~~ Dos casos, Banco y Mercado, con puente: [`docs/Casos.md`](docs/Casos.md).
 6. ~~¿Arranco con A2–A5?~~ Hecho el 10 de noviembre de 2026.
+7. **Guías de lección** ([sección 12](#12-guías-de-lección-docslessons)): ¿carpetas por sección con lecciones
+   numeradas dentro (`docs/lessons/01-language/01-basics.md`, la recomendada) o una lista plana con numeración global
+   (`docs/lessons/006-basics.md`)? ¿Se escriben antes de B0′, como se propone, o dentro de cada tanda de B0′?
 
 ---
 
@@ -406,3 +453,113 @@ Fuentes de versiones: [Kotlin 2.4.20 Released](https://blog.jetbrains.com/kotlin
 [Configure a Gradle project](https://kotlinlang.org/docs/gradle-configure-project.html) ·
 [Gradle compatibility](https://docs.gradle.org/current/userguide/compatibility.html) ·
 [About AGP](https://developer.android.com/build/releases/about-agp)
+
+---
+
+## 12. Guías de lección (`docs/lessons/`)
+
+**Propuesta del 22 de noviembre de 2026, pendiente de revisión** (pregunta 7 de la [sección 10](#10-para-decidir-en-la-revisión)).
+
+### Para qué
+
+Hoy, para entender una lección hay que abrir su paquete y adivinar por dónde empezar: `Main.kt` es solo una demo, la
+lógica está repartida en varios `.kt`, las pruebas viven en otro árbol (`src/test`) y el estado está en
+`CHECKLIST.md`. La guía es **el mapa del código de una lección**: qué archivo leer primero, qué muestra cada uno, qué
+prueba lo demuestra, cómo correrlo, y qué está hecho y qué falta. No repite el temario:
+
+| Documento | Responde |
+|---|---|
+| `docs/Temario.md` | **Qué** se aprende: mapeo Java → Kotlin, trampas, caso, 🎤 y ⚡ |
+| `<lección>/Exercises.md` | **Qué** se practica: enunciados graduados |
+| `docs/lessons/…` (nuevo) | **Dónde** está y **por dónde** leerlo: archivos, símbolos, pruebas, comandos, estado |
+| `CHECKLIST.md` | **Cuánto** falta, en una tabla para todo el curso |
+
+### Estructura de directorios (recomendada)
+
+Una carpeta por sección, con **el mismo nombre que la sección en la raíz**, y dentro un archivo por lección numerado
+con dos dígitos en el orden de estudio del temario. Así el árbol de `docs/lessons/` se lee de arriba abajo en el orden
+del curso, igual que el de la raíz:
+
+```text
+docs/lessons/
+├── README.md                       # índice: todas las guías en orden, con enlace a temario, código y ejercicios
+├── _template.md                    # plantilla de una guía
+├── 01-language/
+│   ├── 01-basics.md
+│   ├── 02-control.md
+│   ├── 03-strings.md
+│   ├── 04-oop.md
+│   ├── 05-io.md
+│   ├── 06-collections.md
+│   ├── 07-functional.md
+│   ├── 08-json.md
+│   ├── 09-datetime.md
+│   ├── 10-exceptions.md
+│   └── 11-generics.md …  16-kotlin2.md        # al escribir cada lección (B4)
+├── 02-coroutines/01-fundamentals.md … 10-loom.md                 # B3
+├── 04-data/
+│   ├── 01-jdbc.md                  # una guía para los tres motores: código compartido + dialectos
+│   ├── 02-jpa.md
+│   └── 03-exposed.md … 06-sqldelight.md                          # B8
+├── 22-legacy-kotlin19/01-language19.md …                         # B5
+└── …                               # el resto de secciones, cuando tengan código
+```
+
+Reglas:
+
+- **Sección = nombre exacto del directorio de la raíz** (`01-language`, `04-data`, `22-legacy-kotlin19`), con su número
+  y sus huecos (no hay `13`–`19`). Los tutoriales **no** llevan guía: su `README.md` ya es el recorrido; el índice los
+  enlaza en primer lugar.
+- **Lección = `NN-<subpaquete>.md`**, con `NN` en el orden del temario dentro de la sección (dos dígitos alcanzan: la
+  sección más grande, `01-language`, tiene 16). El nombre después del número es el del subpaquete del código
+  (`basics`, `jdbc`), para que buscar un archivo encuentre los dos.
+- **El número solo vive en `docs/`**: paquetes, directorios de código y nombres de prueba no cambian.
+- Si se inserta una lección, se renumera solo dentro de su sección (`git mv`), y se corrige el índice.
+- Una lección sin código no tiene guía: la guía nace con el código, no con el temario.
+
+**Alternativa descartada:** lista plana con numeración global de tres dígitos (`docs/lessons/006-basics.md`, …,
+`088-kotlin25.md`). Se ve el orden completo en una sola carpeta, pero insertar una lección obliga a renumerar todas las
+siguientes (o a dejar huecos), el número no dice a qué sección pertenece y 80 archivos en una carpeta se navegan peor
+que 17 carpetas. Si se prefiere, se adopta con huecos de 10 en 10 por sección (`0110-basics`, `0120-control`…).
+
+### Plantilla de una guía
+
+```markdown
+# 01 · `basics` — Tipos, números, identidad
+
+**Sección:** `01-language` · **Paquete:** `dev.raul.oskar.learning.kotlin.basics` · **Caso:** pedidos (provisional) → Banco
+**Enlaces:** [temario](../../Temario.md#01--basics--tipos-números-identidad) · [ejercicios](…/basics/Exercises.md) · [código](…) · [pruebas](…)
+
+## Cómo correrla
+./gradlew -p 01-language run -Plesson=basics
+./gradlew -p 01-language test --tests '*.basics.*'
+
+## Recorrido sugerido
+1. `Numbers.kt`: conversiones explícitas, división, overflow, `toIntOrNull`, `BigDecimal` (`widen`, `checkedAdd`, `money`, `sameAmount`).
+2. `Identity.kt`: `==` frente a `===`, `Nothing` (`fail`), `when` por tipo (`describe`), `UInt`.
+3. `BasicsTest.kt`: cada trampa del temario con la prueba que la demuestra.
+4. `Main.kt`: la demo que imprime todo junto.
+
+## Mapa del código
+| Archivo | Qué muestra | Símbolos | Lo prueba |
+|---|---|---|---|
+| `Numbers.kt` | … | `widen`, `parseOrDefault`, `money`, `addTax`… | `BasicsTest` (…) |
+
+## Estado
+- **Hecho:** código y 9 pruebas; 25 ejercicios (escala vieja); 0 resueltos en `practice/`.
+- **Falta:** B0′ (pasa a `Money` del Banco), B2 (ejercicios a la escala nueva, 🎤 y ⚡ "calculadora de precisión arbitraria").
+```
+
+Criterios: se citan **símbolos, no números de línea** (las líneas cambian con cualquier edición); cada fila del mapa
+apunta a una prueba existente; "Estado" se limita a lo de la lección (el total sigue en `CHECKLIST.md`); máximo una
+pantalla y media.
+
+### Cuándo y cómo se escriben
+
+1. **B0″** (antes de B0′): `docs/lessons/README.md`, `_template.md` y las **12 guías** de lo que ya tiene código (10 de
+   `01-language`, `jdbc` y `jpa`), describiendo el código tal como está hoy. Sirven de mapa de partida para el
+   reemplazo de B0′, y se comprueba que cada símbolo citado existe (`grep`).
+2. **B0′ y siguientes:** cada tanda que cambia el código de una lección actualiza su guía en el mismo cambio, igual
+   que hoy actualiza `CHECKLIST.md`.
+3. **Regla de sincronía nueva** (para `CLAUDE.md` y "Agregar una lección" del README, al aprobarse): lección nueva →
+   guía nueva y fila en el índice; archivo nuevo, renombrado o borrado en una lección → su guía.

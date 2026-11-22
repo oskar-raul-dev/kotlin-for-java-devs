@@ -6,9 +6,11 @@ Kotlin Multiplatform). La base es **Kotlin 2.4**; aparte hay **tracks legacy** q
 ejercicios graduados **sin soluciones**. Varios ejercicios siguen un caso de punta a punta con pedidos de una tienda
 (provisional: lo va a reemplazar un caso de finanzas).
 
-> **Estado:** fase A cerrada (monorepo, Kotlin 2.4.21, track 1.9 con su contenedor). Hay 14 lecciones en
-> `01-language` y `04-data`; el resto de las secciones se escribe en la fase B. El avance está en
-> [`CHECKLIST.md`](CHECKLIST.md) y la hoja de ruta en [`Plan-Migracion-Monorepo.md`](Plan-Migracion-Monorepo.md).
+> **Estado:** fase A cerrada (monorepo, Kotlin 2.4.21, track 1.9 con su contenedor) y fase B en curso: los 5
+> tutoriales están listos, el temario nuevo va en la tanda 2 de 10 y el caso Banco y Mercado está diseñado pero
+> todavía no reemplaza a los pedidos. Hay 14 lecciones con código en `01-language` y `04-data`, verificadas en Kotlin
+> 2.4.21. El avance está en [`CHECKLIST.md`](CHECKLIST.md) y la hoja de ruta en
+> [`Plan-Migracion-Monorepo.md`](Plan-Migracion-Monorepo.md).
 
 **Salto rápido:** [Documentos](#documentos) · [Requisitos](#requisitos) · [Cómo se usa](#cómo-se-usa) ·
 [Índice de secciones](#índice-de-secciones) · [Versiones](#versiones) · [Lecciones](#lecciones) ·
@@ -335,9 +337,13 @@ kotlin-for-java-devs/
 ├── gradlew, gradle/wrapper/    # Gradle 9.9.1 para todo el composite
 ├── .sdkmanrc                   # JDK 21 (Zulu) para `sdk env`
 ├── docs/
-│   ├── Temario.md              # temario por lección
+│   ├── Temario.md              # temario por lección (en construcción por tandas)
+│   ├── Temario-Plan.md         # plan de las tandas del temario y versiones medidas
+│   ├── Casos.md                # casos de estudio Banco y Mercado
 │   ├── Versions.md             # versiones fijadas y cómo actualizarlas
-│   └── LegacyKotlin.md         # Kotlin 1.0 → 2.x y los tracks legacy
+│   ├── LegacyKotlin.md         # Kotlin 1.0 → 2.x y los tracks legacy
+│   ├── prompts/                # prompt maestro de cada tanda del temario
+│   └── archive/                # temario anterior (v1)
 ├── docker/
 │   ├── postgres/compose.yaml   # PostgreSQL 17.2 en 15432
 │   ├── mysql/compose.yaml      # MySQL 8.4.3 en 13306
@@ -359,7 +365,8 @@ kotlin-for-java-devs/
 │       ├── main/resources/simplelogger.properties    # slf4j-simple solo en WARN
 │       └── test/kotlin/…/jdbc/, jpa/
 ├── 22-legacy-kotlin19/         # Kotlin 1.9.22: wrapper propio (Gradle 9.2.1), .sdkmanrc, prueba de humo, docs/k2-notes.md
-└── tutorials/, 02-coroutines/ … 21-legacy-kotlin16/, 25-interview/, 26-kotlin-next/   # (vacías) fase B
+├── tutorials/                  # install, cli, repl, decompile, debug: README, Exercises.md y check.sh cada uno
+└── 02-coroutines/ … 21-legacy-kotlin16/, 25-interview/, 26-kotlin-next/   # (vacías) fase B
 ```
 
 ## Trampas encontradas al armarlo

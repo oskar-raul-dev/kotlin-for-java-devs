@@ -23,7 +23,8 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | Workspace de VS Code | ✅ | `LISTO` | `kotlin-for-java-devs.code-workspace` (ignorado por git) |
 | `README.md` (índice general) | ✅ | `LISTO` | Documentos, requisitos, IDE y terminal, índice de secciones, tracks legacy, convenciones (A9) |
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
-| `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, ideas del caso de finanzas |
+| `Plan-Migracion-Monorepo.md` | ✅ | `LISTO` | Secciones, versiones, contenedores, fases A y B, casos de finanzas, guías de lección (propuesta); estado al 2026-11-22 |
+| `docs/lessons/` (guías de lección) | ⬜️ | `PENDIENTE` | Propuesta en la sección 12 del plan (paso B0″): una guía por lección con código, en `docs/lessons/<sección>/NN-<lección>.md` |
 | `docs/Temario.md` | 🟡 | `EN CREACIÓN` | Esqueleto de 88 entradas (tanda 0); tandas 1 y 2 escritas (15 entradas); faltan las tandas 3 a 10. El anterior, en `docs/archive/Temario-v1.md` |
 | `docs/Temario-Plan.md` y `docs/prompts/temario-tanda.md` | ✅ | `LISTO` | Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
@@ -51,6 +52,7 @@ que se termina algo. El porqué y el orden de los pasos están en [`Plan-Migraci
 | A8 · Contenedores legacy | ✅ | `./scripts/legacy.sh 19` = nativo (4 pruebas); `arm64` nativo |
 | A9 · Documentación | ✅ | README con índice de secciones, CLAUDE.md reescrito; tag `phase-a` |
 | B0′ · Casos Banco y Mercado | 🟡 | Diseño en `docs/Casos.md` ✅; reemplazo del dominio de pedidos en 6 tandas ⬜️ |
+| B0″ · Guías de lección | ⬜️ | Propuesta en la sección 12 del plan; pendiente de revisión |
 
 ## Secciones
 
@@ -327,3 +329,9 @@ dominio provisional por el caso de finanzas (B0′) y llevar los ejercicios a la
   `explicitNulls` y `namingStrategy` estables; `decodeToSequence` y `classDiscriminatorMode` todavía piden opt-in.
   ⚡ nuevos: velas por sesión (`datetime`) y `TransferService` completo (`exceptions`); los de `collections`,
   `functional` y `json` son los del plan, con datos del Mercado.
+- **2026-11-22** · Revisión de estado y verificación de la base en Kotlin 2.x: `./gradlew clean test --rerun-tasks
+  --warning-mode=all` en verde y sin avisos (85 de 85 en `01-language`; 38 en `04-data` con las 18 de PostgreSQL y
+  MySQL `SKIPPED` porque sus puertos estaban tomados por contenedores de otro proyecto); los 12 `Main` corren;
+  `22-legacy-kotlin19` en verde con 1.9.22. Sección de estado del plan reescrita (B1 ✅, B0 en la tanda 2, B0′ con el
+  diseño hecho) y README al día. Propuesta nueva en el plan (sección 12, paso B0″): guías de lección en
+  `docs/lessons/<sección>/NN-<lección>.md`, pendiente de revisión.
