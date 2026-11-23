@@ -54,7 +54,7 @@ que se termina algo. El orden de lo que falta está en [Fase B](#fase-b); las de
 
 ## Fase B
 
-👉 **En curso: B2** (tanda 1 de 4 hecha; sigue la 2: `oop`, `io`, `collections`). B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`). El orden va primero por lo pedido explícitamente (corrutinas, reactivo,
+👉 **En curso: B2** (tandas 1 y 2 de 4 hechas; sigue la 3: `functional`, `json`, `datetime`). B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`). El orden va primero por lo pedido explícitamente (corrutinas, reactivo,
 legacy, web y móvil) y deja lo transversal al final; las decisiones, en [`docs/Decisions.md`](docs/Decisions.md); el contenido de cada lección, en
 [`docs/Temario.md`](docs/Temario.md) (su trazabilidad dice caso, ⚡ y ejercicios de cada una).
 
@@ -118,9 +118,9 @@ en el enunciado y sin prueba provista; 🎤 como etiqueta (unos 6 por lección);
 | `01-language` · `basics` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Calculadora de precisión arbitraria | ✅ |
 | `01-language` · `control` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Matcher por búsqueda binaria | ✅ |
 | `01-language` · `strings` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Códec estilo FIX | ✅ |
-| `01-language` · `oop` | 24 | 25–40 | ⬜️ | ⬜️ Evaluador de expresiones con `sealed` | ⬜️ |
-| `01-language` · `io` | 23 | 25–40 | ⬜️ | ⬜️ Conciliador de extracto | ⬜️ |
-| `01-language` · `collections` | 24 | 25–40 | ⬜️ | ⬜️ `HashMap` propio | ⬜️ |
+| `01-language` · `oop` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Evaluador de expresiones con `sealed` | ✅ |
+| `01-language` · `io` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Conciliador de extracto | ✅ |
+| `01-language` · `collections` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ `HashMap` propio | ✅ |
 | `01-language` · `functional` | 24 | 25–40 | ⬜️ | ⬜️ Librería de operadores de `Sequence` | ⬜️ |
 | `01-language` · `json` | 24 | 25–40 | ⬜️ | ⬜️ Serializador para un formato binario | ⬜️ |
 | `01-language` · `datetime` | 24 | 25–40 | ⬜️ | ⬜️ Velas por sesión | ⬜️ |
@@ -174,9 +174,9 @@ ejercicios a la escala nueva (B2). La columna **Fase** dice en qué fase nace o 
 | 1 | `basics` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
 | 2 | `control` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
 | 3 | `strings` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
-| 4 | `oop` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
-| 5 | `io` | ✅ | ✅ | 🟡 23 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
-| 6 | `collections` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| 4 | `oop` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
+| 5 | `io` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
+| 6 | `collections` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
 | 7 | `functional` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
 | 8 | `json` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
 | 9 | `datetime` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
@@ -597,3 +597,10 @@ y el ⚡ de `09 · webflux` achicado (la API completa y la prueba de carga pasan
   y textos del Banco y del Mercado (IBAN, montos por país, monto en letras, tokenizer con `matchAt`). Los ⚡: `BigNum`
   contra `BigInteger`, `ArrayOrderBook` contra `datagen.orderStream` y `FixCodec` con longitud y checksum. README:
   339 ejercicios. Sin código nuevo (no hizo falta).
+- **2026-11-22** · **B2, tanda 2 (`oop`, `io`, `collections`):** 40 ejercicios más su ⚡ en cada una, con 6 🎤.
+  Nuevos en los casos: `final` por defecto, `entries`, `data object`, `sealed` frente a `enum`, `@ConsistentCopyVisibility`,
+  `@JvmRecord`, posición con costo promedio, cuentas selladas, entidad frente a valor y decoradores con `by` (`oop`);
+  `use` y suprimidas, `readlnOrNull`, la secuencia de `useLines` que se escapa, BOM, fines de línea, procesos externos y
+  lectura incremental del ledger (`io`); `removeFirst` y JDK 21, `buildList`, `min()` de 1.7, niveles de precio con
+  `TreeMap`, `hashCode` malo, el matcher de `control` rehecho con `TreeMap`, unión-búsqueda y `BitSet` (`collections`).
+  En `oop` se corrigieron dos restos del dominio viejo (casos del 02 y el resultado sellado del 08). README: 391 ejercicios.

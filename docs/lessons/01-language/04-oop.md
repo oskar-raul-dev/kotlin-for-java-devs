@@ -143,9 +143,8 @@ argumento. Desde Java se llama como `Ticker.Companion.parse(…)` salvo que se m
 
 ## Estado
 
-- **Hecho:** código en los casos (B0′ tanda 3) y 10 pruebas; 24 ejercicios (4 🎯); 0 resueltos en `practice/`.
-- **Falta:** B2 (⚡ evaluador de expresiones con
-  `sealed`).
+- **Hecho:** código en los casos (B0′ tanda 3) y 10 pruebas; 40 ejercicios más el ⚡ (4 🎯, 6 🎤; B2, tanda 2); 0 resueltos en `practice/`.
+- **Falta:** nada de B2.
 
 [classes]: https://kotlinlang.org/docs/classes.html
 [inheritance]: https://kotlinlang.org/docs/inheritance.html

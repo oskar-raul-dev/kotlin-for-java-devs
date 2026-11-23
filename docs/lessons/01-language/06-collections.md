@@ -167,8 +167,8 @@ asume el riesgo (`01 · interop`). En una frontera con Java conviene copiar al e
 
 ## Estado
 
-- **Hecho:** código en el caso Mercado (B0′ tanda 4) y 9 pruebas; 24 ejercicios (5 🎯); 0 resueltos en `practice/`.
-- **Falta:** B2 (⚡ `HashMap` propio).
+- **Hecho:** código en el caso Mercado (B0′ tanda 4) y 9 pruebas; 40 ejercicios más el ⚡ (5 🎯, 6 🎤; B2, tanda 2); 0 resueltos en `practice/`.
+- **Falta:** nada de B2.
 
 [collections]: https://kotlinlang.org/docs/collections-overview.html
 [j2k-collections]: https://kotlinlang.org/docs/java-to-kotlin-collections-guide.html

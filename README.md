@@ -141,9 +141,9 @@ no van en un archivo: las pruebas las piden al vuelo con `orderStream(seed, coun
 | 1 | `basics` | Tipos numéricos, conversiones explícitas, overflow, `BigDecimal` (escala, redondeo, nunca desde `Double`), `Money` del Banco con operadores y moneda, `Char`, `==` frente a `===`, `Any`/`Unit`/`Nothing`, smart casts | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/basics/Exercises.md) | 5 |
 | 2 | `control` | `if`/`when` como expresiones, rangos (`..`, `..<`, `until`, `downTo`, `step`), tramos de comisión con `when`, bucles, etiquetas `break@`, algoritmos de pizarra (gcd, primos, búsqueda binaria sobre precios, two-sum, paréntesis) | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/control/Exercises.md) | 4 |
 | 3 | `strings` | Plantillas, raw strings, `buildString`, `substringBefore/After`, regex con grupos con nombre sobre cuentas `ACC-…`, mensajes estilo FIX, `replace` con lambda y lookbehind. **La trampa de `split("\\/")`** | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/strings/Exercises.md) | 3 |
-| 4 | `oop` | Cuentas con `init`, setters privados, `open`/`abstract`; `Order` sellado + `when` exhaustivo; enums con `companion` y `of`; `object`, `data class`, `value class` (`TransferId`), operadores, delegación `by`, `lazy` | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/oop/Exercises.md) | 4 |
-| 5 | `io` | `Path` + `kotlin.io.path`, `useLines`, `use {}`, recursos del classpath, CSV con comillas, conciliación exacta del extracto bancario, consola testeable, Kermit | [23](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/io/Exercises.md) | 3 |
-| 6 | `collections` | Solo lectura frente a mutable, listas, sets, mapas (`getOrPut`), `TreeMap` de cierres, libro de órdenes con `TreeMap` + `ArrayDeque`, `PriorityQueue`, arrays | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/collections/Exercises.md) | 5 |
+| 4 | `oop` | Cuentas con `init`, setters privados, `open`/`abstract`; `Order` sellado + `when` exhaustivo; enums con `companion` y `of`; `object`, `data class`, `value class` (`TransferId`), operadores, delegación `by`, `lazy` | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/oop/Exercises.md) | 4 |
+| 5 | `io` | `Path` + `kotlin.io.path`, `useLines`, `use {}`, recursos del classpath, CSV con comillas, conciliación exacta del extracto bancario, consola testeable, Kermit | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/io/Exercises.md) | 3 |
+| 6 | `collections` | Solo lectura frente a mutable, listas, sets, mapas (`getOrPut`), `TreeMap` de cierres, libro de órdenes con `TreeMap` + `ArrayDeque`, `PriorityQueue`, arrays | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/collections/Exercises.md) | 5 |
 | 7 | `functional` | Tipos función, closures, composición, lambdas con receptor, `reified`, `Result`, scope functions, `fun interface`, pipelines sobre ticks (`groupBy`, `groupingBy`, `partition`, vela con `fold`), secuencias perezosas | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/functional/Exercises.md) | 6 |
 | 8 | `json` | kotlinx-serialization sobre el feed `ticks.json`: `@SerialName`, `explicitNulls`, `ignoreUnknownKeys`, defaults, `MarketEvent` sellado, serializadores para `BigDecimal`/`LocalDate`, árbol `JsonElement` | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/json/Exercises.md) | 4 |
 | 9 | `datetime` | `java.time` con el calendario del Mercado: parseo estricto `MM/dd/uuuu`, día de mercado en Nueva York, sesión y horario de verano, feriados, `Clock` inyectado, ventana de 7 días, cierre de mes | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/datetime/Exercises.md) | 5 |
@@ -161,7 +161,7 @@ los tres motores comparten un solo `jdbc/Exercises.md`, con cada ejercicio etiqu
 
 ## Ejercicios
 
-**339 ejercicios** en 12 archivos `Exercises.md`, sin soluciones: `basics`, `control` y `strings` ya tienen 40 más su
+**391 ejercicios** en 12 archivos `Exercises.md`, sin soluciones: `basics`, `control`, `strings`, `oop`, `io` y `collections` ya tienen 40 más su
 ⚡ (fase B2); las demás, de 23 a 25 mientras llegan a la escala nueva.
 
 **Semáforo:**

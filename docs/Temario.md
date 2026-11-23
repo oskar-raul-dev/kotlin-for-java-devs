@@ -278,6 +278,7 @@ frente a Java en herencia, visibilidad e igualdad.
 > **B0′, tanda 3 (hecho):** `ShippingMethod`, `Customer`, `Email`, `Cents` y las formas geométricas pasaron a
 > `AccountType`/`AccountStatus`/`Side`, `Position`, `Ticker`, `TransferId` y `Order` sellado; las cuentas usan `Money`.
 > Guía: [`04-oop.md`](lessons/01-language/04-oop.md).
+> **B2, tanda 2 (hecho):** 40 ejercicios (12 🟢, 14 🟡, 10 🟠, 4 🔴), 6 🎤 y el ⚡ como 41.
 
 | Java | Kotlin | Nota |
 |---|---|---|
@@ -320,6 +321,7 @@ perezosa, cargar recursos del classpath y escribir código de consola que se pue
 > **B0′, tanda 2 (hecho):** `sales.csv` y `Sale` pasaron a `bank-statement.csv` y `StatementLine`, con
 > `ledger-movements.csv` como contraparte y una conciliación exacta (`reconcileExact`); las tolerancias son el ⚡.
 > Guía: [`05-io.md`](lessons/01-language/05-io.md).
+> **B2, tanda 2 (hecho):** 40 ejercicios (12 🟢, 14 🟡, 10 🟠, 4 🔴), 6 🎤 y el ⚡ como 41.
 
 | Java | Kotlin | Nota |
 |---|---|---|
@@ -362,6 +364,7 @@ significa "solo lectura" en Kotlin y usar las estructuras del JDK sin perder la 
 > **B0′, tanda 4 (hecho):** `OrderBook` (`TreeMap` por precio + `ArrayDeque` FIFO, sin emparejar) y cierres por fecha
 > en un `TreeMap` (`closesBefore`, `closeAtOrBefore`); los ejemplos usan tickers. Guía:
 > [`06-collections.md`](lessons/01-language/06-collections.md).
+> **B2, tanda 2 (hecho):** 40 ejercicios (12 🟢, 14 🟡, 10 🟠, 4 🔴), 6 🎤 y el ⚡ como 41.
 
 | Java | Kotlin | Nota |
 |---|---|---|
@@ -3270,9 +3273,9 @@ los enlaces relativos y anclas resuelven. Comprobado con scripts, no a ojo.
 | `basics` | Banco | existe | Calculadora de precisión arbitraria | 40 + ⚡ |
 | `control` | Ambos | existe | Matcher por búsqueda binaria | 40 + ⚡ |
 | `strings` | Ambos | existe | Códec estilo FIX | 40 + ⚡ |
-| `oop` | Ambos | existe | Evaluador de expresiones con `sealed` | 24 |
-| `io` | Banco | existe | Conciliador de extracto | 23 |
-| `collections` | Mercado | existe | `HashMap` propio | 24 |
+| `oop` | Ambos | existe | Evaluador de expresiones con `sealed` | 40 + ⚡ |
+| `io` | Banco | existe | Conciliador de extracto | 40 + ⚡ |
+| `collections` | Mercado | existe | `HashMap` propio | 40 + ⚡ |
 | `functional` | Mercado | existe | Librería de operadores de `Sequence` | 24 |
 | `json` | Mercado | existe | Serializador para un formato binario | 24 |
 | `datetime` | Ambos | existe | Velas por sesión | 24 |
