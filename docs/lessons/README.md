@@ -14,7 +14,7 @@ que se lee para aprender.
 
 ## Reglas
 
-- **Una carpeta por sección**, con el nombre exacto del directorio de la raíz (`01-language`, `04-data`).
+- **Una carpeta por sección**, con el nombre exacto del directorio de la raíz (`01-language`, `02-coroutines`, `04-data`).
 - **Un archivo por lección, `NN-<subpaquete>.md`**, con `NN` en el orden del temario dentro de la sección. El número
   solo vive en `docs/`: paquetes, directorios de código y nombres de prueba no cambian.
 - Se citan **símbolos, no números de línea**, y cada fila del mapa apunta a una prueba que existe.
@@ -58,6 +58,17 @@ que se lee para aprender.
 
 `datagen` no es una lección y no tiene guía: genera los datos de los casos y las órdenes del libro (`orderStream`) (ver
 [`Casos.md`](../Casos.md#datos)).
+
+### `02-coroutines`
+
+| # | Guía | Caso | Pruebas | Ejercicios |
+|---|---|---|---|---|
+| 01 | [`fundamentals`](02-coroutines/01-fundamentals.md) — `suspend`, structured concurrency, `Job` | Ambos | 11 | 40 + ⚡ |
+| 02 | [`cancellation`](02-coroutines/02-cancellation.md) — Cooperativa, `withTimeout`, excepciones, `SupervisorJob` | Ambos | 16 | 40 + ⚡ |
+| 03 | [`dispatchers`](02-coroutines/03-dispatchers.md) — `withContext`, `limitedParallelism`, bloquear hilos | Ambos | 10 | 40 + ⚡ |
+
+`cases` no es una lección y no tiene guía: son las copias mínimas de los casos que usa la sección (`Money`, tickers,
+clientes `suspend` del Banco); se presentan en la guía de `fundamentals`.
 
 ### `04-data`
 

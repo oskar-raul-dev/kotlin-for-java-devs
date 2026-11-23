@@ -827,7 +827,7 @@ Corrutinas, `Flow` y concurrencia. **Build:** 1 · **Caso:** Mercado (y Banco en
 
 **Objetivo:** escribir código concurrente que se lee como secuencial, con corrutinas que viven dentro de un scope y
 nunca quedan huérfanas, y saber qué es (y qué no es) una función `suspend`.
-**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** existe (B3, tanda 1)
 
 | Java 21 | Kotlin (kotlinx-coroutines 1.11.0 ⚠️) | Nota |
 |---|---|---|
@@ -863,7 +863,7 @@ terminaron).
 
 **Objetivo:** cancelar sin dejar trabajo a medias, poner tiempos límite, y decidir cuándo una falla debe tumbar a las
 corrutinas hermanas y cuándo no.
-**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** existe (B3, tanda 1)
 
 | Java 21 | Kotlin (kotlinx-coroutines 1.11.0 ⚠️) | Nota |
 |---|---|---|
@@ -880,7 +880,9 @@ corrutinas hermanas y cuándo no.
   viva después de cancelarse (ver `runCatchingCancellable` en `exceptions`).
 - `withTimeout` lanza `TimeoutCancellationException`, que es una cancelación: si nadie la atrapa, la corrutina termina
   "en silencio" en vez de fallar.
-- `launch(SupervisorJob()) { }` saca a la corrutina de la jerarquía: ya no es hija del scope y nadie la espera.
+- `launch(SupervisorJob()) { }` saca a la corrutina de la jerarquía: ya no es hija del scope y nadie la espera. En
+  1.11.0 esa sobrecarga de `launch` ya da un warning de deprecación ("Passing a Job to coroutine builders breaks
+  structured concurrency", medido).
 - `CoroutineExceptionHandler` en un `async` o en un hijo no hace nada.
 
 **Caso:** el Banco pide la tasa al `FxRateClient` con tiempo límite y, si la transferencia se cancela a mitad, revierte
@@ -899,16 +901,16 @@ cancelación del padre se propaga (no se traga).
 
 **Objetivo:** elegir en qué hilos corre cada cosa (CPU, E/S bloqueante, UI), limitar el paralelismo sin crear pools a
 mano y no agotar los hilos con llamadas bloqueantes.
-**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** existe (B3, tanda 1)
 
 | Java 21 | Kotlin (kotlinx-coroutines 1.11.0 ⚠️) | Nota |
 |---|---|---|
 | `ForkJoinPool.commonPool()` para cálculo | `Dispatchers.Default` | Tantos hilos como núcleos |
 | Un pool grande para E/S bloqueante | `Dispatchers.IO` | 64 hilos (o más si hay más núcleos), compartidos con `Default` |
-| `Executors.newFixedThreadPool(4)` dedicado | `Dispatchers.IO.limitedParallelism(4, "db")` | Medido: el nombre compila sin opt-in en 1.11.0 |
+| `Executors.newFixedThreadPool(4)` dedicado | `Dispatchers.IO.limitedParallelism(4, "db")` | Medido: el nombre compila sin opt-in en 1.11.0 y sale en `toString()`, no en el nombre del hilo |
 | `executor.submit { }` y esperar | `withContext(Dispatchers.IO) { }` | Cambia de hilo y vuelve con el resultado |
 | `Executors.newVirtualThreadPerTaskExecutor()` | `.asCoroutineDispatcher()` | Compila sin opt-in; se compara en `loom` |
-| `Executors.newSingleThreadExecutor()` | `limitedParallelism(1)`; `newSingleThreadContext` | El segundo pide `@ExperimentalCoroutinesApi` (medido) y hay que cerrarlo |
+| `Executors.newSingleThreadExecutor()` | `limitedParallelism(1)`; `newSingleThreadContext` | El segundo pide `@ExperimentalCoroutinesApi` y `@DelicateCoroutinesApi` (medido) y hay que cerrarlo |
 | `ThreadLocal` (MDC del logger) | `ThreadLocal.asContextElement()`, `MDCContext` | El valor viaja con la corrutina, no con el hilo |
 
 **Trampas:**
@@ -3297,9 +3299,9 @@ los enlaces relativos y anclas resuelven. Comprobado con scripts, no a ojo.
 
 | Lección | Caso | Estado | ⚡ | Ejercicios |
 |---|---|---|---|---|
-| `fundamentals` | Ambos | nueva | Fan-out de cotizaciones | B2+ |
-| `cancellation` | Ambos | nueva | Transferencia con tiempo límite y compensación | B2+ |
-| `dispatchers` | Ambos | nueva | Dimensionar dispatchers | B2+ |
+| `fundamentals` | Ambos | existe | Fan-out de cotizaciones | 40 + ⚡ |
+| `cancellation` | Ambos | existe | Transferencia con tiempo límite y compensación | 40 + ⚡ |
+| `dispatchers` | Ambos | existe | Dimensionar dispatchers | 40 + ⚡ |
 | `channels` | Mercado | nueva | Motor de emparejamiento como actor | B2+ |
 | `flow` | Mercado | nueva | Operadores propios con backpressure | B2+ |
 | `hotflows` | Ambos | nueva | Tablero de precios en vivo | B2+ |

@@ -16,7 +16,7 @@ que se termina algo. El orden de lo que falta está en [Fase B](#fase-b); las de
 |---|---|---|---|
 | Repositorio git | ✅ | `LISTO` | Rama `main`, usuario local; remoto `origin` en GitHub; tags `baseline-1.9.22`, `monorepo-1.9.22`, `monorepo-2.4.21` y `legacy-kotlin19` |
 | `.gitignore` del ecosistema Java/JVM | ✅ | `LISTO` | El de `java-champion-review`, con `.idea/` completo ignorado |
-| Gradle Wrapper 9.9.1 + composite build | ✅ | `LISTO` | `01-language` y `04-data`; `./gradlew test` en verde (123 pruebas) |
+| Gradle Wrapper 9.9.1 + composite build | ✅ | `LISTO` | `01-language`, `02-coroutines` y `04-data`; `./gradlew test` en verde |
 | Kotlin 2.x en la base | ✅ | `LISTO` | Kotlin 2.4.21, Gradle 9.9.1 (A7) |
 | `.sdkmanrc` | 🟡 | `EN CREACIÓN` | Raíz y `22-legacy-kotlin19` (Zulu 21.0.8) listos; faltan los tracks 20 y 21 |
 | Proyecto de IntelliJ (`.idea/`) | ✅ | `LISTO` | Ignorado por git; composite importado con `01-language` y `04-data` como builds incluidos |
@@ -24,7 +24,7 @@ que se termina algo. El orden de lo que falta está en [Fase B](#fase-b); las de
 | `README.md` (índice general) | ✅ | `LISTO` | Documentos, requisitos, IDE y terminal, índice de secciones, tracks legacy, convenciones (A9) |
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
 | `docs/Decisions.md` | ✅ | `LISTO` | Las decisiones del curso con su fecha; reemplaza al plan de migración, cerrado y borrado el 2026-11-22 (tag `migration-closed`) |
-| `docs/lessons/` (guías de estudio) | ✅ | `LISTO` | Índice, reglas, plantilla y 12 guías de estudio (teoría, mapa del código y fuentes verificadas), en `docs/lessons/<sección>/NN-<lección>.md` (B0″); `scripts/check-guide-links.sh` |
+| `docs/lessons/` (guías de estudio) | ✅ | `LISTO` | Índice, reglas, plantilla y 15 guías de estudio (teoría, mapa del código y fuentes verificadas), en `docs/lessons/<sección>/NN-<lección>.md` (B0″); `scripts/check-guide-links.sh` |
 | `docs/Temario.md` | ✅ | `LISTO` | Las 88 entradas, los dos 🐉 y la trazabilidad (tandas 0 a 10), revisado con el usuario (B0 cerrado). El anterior, en `docs/archive/Temario-v1.md` |
 | `docs/archive/Temario-Plan.md` y `docs/archive/prompts/temario-tanda.md` | ✅ | `LISTO` | Archivados al cerrar B0. Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
@@ -55,7 +55,7 @@ que se termina algo. El orden de lo que falta está en [Fase B](#fase-b); las de
 
 ## Fase B
 
-👉 **Siguiente: B3.** B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`); B2, también (tag `phase-b2`). El orden va primero por lo pedido explícitamente (corrutinas, reactivo,
+👉 **En curso: B3** ([detalle](#b3-en-detalle)), tanda 1 de 4 hecha. B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`); B2, también (tag `phase-b2`). El orden va primero por lo pedido explícitamente (corrutinas, reactivo,
 legacy, web y móvil) y deja lo transversal al final; las decisiones, en [`docs/Decisions.md`](docs/Decisions.md); el contenido de cada lección, en
 [`docs/Temario.md`](docs/Temario.md) (su trazabilidad dice caso, ⚡ y ejercicios de cada una).
 
@@ -66,7 +66,7 @@ legacy, web y móvil) y deja lo transversal al final; las decisiones, en [`docs/
 | B0″ · Guías de estudio | 12 guías con teoría, mapa del código y fuentes verificadas | — | — | — | ✅ |
 | B1 · Tutoriales | 5 tutoriales numerados, 72 ejercicios, 136 comprobaciones | — | — | — | ✅ |
 | B2 · Ejercicios a la escala nueva | Las 12 lecciones con código: de 25 a 40 ejercicios, 🎤 marcados y su ⚡ ([detalle](#b2-en-detalle)) | 12 (rehacer ejercicios) | B0, B0′ | Ninguna | ✅ |
-| **B3 · Corrutinas y reactivo** | `02-coroutines` y `03-reactive`, con su build (y en el `includeBuild` del composite) | 14 | B0 | kotlinx-coroutines (y `-test`), Turbine, atomicfu, Reactor, RxJava 3, `kotlinx-coroutines-reactor`/`-rx3` | ⬜️ 👉 |
+| **B3 · Corrutinas y reactivo** | `02-coroutines` y `03-reactive`, con su build (y en el `includeBuild` del composite) | 14 | B0 | kotlinx-coroutines 1.11.0 (y `-test`, `-reactor`, `-rx3`), Turbine 1.2.1, atomicfu 0.33.0, Reactor BOM 2026.0.0, reactor-kotlin-extensions 1.3.3, RxJava 3.1.12, RxKotlin 3.0.1 (fijadas) | 🟡 👉 |
 | B4 · `01-language` nuevas | `generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2` | 6 | B0 | Ninguna (`interop` agrega Java al módulo; JSpecify) | ⬜️ |
 | B5 · Tracks legacy | `20` y `21` creados y corriendo en sus contenedores; contenido de `22` | 10 | A8 | Gradle de los tracks 14 (6.8.x) y 16 (7.6.x), JUnit 4 o 5 en 1.4, Spring Boot 2.7 | ⬜️ |
 | B6 · Backend web | `04 · r2dbc` (adelantado), `09-spring` (con WebFlux) y `10-ktor` | 8 | B3 | R2DBC, Spring Boot, SpringMockK, Ktor | ⬜️ |
@@ -106,6 +106,21 @@ ejercicios a 30 por lección: por eso va por fases.
       fila del checklist y su bitácora, el plan y, si hay versiones nuevas, `docs/Versions.md`.
 - [ ] **Commit** por tanda con el escaneo de referencias externas vacío; tag al cerrar cada fase.
 
+### B3 en detalle
+
+Las 14 lecciones nuevas de corrutinas y reactivo, con código, pruebas, ejercicios, ⚡ y guía. Decidido con el usuario
+al empezar (2026-11-22): versiones en lo último estable (ver la fila de B3); cada sección trae **copias mínimas propias**
+de los casos (paquete `cases`: `Money`, tickers, clientes `suspend`) y genera sus datos en código, sin depender de otra
+sección; `dispatchers` simula el repositorio JDBC en vez de usar el de `04-data`; mismo formato de ejercicios que B2
+(40 + ⚡ como el 41, 6 🎤, sin prueba provista para el ⚡); 4 tandas con commit y tag cada una, sin push.
+
+| Tanda | Lecciones | Pruebas | Ejercicios | Estado |
+|---|---|---|---|---|
+| 1 | Build de `02-coroutines`, `fundamentals`, `cancellation`, `dispatchers` | 37 | 120 + 3 ⚡ | ✅ |
+| 2 | `channels`, `flow`, `hotflows` | — | — | ⬜️ |
+| 3 | `sync`, `internals`, `testing`, `loom` | — | — | ⬜️ |
+| 4 | Build de `03-reactive`, `reactor`, `rxjava`, `bridges`, `backpressure` | — | — | ⬜️ |
+
 ### B2 en detalle
 
 Las 12 lecciones con código ya tienen guía, código y pruebas en los casos; B2 lleva sus ejercicios a la escala nueva.
@@ -135,7 +150,7 @@ en el enunciado y sin prueba provista; 🎤 como etiqueta (unos 6 por lección);
 |---|---|---|---|---|---|---|---|
 | [`tutorials`](#tutorials) | ✅ | ➖ | ➖ | ➖ | ✅ 72 | ✅ 5 de 5 | `LISTO` |
 | [`01-language`](#01-language) | ✅ | ✅ Gradle (2.4.21) | 🟡 | 🟡 | 🟡 | ➖ | `EN CREACIÓN` |
-| [`02-coroutines`](#02-coroutines) | ✅ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
+| [`02-coroutines`](#02-coroutines) | ✅ | ✅ Gradle (2.4.21) | 🟡 3 de 10 | 🟡 37 | 🟡 123 | ➖ | `EN CREACIÓN` |
 | [`03-reactive`](#03-reactive) | ✅ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
 | [`04-data`](#04-data) | ✅ | ✅ Gradle (2.4.21) | 🟡 | 🟡 | 🟡 | ➖ | `EN CREACIÓN` |
 | [`05-testing`](#05-testing) | ✅ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
@@ -193,9 +208,9 @@ ejercicios a la escala nueva (B2). La columna **Fase** dice en qué fase nace o 
 
 | # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
 |---|---|---|---|---|---|---|---|---|
-| — | `fundamentals` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
-| — | `cancellation` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
-| — | `dispatchers` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
+| 15 | `fundamentals` | ✅ | ✅ 11 | ✅ 40 | ✅ enunciado | ✅ | B3 | `LISTO` |
+| 16 | `cancellation` | ✅ | ✅ 16 | ✅ 40 | ✅ enunciado | ✅ | B3 | `LISTO` |
+| 17 | `dispatchers` | ✅ | ✅ 10 | ✅ 40 | ✅ enunciado | ✅ | B3 | `LISTO` |
 | — | `channels` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
 | — | `flow` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
 | — | `hotflows` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
@@ -625,3 +640,13 @@ y el ⚡ de `09 · webflux` achicado (la API completa y la prueba de carga pasan
   Boot, Spring reactivo, Spring MVC, móvil, concurrencia, legacy, entrevista y completa), cada una con sus lecciones en
   orden, cuánto hacer de cada una (🎯, núcleo, ⚡ o todo) y las que faltan marcadas con su fase. La corta es la ruta 🎯
   del README, la misma desde la versión inicial del curso (43 ejercicios, 15 ★), ahora sobre los casos.
+- **2026-11-22** · **B3, tanda 1 (build de `02-coroutines`, `fundamentals`, `cancellation`, `dispatchers`):** la
+  sección nace con su build (en el composite) y el paquete `cases` con las copias mínimas de los casos. Tres lecciones
+  con código, 37 pruebas (tiempo virtual con `runTest`; hilos de verdad en `dispatchers`), 40 ejercicios más el ⚡ y 6 🎤
+  cada una, y su guía. Medido en kotlinx-coroutines 1.11.0: `launch(Job)` ya está deprecado (warning: "Passing a Job to
+  coroutine builders breaks structured concurrency"); `newSingleThreadContext` pide `ExperimentalCoroutinesApi` **y**
+  `DelicateCoroutinesApi`; el nombre de `limitedParallelism(n, "db")` sale en `toString()` y no en el hilo;
+  `Default.limitedParallelism(n)` con n mayor que su paralelismo devuelve el mismo `Default`; en
+  kotlinx-coroutines-test, `currentTime`, `runCurrent` y `advanceTimeBy` piden `ExperimentalCoroutinesApi`; las
+  pruebas de Gradle corren con `-ea`, que activa el modo debug (` @coroutine#N` en el nombre del hilo). README: 615
+  ejercicios y 194 pruebas. Tag `b3-batch1`.

@@ -73,12 +73,12 @@ cd 22-legacy-kotlin19 && ./gradlew test                         # track legacy K
   raíz es un *composite build* que solo las agrega; `./gradlew test` en la raíz corre todas, y `-p <sección>` entra
   a una para filtrar pruebas o correr un `Main`.
 - `-Plesson=<subpaquete>` elige qué `Main.kt` corre: el build arma `dev.raul.oskar.learning.kotlin.<lesson>.MainKt`.
-  Sin `-Plesson`, corre `basics` en `01-language` y `jdbc.sqlite` en `04-data`.
+  Sin `-Plesson`, corre `basics` en `01-language`, `fundamentals` en `02-coroutines` y `jdbc.sqlite` en `04-data`.
 - `--tests` filtra por nombre de clase con comodines.
 - `--args` pasa argumentos al `main(args)`.
 - `--console=plain` quita la barra de progreso de Gradle, que se mezcla con lo que se escribe en la consola.
 
-Estado actual: **157 pruebas** en la base (107 en `01-language` y 50 en `04-data`), todas en verde, más **4 de humo**
+Estado actual: **194 pruebas** en la base (107 en `01-language`, 37 en `02-coroutines` y 50 en `04-data`), todas en verde, más **4 de humo**
 en `22-legacy-kotlin19`. Las 26 de PostgreSQL y MySQL salen `SKIPPED` si sus contenedores no están arriba.
 
 ## Índice de secciones
@@ -92,7 +92,7 @@ El número del directorio es el orden de estudio. El nivel indica qué tan compl
 |---|---|---|---|---|---|
 | [`tutorials/`](tutorials/) | Guías de la terminal | 2.4 | 0 | `01-install`, `02-cli`, `03-repl`, `04-decompile`, `05-debug` | ✅ 5 tutoriales, 72 ejercicios |
 | [`01-language/`](01-language/) | El lenguaje y su stdlib desde Java | 2.4 | 1 | `basics`, `control`, `strings`, `oop`, `io`, `collections`, `functional`, `json`, `datetime`, `exceptions` · luego `generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2` | 🟡 10 lecciones |
-| [`02-coroutines/`](02-coroutines/) | Corrutinas, `Flow` y concurrencia | 2.4 | 1 | `fundamentals`, `cancellation`, `dispatchers`, `channels`, `flow`, `hotflows`, `sync`, `internals`, `testing`, `loom` | Fase B3 |
+| [`02-coroutines/`](02-coroutines/) | Corrutinas, `Flow` y concurrencia | 2.4 | 1 | `fundamentals`, `cancellation`, `dispatchers` · luego `channels`, `flow`, `hotflows`, `sync`, `internals`, `testing`, `loom` | 🟡 3 lecciones (B3) |
 | [`03-reactive/`](03-reactive/) | Reactor, RxJava y puentes con corrutinas | 2.4 | 2 | `reactor`, `rxjava`, `bridges`, `backpressure` | Fase B3 |
 | [`04-data/`](04-data/) | Bases de datos relacionales | 2.4 | 2 | `jdbc` (SQLite, PostgreSQL, MySQL), `jpa` · luego `exposed`, `jooq`, `r2dbc`, `sqldelight` | 🟡 4 lecciones |
 | [`05-testing/`](05-testing/) | Pruebas | 2.4 | 2 | `kotest`, `mockk`, `assertions`, `testcontainers` | Fase B8 |
@@ -128,11 +128,16 @@ Fijadas a propósito; el detalle, los tracks legacy y cómo actualizarlas están
 Agregado para las lecciones de bases de datos y pruebas: sqlite-jdbc 3.54.1.0, PostgreSQL JDBC 42.7.14,
 mysql-connector-j 26.10.0, Hibernate ORM 7.4.15.Final, H2 2.5.252, slf4j-simple 2.0.20 y el BOM de JUnit 5.14.4.
 
+Agregado para corrutinas y reactivo (B3): kotlinx-coroutines 1.11.0 (`-core`, `-test`, `-reactor`, `-rx3`),
+Turbine 1.2.1, atomicfu 0.33.0, el BOM de Reactor 2026.0.0 (reactor-core 3.9.0), reactor-kotlin-extensions 1.3.3,
+RxJava 3.1.12 y RxKotlin 3.0.1.
+
 ## Lecciones
 
 Paquete raíz: `dev.raul.oskar.learning.kotlin`. Cada subpaquete tiene su `Main.kt` y su `Exercises.md` en
 `<sección>/src/main/kotlin/…/<subpaquete>/`, y sus pruebas en el mismo paquete bajo `<sección>/src/test/kotlin`.
-Las lecciones 1–9 y 14 están en `01-language`; las de bases de datos (10–13), en `04-data`. Cada una tiene su
+Las lecciones 1–9 y 14 están en `01-language`; las de bases de datos (10–13), en `04-data`; las de corrutinas (15 en
+adelante), en `02-coroutines`, con su propio paquete `cases` (copias mínimas de `Money` y de los casos). Cada una tiene su
 **guía** en [`docs/lessons/`](docs/lessons/README.md): por dónde empezar a leer, qué muestra cada archivo y qué prueba
 lo demuestra. Los datos de los casos (`ticks.json`, `bank-statement.csv`, `ledger-movements.csv`, `fx-rates.json`) los
 genera el paquete `datagen` con semilla fija: `./gradlew -p 01-language run -Plesson=datagen`. Las órdenes del libro
@@ -154,6 +159,9 @@ no van en un archivo: las pruebas las piden al vuelo con `orderStream(seed, coun
 | 12 | `jdbc.mysql` | Mismo ledger en MySQL (`REPEATABLE READ`) + `ON DUPLICATE KEY`, `LAST_INSERT_ID()`, foreign keys a nivel de tabla | ↑ | — |
 | 13 | `jpa` | Hibernate 7 sin Spring sobre el ledger: entidades en Kotlin, cascade, `orphanRemoval`, N+1 y `join fetch`, dirty checking, `LazyInitializationException`, `@Version`, UPDATE masivo | [40 + ⚡](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jpa/Exercises.md) | — |
 | 14 | `exceptions` | Sin checked exceptions, `try`/`throw` como expresiones, `require`/`check`/`error`, sin multi-catch (`when` en el catch), `BankException` sellada con `cause` y su traducción a HTTP, `TransferService`, `Result`/`runCatching` (y su trampa con `CancellationException`), validación que acumula errores, `use` y suppressed, `@Throws` para Java | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/exceptions/Exercises.md) | 4 |
+| 15 | `fundamentals` | Funciones `suspend` (que no cambian de hilo), `launch`/`async`/`runBlocking`, `coroutineScope` y structured concurrency, jerarquía de `Job`, fan-out de cotizaciones del Mercado y saldo + tasa del Banco en paralelo, la fuga de `GlobalScope`, tiempo virtual con `runTest` | [40 + ⚡](02-coroutines/src/main/kotlin/dev/raul/oskar/learning/kotlin/fundamentals/Exercises.md) | — |
+| 16 | `cancellation` | Cancelación cooperativa (`ensureActive`), la trampa de atrapar `CancellationException`, `withTimeout`/`withTimeoutOrNull` y su error de dominio, compensación de una transferencia con `NonCancellable`, `supervisorScope`, `CoroutineExceptionHandler` en la raíz, `launch(SupervisorJob())` (deprecado en 1.11.0) | [40 + ⚡](02-coroutines/src/main/kotlin/dev/raul/oskar/learning/kotlin/cancellation/Exercises.md) | — |
+| 17 | `dispatchers` | `Default`/`IO` (y que comparten hilos), JDBC simulado con `withContext`, `limitedParallelism` del tamaño del pool, hilos virtuales como dispatcher, `ThreadLocal` y `asContextElement`, `Unconfined`, confinamiento con `limitedParallelism(1)`, dispatcher inyectado | [40 + ⚡](02-coroutines/src/main/kotlin/dev/raul/oskar/learning/kotlin/dispatchers/Exercises.md) | — |
 
 `jdbc/` (sin subpaquete) tiene lo compartido: el ledger del Banco (`LedgerRepository`), la interfaz `Dialect`, las extensiones
 `mapRows` e `inTransaction`, y el recorrido `runDemo`. Las tres bases pasan **la misma batería de pruebas**
@@ -163,7 +171,7 @@ los tres motores comparten un solo `jdbc/Exercises.md`, con cada ejercicio etiqu
 
 ## Ejercicios
 
-**492 ejercicios** en 12 archivos `Exercises.md`, 40 por lección más su ⚡ (fase B2), sin soluciones.
+**615 ejercicios** en 15 archivos `Exercises.md`, 40 por lección más su ⚡ (fases B2 y B3), sin soluciones.
 
 **Semáforo:**
 
@@ -178,8 +186,9 @@ los tres motores comparten un solo `jdbc/Exercises.md`, con cada ejercicio etiqu
 Los tiempos son una estimación, no una medición. En la fase B llegaron las marcas de `java-champion-review`:
 ⚡ **Saiyajin** (miniproyecto que cierra la lección, con un criterio verificable), 🐉 **jefe final** (cruza
 secciones), 🎤 pregunta típica de entrevista y etiquetas de versión (`[2.0]`, `[exp N]`, `[dep N]`, `[rm N]`), con 25
-a 40 ejercicios por lección (el 🐉 llega en B10). Las 12 lecciones con código las tienen desde B2: los ejercicios
-agregados siguen la numeración de los que había y van dentro de su nivel, y el ⚡ es el último número (el 41).
+a 40 ejercicios por lección (el 🐉 llega en B10). Las 12 lecciones que ya tenían código las tienen desde B2: los
+ejercicios agregados siguen la numeración de los que había y van dentro de su nivel, y el ⚡ es el último número (el
+41). Las lecciones nuevas (desde B3) nacen con el mismo formato, numeradas por nivel del 01 al 40.
 
 **Convención para resolverlos:**
 
@@ -377,9 +386,12 @@ kotlin-for-java-devs/
 │       ├── main/resources/META-INF/persistence.xml   # unidad JPA "learning" (H2 por defecto)
 │       ├── main/resources/simplelogger.properties    # slf4j-simple solo en WARN
 │       └── test/kotlin/…/jdbc/, jpa/
+├── 02-coroutines/              # fundamentals, cancellation, dispatchers (B3); cases/ con las copias mínimas de los casos
+│   ├── settings.gradle.kts, build.gradle.kts   # Kotlin jvm, kotlinx-coroutines (core y test), Turbine
+│   └── src/main/kotlin/…/<lección>/, src/test/kotlin/…/<lección>/
 ├── 22-legacy-kotlin19/         # Kotlin 1.9.22: wrapper propio (Gradle 9.2.1), .sdkmanrc, prueba de humo, docs/k2-notes.md
 ├── tutorials/                  # 01-install … 05-debug: README, Exercises.md y check.sh cada uno
-└── 02-coroutines/ … 21-legacy-kotlin16/, 25-interview/, 26-kotlin-next/   # (vacías) fase B
+└── 03-reactive/ … 21-legacy-kotlin16/, 25-interview/, 26-kotlin-next/   # (vacías) fase B
 ```
 
 ## Trampas encontradas al armarlo
