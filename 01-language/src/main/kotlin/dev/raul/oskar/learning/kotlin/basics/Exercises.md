@@ -4,9 +4,11 @@
 > `src/test/kotlin/.../basics/practice/ExNN<Nombre>Test.kt` · **Correr:** `./gradlew -p 01-language test --tests '*.basics.practice.*'`
 >
 > **Semáforo:** 🟢 fácil · 🟡 medio · 🟠 difícil · 🔴 muy difícil. **🎯 = prioritario** (ruta recomendada); el resto queda para después.
-> Cada ejercicio trae firma sugerida y casos que la prueba debe cubrir como mínimo.
+> **🎤** = pregunta típica de entrevista · **⚡** = miniproyecto que cierra la lección · `[1.5]` = versión de Kotlin en que es estable.
+> Cada ejercicio trae firma sugerida y casos que la prueba debe cubrir como mínimo. Los números 26 a 40 se agregaron
+> después y van dentro de su nivel; el ⚡ es el 41.
 
-**Prioritarios (🎯):** 02, 05, 09, 14, 16.
+**Prioritarios (🎯):** 02, 05, 09, 14, 16. **Entrevista (🎤):** 11, 14, 16, 26, 30, 38.
 
 ## 🟢 Fáciles
 
@@ -23,7 +25,7 @@
 - Firma: `fun total(xs: List<Int>): Long`
 - Casos: `listOf(Int.MAX_VALUE, 1)` → 2147483648. Escribe también la versión ingenua y una prueba que demuestre el desborde.
 
-**04 🟢 Par e impar con negativos.** `isOdd(-3)` debe ser `true`. En Kotlin, como en Java, `-3 % 2 == -1`.
+**04 🟢 `[1.5]` Par e impar con negativos.** `isOdd(-3)` debe ser `true`. En Kotlin, como en Java, `-3 % 2 == -1`.
 - Firma: `fun isOdd(n: Int): Boolean`
 - Casos: 3, −3, 0, `Int.MIN_VALUE`. Compara `%` con `mod` (`(-3).mod(2) == 1`).
 
@@ -44,6 +46,27 @@ centavos que sobran van a los primeros.
 - Firma: `fun strictBool(raw: String): Boolean?`
 - Casos: `"TRUE"`, `"false"`, `"yes"`, `""`. Busca la función de la stdlib y luego escríbela tú.
 
+**26 🟢 🎤 Cuántos montos distintos.** `BigDecimal("1.0") == BigDecimal("1.00")` es `false`: `equals` compara la escala.
+Contar montos distintos de dos formas: con un `HashSet` (usa `equals`) y con un `TreeSet` (usa `compareTo`).
+- Firmas: `fun distinctByEquals(amounts: List<String>): Int`, `fun distinctByValue(amounts: List<String>): Int`
+- Casos: `["1.0", "1.00", "1"]` → 3 y 1; `["0", "0.00", "-0.0"]` → 3 y 1; lista vacía → 0.
+- Explica en un comentario cómo evita el problema el `Money` de la lección (escala fija por moneda) y por qué
+  `stripTrailingZeros()` no siempre basta.
+
+**27 🟢 Centavos ida y vuelta.** De un `Money` a su monto en la unidad mínima de la moneda, sin pasar por `Double`.
+- Firma: `fun toMinorUnits(m: Money): Long`
+- Casos: `19.99 USD` → 1999, `500 JPY` → 500 (0 decimales), `1.234 KWD` → 1234 (3 decimales), negativos; y
+  `Money.ofCents(toMinorUnits(m), m.currency) == m` para los tres. Pista: `movePointRight` y `longValueExact`.
+
+**28 🟢 Promedio sin truncar.** Sin conversiones implícitas, `sum / size` entre `Int` trunca.
+- Firma: `fun average(xs: List<Int>): Double?`
+- Casos: `[1, 2]` → 1.5, `[]` → `null`, `[Int.MAX_VALUE, Int.MAX_VALUE]` → `2147483647.0` (la suma no debe desbordar).
+
+**29 🟢 `[1.5]` Bytes sin signo.** El checksum de un mensaje es la suma de sus bytes módulo 256 (lo usa el ⚡ de `strings`).
+- Firmas: `fun checksum(bytes: ByteArray): UByte`, `fun hex(b: Byte): String`
+- Casos: `byteArrayOf(-1)` → `255u`, vacío → `0u`, una suma que pasa de 255 da la vuelta; `hex(-1)` → `"FF"`,
+  `hex(10)` → `"0A"`. Compara con hacerlo en `Int` con `and 0xFF`.
+
 ## 🟡 Medios
 
 **09 🟡 🎯 Cadena de nulos.** Con `data class Quote(val ticker: String?, val bid: String?, val ask: String?)` (un tick
@@ -55,7 +78,7 @@ incompleto del feed), armar `"ACME 99.83/99.85"` con lo que haya, **sin `!!`**.
 - Firma: `fun approxEquals(a: Double, b: Double, rel: Double = 1e-9, abs: Double = 1e-12): Boolean`
 - Casos: `0.1 + 0.2` contra `0.3`, `1e20` contra `1e20 + 1`, `0.0` contra `-0.0`, `NaN` contra `NaN` (false).
 
-**11 🟡 Caché de enteros.** Demostrar con pruebas que `val a: Int? = 127; val b: Int? = 127; a === b` es `true`
+**11 🟡 🎤 Caché de enteros.** Demostrar con pruebas que `val a: Int? = 127; val b: Int? = 127; a === b` es `true`
 y con 128 es `false`. Explica en un comentario por qué (boxing a `Integer` y su caché −128..127) y por qué `==` no tiene el problema.
 
 **12 🟡 Bits.** Contar bits encendidos, saber si es potencia de dos y obtener la siguiente potencia de dos.
@@ -66,7 +89,7 @@ y con 128 es `false`. Explica en un comentario por qué (boxing a `Integer` y su
 - Firmas: `fun parseColor(hex: String): Triple<Int, Int, Int>?`, `fun toHex(r: Int, g: Int, b: Int): String`
 - Casos: con y sin `#`, minúsculas, longitud inválida → `null`, componente fuera de 0..255 → excepción.
 
-**14 🟡 🎯 Modos de redondeo.** Tabla de `HALF_UP`, `HALF_EVEN`, `HALF_DOWN`, `DOWN`, `CEILING` para
+**14 🟡 🎯 🎤 Modos de redondeo.** Tabla de `HALF_UP`, `HALF_EVEN`, `HALF_DOWN`, `DOWN`, `CEILING` para
 `2.345`, `2.355`, `-2.345` a dos decimales.
 - Firma: `fun roundAll(x: BigDecimal): Map<RoundingMode, BigDecimal>`
 - Casos: la prueba fija la tabla completa. Responde en un comentario: ¿cuál usa la banca y por qué?
@@ -75,13 +98,42 @@ y con 128 es `false`. Explica en un comentario por qué (boxing a `Integer` y su
 - Firma: `fun toMillis(seconds: Long): Long`
 - Casos: 0, 1, `Long.MAX_VALUE / 1000`, `Long.MAX_VALUE / 1000 + 1` → `ArithmeticException` (`Math.multiplyExact`).
 
-**16 🟡 🎯 `Nothing` útil.** Escribir `fun fail(msg: String): Nothing` y usarlo en un Elvis y en una rama de `when`
+**16 🟡 🎯 🎤 `Nothing` útil.** Escribir `fun fail(msg: String): Nothing` y usarlo en un Elvis y en una rama de `when`
 para que el compilador sepa que el resto del código ya no ve `null`.
 - Casos: una función `fun port(env: Map<String, String>): Int` que use ambos. Prueba los caminos de error.
 
 **17 🟡 El valor absoluto que miente.** `Math.abs(Int.MIN_VALUE)` es negativo.
 - Firma: `fun safeAbs(n: Int): Long` y `fun strictAbs(n: Int): Int` (lanza en `MIN_VALUE`).
 - Casos: −5, 0, `Int.MIN_VALUE` en ambas.
+
+**30 🟡 🎤 Dónde hay boxing.** En Kotlin todo parece objeto: ¿cuándo queda `int` y cuándo `Integer`?
+- Firma: `fun componentType(array: Any): Class<*>?` (el tipo de los elementos de un arreglo, o `null` si no lo es)
+- Casos: `IntArray` → `int`, `Array<Int>` → `Integer`, `arrayOf<Int?>(null)` → `Integer`, `"x"` → `null`; compara con
+  `Int::class.javaPrimitiveType` y `Int::class.javaObjectType`.
+- Explica en un comentario, para `val a: Int`, `val b: Int?`, `List<Int>`, un parámetro `T` y `vararg n: Int`, si
+  queda primitivo o en caja, y compruébalo con `javap -c` (tutorial `04-decompile`).
+
+**31 🟡 Interés de unos días.** Interés simple de un saldo con base 360, redondeando una sola vez al final.
+- Firma: `fun simpleInterest(balance: Money, annualRate: BigDecimal, days: Int, basis: Int = 360): Money`
+- Casos: `10000.00 USD`, `0.05`, 30 días → `41.67 USD`; 0 días → cero; `days < 0` → `IllegalArgumentException`.
+  Agrega una prueba que redondee cada día y sume 30 veces: ¿da lo mismo? Pista: dividir con escala o `MathContext`.
+
+**32 🟡 Comisión con piso y techo.** Comisión porcentual acotada entre un mínimo y un máximo.
+- Firma: `fun fee(notional: Money, rate: BigDecimal, min: Money, max: Money): Money`
+- Casos: `1000.00` al `0.001` con mínimo `2.50` → `2.50`; un nominal enorme → el máximo; el caso intermedio; monedas
+  distintas → `IllegalArgumentException`; `min > max` → excepción. Pista: `Money` es `Comparable`, así que tiene `coerceIn`.
+
+**33 🟡 Cambio de moneda.** Convertir con un tipo de cambio a la escala de la moneda destino.
+- Firma: `fun convert(m: Money, rate: BigDecimal, to: Currency): Money`
+- Casos: `100.00 USD` a `151.237` → `15124 JPY`; de JPY a USD con la tasa inversa; demuestra en una prueba que
+  `BigDecimal.ONE.divide(BigDecimal("3"))` lanza `ArithmeticException` y que con `MathContext.DECIMAL64` no; la ida
+  y vuelta USD → JPY → USD puede no devolver el mismo monto (la prueba fija la diferencia máxima).
+
+**34 🟡 Monto estricto.** Leer un monto de texto sin redondear nunca: si trae más decimales de los que admite la moneda,
+es inválido.
+- Firma: `fun parseStrict(raw: String?, currency: Currency = Money.USD): Money?`
+- Casos: `" 19.99 "` → `19.99 USD`, `"19.9"` → `19.90 USD`, `"19.999"` → `null`, `"1E+3"` → `null`, `"500"` en JPY
+  → `500 JPY`, `"5.5"` en JPY → `null`, `null` y `""` → `null`.
 
 ## 🟠 Difíciles
 
@@ -106,6 +158,42 @@ y `setParseBigDecimal(true)`.
 - Firmas: `fun toBase(n: Long, radix: Int): String`, `fun fromBase(s: String, radix: Int): Long`
 - Casos: 0, negativos, 255 en base 16 y 2, `Long.MAX_VALUE` en base 36.
 
+**35 🟠 Prorrateo por saldos.** Repartir un cargo entre cuentas en proporción a su saldo con el método del mayor
+residuo: cada parte se trunca al centavo y los centavos que faltan van a las partes con mayor residuo (no a las primeras).
+- Firma: `fun prorate(total: Money, balances: List<Money>): List<Money>`
+- Casos: `100.00` entre `[30.00, 20.00, 10.00]` → `[50.00, 33.33, 16.67]` (el ejercicio 05 daría `50.01` a la
+  primera); la suma siempre es el total; todos los saldos en cero o lista vacía → `IllegalArgumentException`; un
+  total negativo (una devolución) reparte con el mismo criterio.
+
+**36 🟠 Depósito a plazo.** Un depósito que capitaliza intereses cada mes: el interés del mes se redondea al centavo
+con `HALF_EVEN` y se suma al saldo, y la tabla muestra cada mes.
+- Firma: `fun termDeposit(principal: Money, monthlyRate: BigDecimal, months: Int): List<DepositMonth>` con
+  `data class DepositMonth(val n: Int, val interest: Money, val balance: Money)`
+- Casos: `10000.00` al `0.01` en 12 meses → primer interés `100.00` y saldo final `11268.25`; 0 meses → lista vacía;
+  tasa o meses negativos → `IllegalArgumentException`; el saldo final es el principal más la suma de los intereses.
+  Compara con la fórmula cerrada `P · (1 + r)^n` redondeada una sola vez (`BigDecimal.pow`) sobre varios montos y
+  tasas, y explica en un comentario por qué pueden diferir en algún centavo y cuál usaría el Banco en el extracto.
+
+**37 🟠 Multiplicar y dividir sin desbordar.** `a * b / c` en `Long` cuando `a * b` no cabe pero el resultado sí (precio en
+centavos por cantidad, dividido por un lote).
+- Firma: `fun mulDiv(a: Long, b: Long, c: Long): Long` (trunca hacia cero, como `/`)
+- Casos: `mulDiv(Long.MAX_VALUE, 2, 2) == Long.MAX_VALUE`, signos mezclados, `c = 0` → `ArithmeticException`, un
+  resultado que no cabe → `ArithmeticException`; contra `BigInteger` en 1000 casos con semilla fija. Pista:
+  `Math.multiplyHigh` o caer a `BigInteger` solo cuando hace falta.
+
+**38 🟠 🎤 Dinero que compara por valor.** Una alternativa al `Money` de la lección: aceptar cualquier escala y hacer
+que `equals` y `hashCode` ignoren los ceros a la derecha.
+- Firma: `class LooseMoney(val amount: BigDecimal, val currency: Currency)` (no `data class`) con `equals`,
+  `hashCode` y `toString`
+- Casos: `1.0 USD == 1.00 USD`, mismos `hashCode`, un `HashSet` con los dos tiene uno; `0 USD` contra `0.00 USD`;
+  `1.00 USD != 1.00 EUR`. Explica en un comentario qué contrato se rompe si `equals` usa `compareTo` pero `hashCode`
+  usa `amount.hashCode()`, y qué diseño prefieres para el Banco.
+
+**39 🟠 Redondear a un incremento.** Efectivo en francos suizos (múltiplos de `0.05`) o precios con tick de `0.25`.
+- Firma: `fun roundToIncrement(x: BigDecimal, increment: BigDecimal, mode: RoundingMode = RoundingMode.HALF_EVEN): BigDecimal`
+- Casos: `1.02` a `0.05` → `1.00`, `1.03` → `1.05`, `1.025` → `1.00` con `HALF_EVEN` y `1.05` con `HALF_UP`,
+  `100.13` a `0.25` → `100.25`, negativos, `increment <= 0` → `IllegalArgumentException`.
+
 ## 🔴 Muy difíciles
 
 **23 🔴 Grandes números.** Factorial de 100 con `BigInteger`, la suma de sus dígitos, y una exponenciación
@@ -116,8 +204,30 @@ modular rápida propia (cuadrado y multiplicación).
 **24 🔴 Dinero con reparto.** `Money(amount: Long /* centavos */, currency: Currency)` con suma que exige misma
 moneda y `allocate(ratios: List<Int>)` al estilo Fowler: repartir 100 en `[3, 7]` → `[30, 70]`, 5 centavos en `[1, 1]` → `[3, 2]`.
 - Casos: la suma del reparto siempre es el original; monedas distintas → excepción; ratios vacíos o en cero.
+- Ojo: es un `Money` en centavos distinto del de la lección; defínelo dentro de `object Ex24` para no taparlo.
 
 **25 🔴 Suma de Kahan.** Implementar la suma compensada y mostrar con una prueba la diferencia contra la suma
 ingenua al sumar `0.1` diez millones de veces.
 - Firma: `fun kahanSum(xs: DoubleArray): Double`
 - Casos: la ingenua se aleja de `1_000_000.0` más que Kahan; compara también con `BigDecimal` como referencia.
+
+**40 🔴 Punto fijo sobre `Long`.** Precios con exactamente 4 decimales guardados como `Long` (`12.3456` es `123456`),
+sin `BigDecimal` por dentro: suma, resta, multiplicación y división con `HALF_EVEN` hecho a mano, y desborde detectado.
+- Firma: `class Fixed4 private constructor(val raw: Long) : Comparable<Fixed4>` con `Fixed4.parse(text: String)`,
+  `plus`, `minus`, `times`, `div` y `toString()` (siempre 4 decimales)
+- Casos: `Fixed4.parse("0.0001") * Fixed4.parse("0.5")` → `"0.0000"` (`0.00005` va al par), `"1.0000" / "3.0000"` →
+  `"0.3333"`, división por cero y desborde → `ArithmeticException`; contra `BigDecimal` (escala 4, `HALF_EVEN`) en
+  10 000 pares con semilla fija.
+
+## ⚡ Saiyajin
+
+**41 ⚡ Calculadora de precisión arbitraria.** Un `BigInteger` propio: enteros de cualquier tamaño guardados en un
+`IntArray` de dígitos (o de bloques de 10⁹, si quieres velocidad), con signo.
+- Firma: `class BigNum private constructor(…) : Comparable<BigNum>` con `BigNum.parse(text: String)`, `plus`,
+  `minus`, `times`, `unaryMinus`, `compareTo`, `equals`/`hashCode`, `toString()` y
+  `fun divide(divisor: BigNum, decimals: Int): String` (cociente con `decimals` decimales y redondeo `HALF_EVEN`).
+- **Se verifica con:** pruebas contra `java.math.BigInteger` (suma, resta, multiplicación, comparación) y contra
+  `BigDecimal.divide(…, decimals, HALF_EVEN)` sobre 10 000 pares aleatorios con semilla fija, de hasta 200 dígitos;
+  más los bordes: cero (sin `-0`), negativos en cada operación, ceros a la izquierda en el texto (`"007"`), texto
+  inválido → `NumberFormatException`, y divisor cero → `ArithmeticException`.
+- Sin usar `BigInteger` ni `BigDecimal` dentro de `BigNum`: solo en las pruebas, como referencia.

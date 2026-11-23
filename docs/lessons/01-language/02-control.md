@@ -104,8 +104,8 @@ Los algoritmos de la lección (`binarySearch`, `twoSum`, `balanced`) usan lo mis
 
 ## Estado
 
-- **Hecho:** código en los casos (B0′ tanda 4) y 6 pruebas; 24 ejercicios (4 🎯); 0 resueltos en `practice/`.
-- **Falta:** B2 (⚡ matcher por búsqueda binaria).
+- **Hecho:** código en los casos (B0′ tanda 4) y 6 pruebas; 40 ejercicios más el ⚡ matcher por búsqueda binaria (4 🎯, 6 🎤; B2, tanda 1); 0 resueltos en `practice/`.
+- **Falta:** nada de B2.
 
 [control-flow]: https://kotlinlang.org/docs/control-flow.html
 [ranges]: https://kotlinlang.org/docs/ranges.html

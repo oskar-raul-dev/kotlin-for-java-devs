@@ -138,9 +138,9 @@ no van en un archivo: las pruebas las piden al vuelo con `orderStream(seed, coun
 
 | # | Subpaquete | Qué repasa | Ejercicios | 🎯 |
 |---|---|---|---|---|
-| 1 | `basics` | Tipos numéricos, conversiones explícitas, overflow, `BigDecimal` (escala, redondeo, nunca desde `Double`), `Money` del Banco con operadores y moneda, `Char`, `==` frente a `===`, `Any`/`Unit`/`Nothing`, smart casts | [25](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/basics/Exercises.md) | 5 |
-| 2 | `control` | `if`/`when` como expresiones, rangos (`..`, `..<`, `until`, `downTo`, `step`), tramos de comisión con `when`, bucles, etiquetas `break@`, algoritmos de pizarra (gcd, primos, búsqueda binaria sobre precios, two-sum, paréntesis) | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/control/Exercises.md) | 4 |
-| 3 | `strings` | Plantillas, raw strings, `buildString`, `substringBefore/After`, regex con grupos con nombre sobre cuentas `ACC-…`, mensajes estilo FIX, `replace` con lambda y lookbehind. **La trampa de `split("\\/")`** | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/strings/Exercises.md) | 3 |
+| 1 | `basics` | Tipos numéricos, conversiones explícitas, overflow, `BigDecimal` (escala, redondeo, nunca desde `Double`), `Money` del Banco con operadores y moneda, `Char`, `==` frente a `===`, `Any`/`Unit`/`Nothing`, smart casts | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/basics/Exercises.md) | 5 |
+| 2 | `control` | `if`/`when` como expresiones, rangos (`..`, `..<`, `until`, `downTo`, `step`), tramos de comisión con `when`, bucles, etiquetas `break@`, algoritmos de pizarra (gcd, primos, búsqueda binaria sobre precios, two-sum, paréntesis) | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/control/Exercises.md) | 4 |
+| 3 | `strings` | Plantillas, raw strings, `buildString`, `substringBefore/After`, regex con grupos con nombre sobre cuentas `ACC-…`, mensajes estilo FIX, `replace` con lambda y lookbehind. **La trampa de `split("\\/")`** | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/strings/Exercises.md) | 3 |
 | 4 | `oop` | Cuentas con `init`, setters privados, `open`/`abstract`; `Order` sellado + `when` exhaustivo; enums con `companion` y `of`; `object`, `data class`, `value class` (`TransferId`), operadores, delegación `by`, `lazy` | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/oop/Exercises.md) | 4 |
 | 5 | `io` | `Path` + `kotlin.io.path`, `useLines`, `use {}`, recursos del classpath, CSV con comillas, conciliación exacta del extracto bancario, consola testeable, Kermit | [23](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/io/Exercises.md) | 3 |
 | 6 | `collections` | Solo lectura frente a mutable, listas, sets, mapas (`getOrPut`), `TreeMap` de cierres, libro de órdenes con `TreeMap` + `ArrayDeque`, `PriorityQueue`, arrays | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/collections/Exercises.md) | 5 |
@@ -161,7 +161,8 @@ los tres motores comparten un solo `jdbc/Exercises.md`, con cada ejercicio etiqu
 
 ## Ejercicios
 
-**289 ejercicios** en 12 archivos `Exercises.md`, de 23 a 25 por lección, sin soluciones.
+**339 ejercicios** en 12 archivos `Exercises.md`, sin soluciones: `basics`, `control` y `strings` ya tienen 40 más su
+⚡ (fase B2); las demás, de 23 a 25 mientras llegan a la escala nueva.
 
 **Semáforo:**
 
@@ -174,8 +175,10 @@ los tres motores comparten un solo `jdbc/Exercises.md`, con cada ejercicio etiqu
 | 🎯 | Prioritario | Ruta recomendada (ver [Ruta prioritaria](#ruta-prioritaria)). El resto queda para después |
 
 Los tiempos son una estimación, no una medición. En la fase B llegan las marcas de `java-champion-review`:
-⚡ **Saiyajin** (miniproyecto que cierra la lección), 🐉 **jefe final** (cruza secciones), 🎤 pregunta típica de
-entrevista y etiquetas de versión (`[2.0]`, `[exp N]`, `[dep N]`, `[rm N]`), con 25 a 40 ejercicios por lección.
+⚡ **Saiyajin** (miniproyecto que cierra la lección, con un criterio verificable), 🐉 **jefe final** (cruza
+secciones), 🎤 pregunta típica de entrevista y etiquetas de versión (`[2.0]`, `[exp N]`, `[dep N]`, `[rm N]`), con 25
+a 40 ejercicios por lección. Las lecciones que ya pasaron por B2 las tienen; los ejercicios agregados en B2 siguen la
+numeración de los que había y van dentro de su nivel, y el ⚡ es el último número.
 
 **Convención para resolverlos:**
 
@@ -415,8 +418,8 @@ kotlin-for-java-devs/
 1. En la sección que corresponda, crear `src/main/kotlin/dev/raul/oskar/learning/kotlin/<tema>/Main.kt` con `package …<tema>` y `fun main()`.
 2. Poner la lógica en funciones o clases aparte (no en `main`) para poder probarla.
 3. Crear `src/test/kotlin/dev/raul/oskar/learning/kotlin/<tema>/<Tema>Test.kt` con `kotlin.test`.
-4. Escribir `<tema>/Exercises.md` con el mismo encabezado que los demás: 20–30 ejercicios con semáforo, firma
-   sugerida y casos mínimos, y 🎯 en los que tocan lo que se está preparando.
+4. Escribir `<tema>/Exercises.md` con el mismo encabezado que los demás: 25–40 ejercicios con semáforo, firma
+   sugerida y casos mínimos, 🎤 en las preguntas de entrevista, 🎯 en la ruta prioritaria y su ⚡ al final.
 5. Correr con `./gradlew -p <sección> run -Plesson=<tema>` y `./gradlew -p <sección> test --tests '*.<tema>.*'`.
 6. Escribir su guía en `docs/lessons/<sección>/NN-<tema>.md` a partir de
    [`_template.md`](docs/lessons/_template.md) y agregarla al [índice de guías](docs/lessons/README.md).

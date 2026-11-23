@@ -144,6 +144,7 @@ trampas de escala, redondeo y `Double`.
 > **B0′, tanda 3 (hecho):** `Money` de [`Casos.md`](Casos.md#money) en `Money.kt` (lo importan `oop`, `exceptions` y
 > `json`); `Numbers.kt` conserva `BigDecimal` suelto para las trampas (`fromDouble`, `commission`, `sameAmount`). Los
 > 25 ejercicios actuales se conservan y se completan. Guía: [`01-basics.md`](lessons/01-language/01-basics.md).
+> **B2, tanda 1 (hecho):** 40 ejercicios (12 🟢, 14 🟡, 10 🟠, 4 🔴), 6 🎤 y el ⚡ como 41.
 
 | Java | Kotlin | Nota |
 |---|---|---|
@@ -189,6 +190,7 @@ algoritmos de pizarra (búsqueda binaria, two-sum, ordenamientos) en Kotlin idio
 > **B0′, tanda 4 (hecho):** los tramos de edad pasaron a tramos de comisión por volumen (`commissionRate`, con `..<`
 > sobre `Long`) y la búsqueda binaria se prueba sobre precios en centavos. Los algoritmos de pizarra se quedan. Guía:
 > [`02-control.md`](lessons/01-language/02-control.md).
+> **B2, tanda 1 (hecho):** 40 ejercicios (12 🟢, 14 🟡, 9 🟠, 5 🔴, con el arbitraje), 6 🎤 y el ⚡ como 41.
 
 | Java | Kotlin | Nota |
 |---|---|---|
@@ -232,6 +234,7 @@ parsear texto con regex sin caer en las diferencias con Java.
 > **B0′, tanda 4 (hecho):** la fecha con grupos, el zip y la tarjeta pasaron a la forma de las cuentas `ACC-…`
 > (`isAccountFormat`, `accountParts`, `maskAccount`) y a `parseFix`; los dígitos de control mod 97 quedan como
 > ejercicio. La trampa de `split("\\/")` se queda, ahora también con FIX. Guía: [`03-strings.md`](lessons/01-language/03-strings.md).
+> **B2, tanda 1 (hecho):** 40 ejercicios (12 🟢, 14 🟡, 10 🟠, 4 🔴), 6 🎤 y el ⚡ como 41.
 
 | Java | Kotlin | Nota |
 |---|---|---|
@@ -3264,9 +3267,9 @@ los enlaces relativos y anclas resuelven. Comprobado con scripts, no a ojo.
 
 | Lección | Caso | Estado | ⚡ | Ejercicios |
 |---|---|---|---|---|
-| `basics` | Banco | existe | Calculadora de precisión arbitraria | 25 |
-| `control` | Ambos | existe | Matcher por búsqueda binaria | 24 |
-| `strings` | Ambos | existe | Códec estilo FIX | 24 |
+| `basics` | Banco | existe | Calculadora de precisión arbitraria | 40 + ⚡ |
+| `control` | Ambos | existe | Matcher por búsqueda binaria | 40 + ⚡ |
+| `strings` | Ambos | existe | Códec estilo FIX | 40 + ⚡ |
 | `oop` | Ambos | existe | Evaluador de expresiones con `sealed` | 24 |
 | `io` | Banco | existe | Conciliador de extracto | 23 |
 | `collections` | Mercado | existe | `HashMap` propio | 24 |

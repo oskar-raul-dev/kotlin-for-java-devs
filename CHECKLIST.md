@@ -54,7 +54,7 @@ que se termina algo. El orden de lo que falta está en [Fase B](#fase-b); las de
 
 ## Fase B
 
-👉 **Siguiente: B2.** B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`). El orden va primero por lo pedido explícitamente (corrutinas, reactivo,
+👉 **En curso: B2** (tanda 1 de 4 hecha; sigue la 2: `oop`, `io`, `collections`). B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`). El orden va primero por lo pedido explícitamente (corrutinas, reactivo,
 legacy, web y móvil) y deja lo transversal al final; las decisiones, en [`docs/Decisions.md`](docs/Decisions.md); el contenido de cada lección, en
 [`docs/Temario.md`](docs/Temario.md) (su trazabilidad dice caso, ⚡ y ejercicios de cada una).
 
@@ -64,7 +64,7 @@ legacy, web y móvil) y deja lo transversal al final; las decisiones, en [`docs/
 | B0′ · Casos Banco y Mercado | Código, datos (`datagen`), enunciados y ruta 🎯 en los casos | — | B0 (tandas 1 y 2) | — | ✅ |
 | B0″ · Guías de estudio | 12 guías con teoría, mapa del código y fuentes verificadas | — | — | — | ✅ |
 | B1 · Tutoriales | 5 tutoriales numerados, 72 ejercicios, 136 comprobaciones | — | — | — | ✅ |
-| **B2 · Ejercicios a la escala nueva** | Las 12 lecciones con código: de 25 a 40 ejercicios, 🎤 marcados y su ⚡ ([detalle](#b2-en-detalle)) | 12 (rehacer ejercicios) | B0, B0′ | Ninguna | ⬜️ 👉 |
+| **B2 · Ejercicios a la escala nueva** | Las 12 lecciones con código: de 25 a 40 ejercicios, 🎤 marcados y su ⚡ ([detalle](#b2-en-detalle)) | 12 (rehacer ejercicios) | B0, B0′ | Ninguna | 🟡 👉 |
 | B3 · Corrutinas y reactivo | `02-coroutines` y `03-reactive`, con su build (y en el `includeBuild` del composite) | 14 | B0 | kotlinx-coroutines (y `-test`), Turbine, atomicfu, Reactor, RxJava 3, `kotlinx-coroutines-reactor`/`-rx3` | ⬜️ |
 | B4 · `01-language` nuevas | `generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2` | 6 | B0 | Ninguna (`interop` agrega Java al módulo; JSpecify) | ⬜️ |
 | B5 · Tracks legacy | `20` y `21` creados y corriendo en sus contenedores; contenido de `22` | 10 | A8 | Gradle de los tracks 14 (6.8.x) y 16 (7.6.x), JUnit 4 o 5 en 1.4, Spring Boot 2.7 | ⬜️ |
@@ -108,13 +108,16 @@ ejercicios a 30 por lección: por eso va por fases.
 ### B2 en detalle
 
 Las 12 lecciones con código ya tienen guía, código y pruebas en los casos; B2 lleva sus ejercicios a la escala nueva.
-Los ⚡ son los del temario.
+Los ⚡ son los del temario. Decidido con el usuario al empezar: 4 tandas de 3 en este orden (1: `basics`, `control`,
+`strings` · 2: `oop`, `io`, `collections` · 3: `functional`, `json`, `datetime` · 4: `exceptions`, `jdbc`, `jpa`); se
+conservan los ejercicios que había y se agregan hasta 40, dentro de su nivel; el ⚡ es el número 41, con su criterio
+en el enunciado y sin prueba provista; 🎤 como etiqueta (unos 6 por lección); revisión del usuario antes de cada commit.
 
 | Lección | Ejercicios hoy | Meta | 🎤 | ⚡ | Estado |
 |---|---|---|---|---|---|
-| `01-language` · `basics` | 25 | 25–40 | ⬜️ | ⬜️ Calculadora de precisión arbitraria | ⬜️ |
-| `01-language` · `control` | 24 | 25–40 | ⬜️ | ⬜️ Matcher por búsqueda binaria | ⬜️ |
-| `01-language` · `strings` | 24 | 25–40 | ⬜️ | ⬜️ Códec estilo FIX | ⬜️ |
+| `01-language` · `basics` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Calculadora de precisión arbitraria | ✅ |
+| `01-language` · `control` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Matcher por búsqueda binaria | ✅ |
+| `01-language` · `strings` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Códec estilo FIX | ✅ |
 | `01-language` · `oop` | 24 | 25–40 | ⬜️ | ⬜️ Evaluador de expresiones con `sealed` | ⬜️ |
 | `01-language` · `io` | 23 | 25–40 | ⬜️ | ⬜️ Conciliador de extracto | ⬜️ |
 | `01-language` · `collections` | 24 | 25–40 | ⬜️ | ⬜️ `HashMap` propio | ⬜️ |
@@ -168,9 +171,9 @@ ejercicios a la escala nueva (B2). La columna **Fase** dice en qué fase nace o 
 
 | # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
 |---|---|---|---|---|---|---|---|---|
-| 1 | `basics` | ✅ | ✅ | 🟡 25 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
-| 2 | `control` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
-| 3 | `strings` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| 1 | `basics` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
+| 2 | `control` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
+| 3 | `strings` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
 | 4 | `oop` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
 | 5 | `io` | ✅ | ✅ | 🟡 23 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
 | 6 | `collections` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
@@ -587,3 +590,10 @@ y el ⚡ de `09 · webflux` achicado (la API completa y la prueba de carga pasan
   fase: generador de órdenes, tutoriales numerados, guías de estudio, idioma de las fuentes, puertos); el orden de la
   fase B, su tamaño y los riesgos, a la sección "Fase B" de este checklist; el origen de las secciones y `13-spring-api`,
   a `docs/Temario.md`. `docs/Temario-Plan.md` y su prompt pasan a `docs/archive/`. Tag `migration-closed`.
+- **2026-11-22** · **B2, tanda 1 (`basics`, `control`, `strings`):** cada lección pasa a 40 ejercicios más su ⚡ (el
+  41), conservando los que había y agregando los nuevos dentro de su nivel; 6 🎤 por lección y etiquetas de versión
+  donde aplica (`[1.5]`, `[1.7]`, `[1.9]`, `[2.2]`). Ejercicios nuevos en los casos: dinero por moneda (centavos,
+  cambio, prorrateo por mayor residuo, depósito a plazo), algoritmos sobre precios (lower bound, pila monótona, arbitraje),
+  y textos del Banco y del Mercado (IBAN, montos por país, monto en letras, tokenizer con `matchAt`). Los ⚡: `BigNum`
+  contra `BigInteger`, `ArrayOrderBook` contra `datagen.orderStream` y `FixCodec` con longitud y checksum. README:
+  339 ejercicios. Sin código nuevo (no hizo falta).

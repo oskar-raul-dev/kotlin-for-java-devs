@@ -142,8 +142,8 @@ los operadores exigen la misma moneda con `require`. → [`Casos.md`](../../Caso
 
 ## Estado
 
-- **Hecho:** código en el caso Banco (B0′ tanda 3) y 12 pruebas; 25 ejercicios (5 🎯); 0 resueltos en `practice/`.
-- **Falta:** B2 (ejercicios a la escala nueva, 🎤 y ⚡ calculadora de precisión arbitraria).
+- **Hecho:** código en el caso Banco (B0′ tanda 3) y 12 pruebas; 40 ejercicios más el ⚡ calculadora de precisión arbitraria (5 🎯, 6 🎤; B2, tanda 1); 0 resueltos en `practice/`.
+- **Falta:** nada de B2.
 
 [numbers]: https://kotlinlang.org/docs/numbers.html
 [types]: https://kotlinlang.org/docs/types-overview.html

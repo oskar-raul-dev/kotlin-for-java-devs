@@ -108,8 +108,8 @@ comparación deja de funcionar. Kotlin lo resolvió con `lowercase()`/`uppercase
 
 ## Estado
 
-- **Hecho:** código en los casos (B0′ tanda 4) y 7 pruebas; 24 ejercicios (3 🎯); 0 resueltos en `practice/`.
-- **Falta:** B2 (⚡ códec estilo FIX).
+- **Hecho:** código en los casos (B0′ tanda 4) y 7 pruebas; 40 ejercicios más el ⚡ códec estilo FIX (3 🎯, 6 🎤; B2, tanda 1); 0 resueltos en `practice/`.
+- **Falta:** nada de B2.
 
 [strings]: https://kotlinlang.org/docs/strings.html
 [j2k-strings]: https://kotlinlang.org/docs/java-to-kotlin-idioms-strings.html
