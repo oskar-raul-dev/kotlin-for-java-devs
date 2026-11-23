@@ -73,12 +73,14 @@ cd 22-legacy-kotlin19 && ./gradlew test                         # track legacy K
   raíz es un *composite build* que solo las agrega; `./gradlew test` en la raíz corre todas, y `-p <sección>` entra
   a una para filtrar pruebas o correr un `Main`.
 - `-Plesson=<subpaquete>` elige qué `Main.kt` corre: el build arma `dev.raul.oskar.learning.kotlin.<lesson>.MainKt`.
-  Sin `-Plesson`, corre `basics` en `01-language`, `fundamentals` en `02-coroutines` y `jdbc.sqlite` en `04-data`.
+  Sin `-Plesson`, corre `basics` en `01-language`, `fundamentals` en `02-coroutines`, `reactor` en `03-reactive` y
+  `jdbc.sqlite` en `04-data`.
 - `--tests` filtra por nombre de clase con comodines.
 - `--args` pasa argumentos al `main(args)`.
 - `--console=plain` quita la barra de progreso de Gradle, que se mezcla con lo que se escribe en la consola.
 
-Estado actual: **266 pruebas** en la base (107 en `01-language`, 109 en `02-coroutines` y 50 en `04-data`), todas en verde, más **4 de humo**
+Estado actual: **305 pruebas** en la base (107 en `01-language`, 109 en `02-coroutines`, 39 en `03-reactive` y 50 en
+`04-data`), todas en verde, más **4 de humo**
 en `22-legacy-kotlin19`. Las 26 de PostgreSQL y MySQL salen `SKIPPED` si sus contenedores no están arriba.
 
 ## Índice de secciones
@@ -93,7 +95,7 @@ El número del directorio es el orden de estudio. El nivel indica qué tan compl
 | [`tutorials/`](tutorials/) | Guías de la terminal | 2.4 | 0 | `01-install`, `02-cli`, `03-repl`, `04-decompile`, `05-debug` | ✅ 5 tutoriales, 72 ejercicios |
 | [`01-language/`](01-language/) | El lenguaje y su stdlib desde Java | 2.4 | 1 | `basics`, `control`, `strings`, `oop`, `io`, `collections`, `functional`, `json`, `datetime`, `exceptions` · luego `generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2` | 🟡 10 lecciones |
 | [`02-coroutines/`](02-coroutines/) | Corrutinas, `Flow` y concurrencia | 2.4 | 1 | `fundamentals`, `cancellation`, `dispatchers`, `channels`, `flow`, `hotflows`, `sync`, `internals`, `testing`, `loom` | ✅ 10 lecciones (B3) |
-| [`03-reactive/`](03-reactive/) | Reactor, RxJava y puentes con corrutinas | 2.4 | 2 | `reactor`, `rxjava`, `bridges`, `backpressure` | Fase B3 |
+| [`03-reactive/`](03-reactive/) | Reactor, RxJava y puentes con corrutinas | 2.4 | 2 | `reactor`, `rxjava`, `bridges`, `backpressure` | ✅ 4 lecciones (B3) |
 | [`04-data/`](04-data/) | Bases de datos relacionales | 2.4 | 2 | `jdbc` (SQLite, PostgreSQL, MySQL), `jpa` · luego `exposed`, `jooq`, `r2dbc`, `sqldelight` | 🟡 4 lecciones |
 | [`05-testing/`](05-testing/) | Pruebas | 2.4 | 2 | `kotest`, `mockk`, `assertions`, `testcontainers` | Fase B8 |
 | [`06-compiler/`](06-compiler/) | Bytecode, reflexión, KSP y plugins del compilador | 2.4 | 2 | `bytecode`, `reflection`, `ksp`, `compilerplugins` | Fase B8 |
@@ -136,8 +138,9 @@ RxJava 3.1.12 y RxKotlin 3.0.1.
 
 Paquete raíz: `dev.raul.oskar.learning.kotlin`. Cada subpaquete tiene su `Main.kt` y su `Exercises.md` en
 `<sección>/src/main/kotlin/…/<subpaquete>/`, y sus pruebas en el mismo paquete bajo `<sección>/src/test/kotlin`.
-Las lecciones 1–9 y 14 están en `01-language`; las de bases de datos (10–13), en `04-data`; las de corrutinas (15 en
-adelante), en `02-coroutines`, con su propio paquete `cases` (copias mínimas de `Money` y de los casos). Cada una tiene su
+Las lecciones 1–9 y 14 están en `01-language`; las de bases de datos (10–13), en `04-data`; las de corrutinas (15–24),
+en `02-coroutines`, y las de reactivo (25–28), en `03-reactive`; cada una de esas dos secciones trae su propio paquete
+`cases` (copias mínimas de `Money` y de los casos). Cada una tiene su
 **guía** en [`docs/lessons/`](docs/lessons/README.md): por dónde empezar a leer, qué muestra cada archivo y qué prueba
 lo demuestra. Los datos de los casos (`ticks.json`, `bank-statement.csv`, `ledger-movements.csv`, `fx-rates.json`) los
 genera el paquete `datagen` con semilla fija: `./gradlew -p 01-language run -Plesson=datagen`. Las órdenes del libro
@@ -169,6 +172,10 @@ no van en un archivo: las pruebas las piden al vuelo con `orderStream(seed, coun
 | 22 | `internals` | CPS y `COROUTINE_SUSPENDED`, la máquina de estados (`label`, variables como campos), `startCoroutine` sin kotlinx, callbacks a `suspend` con cancelación, doble reanudación, `sequence`, elementos propios del contexto | [40 + ⚡](02-coroutines/src/main/kotlin/dev/raul/oskar/learning/kotlin/internals/Exercises.md) | — |
 | 23 | `testing` | `runTest` y tiempo virtual, `advanceTimeBy`/`runCurrent`/`advanceUntilIdle`, dispatcher inyectado (y el `IO` fijo que escapa), Standard frente a Unconfined, `backgroundScope`, Turbine y la conflación de `StateFlow`, `setMain`, una hora de sesión en milisegundos | [40 + ⚡](02-coroutines/src/main/kotlin/dev/raul/oskar/learning/kotlin/testing/Exercises.md) | — |
 | 24 | `loom` | Hilos de plataforma, hilos virtuales, corrutinas y corrutinas sobre hilos virtuales con el mismo trabajo; qué trae cada modelo; el *pinning* de `synchronized` en el JDK 21 medido | [40 + ⚡](02-coroutines/src/main/kotlin/dev/raul/oskar/learning/kotlin/loom/Exercises.md) | — |
+| 25 | `reactor` | `Mono`/`Flux` desde Kotlin, *lazy*, vacío frente a `null` (Reactor 3.9 con JSpecify: Kotlin ve los `null` en compilación), `block()` prohibido en hilos no bloqueantes, concurrencia de `flatMap`, el pipeline del feed (limpieza, velas, cruces) con estado por suscripción, `StepVerifier` en tiempo virtual | [40 + ⚡](03-reactive/src/main/kotlin/dev/raul/oskar/learning/kotlin/reactor/Exercises.md) | — |
+| 26 | `rxjava` | Los cinco tipos, error sin `onError`, `subscribeBy` y `CompositeDisposable` de RxKotlin, `subscribeOn`/`observeOn`, `null` desde platform types, `TestScheduler`, el mismo pipeline y la migración incremental a corrutinas (`await`, `asFlow`, `rxSingle`) | [40 + ⚡](03-reactive/src/main/kotlin/dev/raul/oskar/learning/kotlin/rxjava/Exercises.md) | — |
+| 27 | `bridges` | `awaitSingle`/`awaitSingleOrNull`, `asFlow`, `mono { }`, `flux { }`, `asFlux`; cancelación, contexto (`ReactorContext`) y backpressure cruzando en las dos direcciones | [40 + ⚡](03-reactive/src/main/kotlin/dev/raul/oskar/learning/kotlin/bridges/Exercises.md) | — |
+| 28 | `backpressure` | `request(n)` frente a suspensión; buffer acotado, descarte y último valor en Reactor, `Flowable` y `Flow` (con lo que llega en cada caso medido); `Observable` sin backpressure; relojes sin demanda | [40 + ⚡](03-reactive/src/main/kotlin/dev/raul/oskar/learning/kotlin/backpressure/Exercises.md) | — |
 
 `jdbc/` (sin subpaquete) tiene lo compartido: el ledger del Banco (`LedgerRepository`), la interfaz `Dialect`, las extensiones
 `mapRows` e `inTransaction`, y el recorrido `runDemo`. Las tres bases pasan **la misma batería de pruebas**
@@ -178,7 +185,7 @@ los tres motores comparten un solo `jdbc/Exercises.md`, con cada ejercicio etiqu
 
 ## Ejercicios
 
-**902 ejercicios** en 22 archivos `Exercises.md`, 40 por lección más su ⚡ (fases B2 y B3), sin soluciones.
+**1066 ejercicios** en 26 archivos `Exercises.md`, 40 por lección más su ⚡ (fases B2 y B3), sin soluciones.
 
 **Semáforo:**
 
@@ -396,9 +403,12 @@ kotlin-for-java-devs/
 ├── 02-coroutines/              # fundamentals … loom (B3); cases/ con las copias mínimas de los casos y el feed con semilla
 │   ├── settings.gradle.kts, build.gradle.kts   # Kotlin jvm + plugin de atomicfu, kotlinx-coroutines (core y test), Turbine
 │   └── src/main/kotlin/…/<lección>/, src/test/kotlin/…/<lección>/
+├── 03-reactive/                # reactor, rxjava, bridges, backpressure (B3); cases/ con su copia del feed y las referencias
+│   ├── settings.gradle.kts, build.gradle.kts   # Kotlin jvm, BOM de Reactor, reactor-kotlin-extensions, RxJava 3, RxKotlin, puentes de corrutinas
+│   └── src/main/kotlin/…/<lección>/, src/test/kotlin/…/<lección>/
 ├── 22-legacy-kotlin19/         # Kotlin 1.9.22: wrapper propio (Gradle 9.2.1), .sdkmanrc, prueba de humo, docs/k2-notes.md
 ├── tutorials/                  # 01-install … 05-debug: README, Exercises.md y check.sh cada uno
-└── 03-reactive/ … 21-legacy-kotlin16/, 25-interview/, 26-kotlin-next/   # (vacías) fase B
+└── 05-testing/ … 21-legacy-kotlin16/, 25-interview/, 26-kotlin-next/   # (vacías) fase B
 ```
 
 ## Trampas encontradas al armarlo

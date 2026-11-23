@@ -1188,9 +1188,9 @@ Reactor, RxJava y puentes con corrutinas. **Build:** 2 · **Caso:** Mercado.
 
 **Objetivo:** leer y escribir código Reactor desde Kotlin (el de WebFlux y de muchas librerías Java), con las
 extensiones de `reactor-kotlin-extensions` y sin pelear con los tipos nullables.
-**Sección:** `03-reactive` · **Build:** nivel 2 · **Caso:** Mercado · **Estado:** nueva
+**Sección:** `03-reactive` · **Build:** nivel 2 · **Caso:** Mercado · **Estado:** existe (B3, tanda 4)
 
-| Java 21 | Kotlin (Reactor ⚠️ se fija al escribir la sección) | Nota |
+| Java 21 | Kotlin (Reactor 3.9.0, BOM 2026.0.0) | Nota |
 |---|---|---|
 | `Mono.just(x)`, `Flux.fromIterable(list)` | `x.toMono()`, `list.toFlux()` | Extensiones de `reactor-kotlin-extensions` |
 | `flux.map(t -> …).filter(…)` | `flux.map { … }.filter { … }` | Lambdas finales fuera del paréntesis |
@@ -1202,8 +1202,9 @@ extensiones de `reactor-kotlin-extensions` y sin pelear con los tipos nullables.
 **Trampas:**
 - Nada pasa hasta `subscribe()`: un `Mono` que se crea y no se suscribe no ejecuta nada (el error clásico al portar
   código imperativo).
-- Reactor prohíbe `null` como elemento: `Mono.just(maybeNull)` lanza; desde Kotlin hay que usar `justOrEmpty` o
-  `toMono()` sobre un nullable.
+- Reactor prohíbe `null` como elemento. Desde Reactor 3.8 trae anotaciones JSpecify y Kotlin las lee:
+  `Mono.just(maybeNull)` ya no compila (medido con 3.9.0) y se usa `justOrEmpty`; el `null` se cuela por platform types
+  de Java (`Mono.just(System.getProperty(…))` compila y lanza `NullPointerException: value`).
 - `block()` dentro de un flujo reactivo (o en un hilo de Netty) se queda bloqueado o lanza
   `IllegalStateException`.
 - Los tipos de Reactor son Java: un `Flux<Tick>` puede traer platform types en las firmas de librerías viejas.
@@ -1223,12 +1224,12 @@ con `StepVerifier` en tiempo virtual (`withVirtualTime`) que dan las mismas vela
 
 **Objetivo:** mantener código RxJava (muy común en Android y en servicios viejos) desde Kotlin y saber cómo migrarlo
 a corrutinas.
-**Sección:** `03-reactive` · **Build:** nivel 2 · **Caso:** Mercado · **Estado:** nueva
+**Sección:** `03-reactive` · **Build:** nivel 2 · **Caso:** Mercado · **Estado:** existe (B3, tanda 4)
 
-| Java 21 | Kotlin (RxJava 3 ⚠️) | Nota |
+| Java 21 | Kotlin (RxJava 3.1.12) | Nota |
 |---|---|---|
 | `Observable`, `Flowable`, `Single`, `Maybe`, `Completable` | Los mismos | `Flowable` es el único con backpressure |
-| `observable.subscribe(onNext, onError)` | `subscribeBy(onNext = { }, onError = { })` (RxKotlin ⚠️) | Argumentos con nombre: no se confunden los callbacks |
+| `observable.subscribe(onNext, onError)` | `subscribeBy(onNext = { }, onError = { })` (RxKotlin 3.0.1) | Argumentos con nombre: no se confunden los callbacks |
 | `CompositeDisposable.add(d)` | `d.addTo(disposables)` | Hay que liberar las suscripciones |
 | `Schedulers.io()`, `observeOn` | Los mismos | Similares a `Dispatchers.IO` |
 | `TestObserver` | `observable.test().assertValues(…)` | Igual que en Java |
@@ -1239,7 +1240,8 @@ a corrutinas.
   global (y en Android cierra la app).
 - `Observable` no tiene backpressure: un productor rápido llena la memoria; para eso está `Flowable`.
 - Una suscripción que nadie libera (`dispose`) sigue viva y retiene lo que capturó (fugas de memoria en Android).
-- RxJava tampoco admite `null`: un `map` que devuelve `null` desde Kotlin lanza `NullPointerException`.
+- RxJava tampoco admite `null`. Kotlin reconoce sus anotaciones: un `map { null }` no compila (medido); el `null` que
+  llega desde una API Java sin anotar (un platform type) compila y lanza `NullPointerException` en ejecución.
 - Mezclar `observeOn` y `subscribeOn` sin entender cuál afecta a qué deja el trabajo en el hilo equivocado.
 
 **Caso:** el mismo pipeline del feed del Mercado, ahora en RxJava, y su migración paso a paso a `Flow`.
@@ -1255,9 +1257,9 @@ prueba final sin dependencias de RxJava en el núcleo.
 
 **Objetivo:** cruzar entre corrutinas y Reactor/RxJava sin perder la cancelación, el contexto ni la backpressure, que
 es lo que pide un backend WebFlux escrito en Kotlin.
-**Sección:** `03-reactive` · **Build:** nivel 2 · **Caso:** Mercado · **Estado:** nueva
+**Sección:** `03-reactive` · **Build:** nivel 2 · **Caso:** Mercado · **Estado:** existe (B3, tanda 4)
 
-| Java 21 | Kotlin (`kotlinx-coroutines-reactor` ⚠️, la versión de coroutines de la sección) | Nota |
+| Java 21 | Kotlin (`kotlinx-coroutines-reactor` 1.11.0) | Nota |
 |---|---|---|
 | `mono.block()` | `mono.awaitSingle()`, `awaitSingleOrNull()` | Suspende en vez de bloquear |
 | `flux.toIterable()` | `flux.asFlow()` | La backpressure de Reactor se mapea a la suspensión |
@@ -1288,7 +1290,7 @@ revés), de que el id de correlación llega a los dos lados, y de que la backpre
 
 **Objetivo:** comparar cómo manejan un productor más rápido que el consumidor Reactor (`request(n)`), RxJava
 (`Flowable`) y `Flow` (suspensión), y elegir estrategia (buffer, descarte, último valor) según el dato.
-**Sección:** `03-reactive` · **Build:** nivel 2 · **Caso:** Mercado · **Estado:** nueva
+**Sección:** `03-reactive` · **Build:** nivel 2 · **Caso:** Mercado · **Estado:** existe (B3, tanda 4)
 
 | Java 21 | Kotlin | Nota |
 |---|---|---|
@@ -3315,10 +3317,10 @@ los enlaces relativos y anclas resuelven. Comprobado con scripts, no a ojo.
 
 | Lección | Caso | Estado | ⚡ | Ejercicios |
 |---|---|---|---|---|
-| `reactor` | Mercado | nueva | Pipeline del feed en Reactor | B2+ |
-| `rxjava` | Mercado | nueva | Migración incremental | B2+ |
-| `bridges` | Mercado | nueva | Puente con cancelación y contexto | B2+ |
-| `backpressure` | Mercado | nueva | El mismo pipeline en tres modelos | B2+ |
+| `reactor` | Mercado | existe | Pipeline del feed en Reactor | 40 + ⚡ |
+| `rxjava` | Mercado | existe | Migración incremental | 40 + ⚡ |
+| `bridges` | Mercado | existe | Puente con cancelación y contexto | 40 + ⚡ |
+| `backpressure` | Mercado | existe | El mismo pipeline en tres modelos | 40 + ⚡ |
 
 **`04-data`**
 

@@ -59,7 +59,7 @@ its plan was deleted (tag `migration-closed`). Phase B (new content) continues; 
 | Base: `01-language`, `04-data` | 2.4.21 | 9.9.1 (root wrapper) | 21 (toolchain, `.sdkmanrc`) | kotlinx-serialization 1.13.0, Kermit 2.2.0, Hibernate 7.4.15, H2 2.5.252, JUnit BOM 5.14.4 |
 | `tutorials/` (no build) | 2.4.21 CLI (`.sdkmanrc`: `kotlin=2.4.21`) | — | 21 | Folders are numbered in reading order (`01-install` … `05-debug`; Kotlin packages keep the bare name, `…tutorials.cli`). Each tutorial has a `check.sh` that re-runs every command in its README; keep them in sync |
 | `02-coroutines` | 2.4.21 | 9.9.1 (root wrapper) | 21 | kotlinx-coroutines 1.11.0 (core, test), Turbine 1.2.1, atomicfu 0.33.0 (Gradle plugin) |
-| `03-reactive` (B3 batch 4) | 2.4.21 | 9.9.1 (root wrapper) | 21 | Reactor BOM 2026.0.0, reactor-kotlin-extensions 1.3.3, kotlinx-coroutines-reactor/-rx3 1.11.0, RxJava 3.1.12, RxKotlin 3.0.1 |
+| `03-reactive` | 2.4.21 | 9.9.1 (root wrapper) | 21 | Reactor BOM 2026.0.0, reactor-kotlin-extensions 1.3.3, kotlinx-coroutines-reactor/-rx3 1.11.0, RxJava 3.1.12, RxKotlin 3.0.1 |
 | `22-legacy-kotlin19` | 1.9.22 | 9.2.1 (own wrapper) | 21 | JUnit BOM 5.10.3 |
 | `20-legacy-kotlin14`, `21-legacy-kotlin16` | 1.4.32, 1.6.21 | 6.8.x, 7.6.x ⚠️ | 11, 17 | Phase B5 |
 
@@ -78,6 +78,7 @@ of study (`Legacy19SmokeTest` fails on purpose if track 19 stops running Kotlin 
 ./gradlew -p 01-language run -Plesson=io --console=plain      # io reads stdin; plain console avoids progress-bar noise
 ./gradlew -p 01-language run -Plesson=datagen                 # regenerate the case data files (fixed seed)
 ./gradlew -p 02-coroutines run -Plesson=cancellation          # default in 02-coroutines: fundamentals
+./gradlew -p 03-reactive run -Plesson=bridges                 # default in 03-reactive: reactor
 ./gradlew -p 04-data run -Plesson=jdbc.postgres               # default in 04-data: jdbc.sqlite
 ./gradlew -p 04-data run -Plesson=jpa --args=postgres         # JPA against Docker Postgres (drop-and-create)
 cd 22-legacy-kotlin19 && ./gradlew test                       # legacy track 19, natively (own wrapper)
@@ -107,7 +108,7 @@ all tests with both databases up** (no SKIPPED).
 ## Architecture
 
 - **Monorepo of independent projects.** Root `settings.gradle.kts` is a composite build that `includeBuild`s the
-  base sections with a build (today `01-language`, `02-coroutines` and `04-data`); root `build.gradle.kts` registers aggregate
+  base sections with a build (today `01-language`, `02-coroutines`, `03-reactive` and `04-data`); root `build.gradle.kts` registers aggregate
   `build`/`test`/`check`/`clean`. Each section has its own `settings.gradle.kts` and `build.gradle.kts`, no shared
   parent; versions are repeated on purpose. Empty sections hold a `.gitkeep`.
 - **Outside the composite:** legacy tracks `20`–`22` (own wrapper, Kotlin version and `.sdkmanrc`; open them as
@@ -120,10 +121,11 @@ all tests with both databases up** (no SKIPPED).
   (`11`, `12`) · 5 build tooling (`08`) · 6 legacy in a container (`20`–`22`).
 - Lessons: `01-language` has `basics`, `control`, `strings`, `oop`, `collections`, `functional`, `exceptions`, `io`,
   `datetime`, `json` (plus `datagen`, the data generator, which is not a lesson); `02-coroutines` has `fundamentals`,
-  `cancellation`, `dispatchers`, `channels`, `flow`, `hotflows`, `sync`, `internals`, `testing`, `loom`; `04-data` has `jdbc.*` and `jpa`. Each lesson has a `Main.kt` (demo only), logic in separate
+  `cancellation`, `dispatchers`, `channels`, `flow`, `hotflows`, `sync`, `internals`, `testing`, `loom`; `03-reactive` has
+  `reactor`, `rxjava`, `bridges`, `backpressure`; `04-data` has `jdbc.*` and `jpa`. Each lesson has a `Main.kt` (demo only), logic in separate
   `.kt` files so it is testable, an `Exercises.md`, and a mirrored `src/test/.../<lesson>/<Lesson>Test.kt` using
   `kotlin.test` on JUnit 5.
-- Sections never depend on each other (decision 22): `02-coroutines` has its own `cases/` package with minimal copies
+- Sections never depend on each other (decision 22): `02-coroutines` and `03-reactive` each have their own `cases/` package with minimal copies
   of the cases (`Money`, the five tickers with reference prices and latencies, `suspend` Bank clients) and generates
   its data in code (`cases/Feed.kt`: `tickFeed(seed)` random walk, `withFlaws` for duplicates and late ticks); `dispatchers` simulates the JDBC repository with `Thread.sleep`. Tests use `runTest` (virtual
   time) except where real threads are the point (`DispatchersTest` uses `runBlocking`).
@@ -193,6 +195,9 @@ and update `CHECKLIST.md`.
 - kotlinx-coroutines-test 1.11.0: `currentTime`, `runCurrent` and `advanceTimeBy` need
   `@OptIn(ExperimentalCoroutinesApi::class)` (the coroutine tests opt in at file level). Gradle runs tests with `-ea`,
   which turns on coroutine debug mode: thread names get a ` @coroutine#N` suffix (`dispatchers.threadName()` strips it).
+- Reactor 3.9 (JSpecify) and RxJava 3 nullability annotations are seen by Kotlin: `Mono.just(nullable)` or `map { null }`
+  do not compile; nulls still leak through Java platform types. Tests that cross into Reactor use `runBlocking` or
+  `StepVerifier` (Reactor schedulers ignore the `runTest` virtual clock).
 - `loom` tests use real threads and the JDK 21 runtime; the pinning test skips itself on JDK 24+ (JEP 491).
 - `launch(SupervisorJob())` is deprecated (warning) in kotlinx-coroutines 1.11.0; `cancellation` keeps it under
   `@Suppress("DEPRECATION")` on purpose to show the trap.

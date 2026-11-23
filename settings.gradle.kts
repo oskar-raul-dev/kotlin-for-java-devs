@@ -7,5 +7,6 @@ rootProject.name = "kotlin-for-java-devs"
 listOf(
     "01-language",
     "02-coroutines",
+    "03-reactive",
     "04-data",
 ).forEach { includeBuild(it) }
