@@ -411,6 +411,7 @@ cuándo conviene `Sequence`, y usar las scope functions sin anidarlas.
 > **B0′, tanda 4 (hecho):** `Txn` y el `Order` mutable pasaron a `Tick` limpio y `OrderTicket`; los pipelines agrupan
 > por ticker y `candleOf` arma una vela OHLC con `fold`. Los enunciados ya usan `Tick`. Guía:
 > [`07-functional.md`](lessons/01-language/07-functional.md).
+> **B2, tanda 3 (hecho):** 40 ejercicios (12 🟢, 14 🟡, 10 🟠, 4 🔴), 6 🎤 y el ⚡ como 41.
 
 | Java | Kotlin | Nota |
 |---|---|---|
@@ -458,6 +459,7 @@ jerarquías selladas y serializadores propios.
 > **B0′, tanda 2 (hecho):** `OrderEvent`, `Address` y `Payment` pasaron a `Tick` y a `MarketEvent` sellado (`Trade`,
 > `Quote`, `Halt`), leídos de `ticks.json`; el serializador de `Money` (`MoneyAsString`) llegó en la tanda 3. Versión: kotlinx-serialization
 > **1.13.0** ([`Versions.md`](Versions.md)). Guía: [`08-json.md`](lessons/01-language/08-json.md).
+> **B2, tanda 3 (hecho):** 40 ejercicios (12 🟢, 14 🟡, 10 🟠, 4 🔴), 6 🎤 y el ⚡ como 41.
 
 | Java (Jackson) | Kotlin (kotlinx-serialization 1.13.0) | Nota |
 |---|---|---|
@@ -499,6 +501,7 @@ inyectar) y saber qué aporta la stdlib de Kotlin (`kotlin.time`).
 > **B0′, tanda 4 (hecho):** la edad, el epoch y la ventana de 90 días pasaron al calendario del Mercado de Nueva York
 > (`marketDateOf`, `sessionBounds`, `isMarketOpen`, `HOLIDAYS_2026` ficticios), `Clock` inyectado (`isOpenNow`), ventana
 > de 7 días y cierre de mes (`monthClose`). Guía: [`09-datetime.md`](lessons/01-language/09-datetime.md).
+> **B2, tanda 3 (hecho):** 40 ejercicios (12 🟢, 14 🟡, 10 🟠, 4 🔴), 6 🎤 y el ⚡ como 41.
 
 | Java | Kotlin | Nota |
 |---|---|---|
@@ -3276,9 +3279,9 @@ los enlaces relativos y anclas resuelven. Comprobado con scripts, no a ojo.
 | `oop` | Ambos | existe | Evaluador de expresiones con `sealed` | 40 + ⚡ |
 | `io` | Banco | existe | Conciliador de extracto | 40 + ⚡ |
 | `collections` | Mercado | existe | `HashMap` propio | 40 + ⚡ |
-| `functional` | Mercado | existe | Librería de operadores de `Sequence` | 24 |
-| `json` | Mercado | existe | Serializador para un formato binario | 24 |
-| `datetime` | Ambos | existe | Velas por sesión | 24 |
+| `functional` | Mercado | existe | Librería de operadores de `Sequence` | 40 + ⚡ |
+| `json` | Mercado | existe | Serializador para un formato binario | 40 + ⚡ |
+| `datetime` | Ambos | existe | Velas por sesión | 40 + ⚡ |
 | `exceptions` | Banco | existe | `TransferService` completo | 24 |
 | `generics` | Mercado | nueva | Colecciones persistentes covariantes | B2+ |
 | `inline` | Banco | nueva | Utilidades sin asignaciones | B2+ |

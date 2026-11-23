@@ -54,7 +54,7 @@ que se termina algo. El orden de lo que falta está en [Fase B](#fase-b); las de
 
 ## Fase B
 
-👉 **En curso: B2** (tandas 1 y 2 de 4 hechas; sigue la 3: `functional`, `json`, `datetime`). B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`). El orden va primero por lo pedido explícitamente (corrutinas, reactivo,
+👉 **En curso: B2** (tandas 1 a 3 de 4 hechas; sigue la 4: `exceptions`, `jdbc`, `jpa`). B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`). El orden va primero por lo pedido explícitamente (corrutinas, reactivo,
 legacy, web y móvil) y deja lo transversal al final; las decisiones, en [`docs/Decisions.md`](docs/Decisions.md); el contenido de cada lección, en
 [`docs/Temario.md`](docs/Temario.md) (su trazabilidad dice caso, ⚡ y ejercicios de cada una).
 
@@ -121,9 +121,9 @@ en el enunciado y sin prueba provista; 🎤 como etiqueta (unos 6 por lección);
 | `01-language` · `oop` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Evaluador de expresiones con `sealed` | ✅ |
 | `01-language` · `io` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Conciliador de extracto | ✅ |
 | `01-language` · `collections` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ `HashMap` propio | ✅ |
-| `01-language` · `functional` | 24 | 25–40 | ⬜️ | ⬜️ Librería de operadores de `Sequence` | ⬜️ |
-| `01-language` · `json` | 24 | 25–40 | ⬜️ | ⬜️ Serializador para un formato binario | ⬜️ |
-| `01-language` · `datetime` | 24 | 25–40 | ⬜️ | ⬜️ Velas por sesión | ⬜️ |
+| `01-language` · `functional` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Librería de operadores de `Sequence` | ✅ |
+| `01-language` · `json` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Serializador para un formato binario | ✅ |
+| `01-language` · `datetime` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Velas por sesión | ✅ |
 | `01-language` · `exceptions` | 24 | 25–40 | ⬜️ | ⬜️ `TransferService` completo | ⬜️ |
 | `04-data` · `jdbc` | 25 | 25–40 | ⬜️ | ⬜️ Ledger concurrente en tres motores | ⬜️ |
 | `04-data` · `jpa` | 24 | 25–40 | ⬜️ | ⬜️ Ledger en JPA con concurrencia | ⬜️ |
@@ -177,9 +177,9 @@ ejercicios a la escala nueva (B2). La columna **Fase** dice en qué fase nace o 
 | 4 | `oop` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
 | 5 | `io` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
 | 6 | `collections` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
-| 7 | `functional` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
-| 8 | `json` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
-| 9 | `datetime` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| 7 | `functional` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
+| 8 | `json` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
+| 9 | `datetime` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
 | 14 | `exceptions` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
 | — | `generics` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B4 | `PENDIENTE` |
 | — | `inline` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B4 | `PENDIENTE` |
@@ -604,3 +604,9 @@ y el ⚡ de `09 · webflux` achicado (la API completa y la prueba de carga pasan
   lectura incremental del ledger (`io`); `removeFirst` y JDK 21, `buildList`, `min()` de 1.7, niveles de precio con
   `TreeMap`, `hashCode` malo, el matcher de `control` rehecho con `TreeMap`, unión-búsqueda y `BitSet` (`collections`).
   En `oop` se corrigieron dos restos del dominio viejo (casos del 02 y el resultado sellado del 08). README: 391 ejercicios.
+- **2026-11-22** · **B2, tanda 3 (`functional`, `json`, `datetime`):** 40 ejercicios más su ⚡ en cada una, con 6 🎤.
+  Nuevos: `List`/`Sequence`/`Stream` con traza, lambdas con receptor, `var` capturadas, VWAP, `runningFold` y caída
+  máxima, P&L con lotes FIFO, lentes y trampolín (`functional`); descriptor del plugin, `@Required`, `Money` y
+  `value class` en JSON, `data object` sellado, JSON Lines, claves estructuradas, sobre genérico, polimorfismo abierto,
+  diff y JSONPath (`json`); qué tipo de fecha guardar, `kotlin.time.Duration`, fin de mes anclado, corte con `Clock`,
+  convenciones de días, feriados por reglas, fecha valor entre plazas y reloj monotónico (`datetime`).

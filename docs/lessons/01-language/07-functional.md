@@ -171,8 +171,8 @@ que `Sequence` no tiene es paralelismo: para repartir trabajo de CPU entre núcl
 
 ## Estado
 
-- **Hecho:** código en el caso Mercado (B0′ tanda 4) y 9 pruebas; enunciados ya sobre `Tick`; 24 ejercicios (6 🎯); 0 resueltos en `practice/`.
-- **Falta:** B2 (⚡ librería de operadores de `Sequence`).
+- **Hecho:** código en el caso Mercado (B0′ tanda 4) y 9 pruebas; enunciados ya sobre `Tick`; 40 ejercicios más el ⚡ (6 🎯, 6 🎤; B2, tanda 3); 0 resueltos en `practice/`.
+- **Falta:** nada de B2.
 
 [lambdas]: https://kotlinlang.org/docs/lambdas.html
 [inline]: https://kotlinlang.org/docs/inline-functions.html

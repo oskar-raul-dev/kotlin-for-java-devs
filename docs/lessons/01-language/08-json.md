@@ -112,8 +112,8 @@ Datos: `data/ticks.json`, generado por `datagen` (ver [`Casos.md`](../../Casos.m
 
 ## Estado
 
-- **Hecho:** código en el caso Mercado (B0′ tandas 2 y 3) y 9 pruebas; 24 ejercicios (4 🎯); 0 resueltos en `practice/`.
-- **Falta:** B2 (⚡ serializador binario).
+- **Hecho:** código en el caso Mercado (B0′ tandas 2 y 3) y 9 pruebas; 40 ejercicios más el ⚡ (4 🎯, 6 🎤; B2, tanda 3); 0 resueltos en `practice/`.
+- **Falta:** nada de B2.
 
 [serialization]: https://kotlinlang.org/docs/serialization.html
 [json-config]: https://kotlinlang.org/docs/serialization-json-configuration.html

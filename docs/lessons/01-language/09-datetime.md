@@ -105,8 +105,8 @@ aritmética de calendario tiene sus propias reglas: el 31 de enero más un mes e
 
 ## Estado
 
-- **Hecho:** código en los casos (B0′ tanda 4) y 8 pruebas; 24 ejercicios (5 🎯); 0 resueltos en `practice/`.
-- **Falta:** B2 (⚡ velas por sesión).
+- **Hecho:** código en los casos (B0′ tanda 4) y 8 pruebas; 40 ejercicios más el ⚡ (5 🎯, 6 🎤; B2, tanda 3); 0 resueltos en `practice/`.
+- **Falta:** nada de B2.
 
 [java-time]: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/package-summary.html
 [oracle-tutorial]: https://docs.oracle.com/javase/tutorial/datetime/

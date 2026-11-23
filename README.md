@@ -144,9 +144,9 @@ no van en un archivo: las pruebas las piden al vuelo con `orderStream(seed, coun
 | 4 | `oop` | Cuentas con `init`, setters privados, `open`/`abstract`; `Order` sellado + `when` exhaustivo; enums con `companion` y `of`; `object`, `data class`, `value class` (`TransferId`), operadores, delegación `by`, `lazy` | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/oop/Exercises.md) | 4 |
 | 5 | `io` | `Path` + `kotlin.io.path`, `useLines`, `use {}`, recursos del classpath, CSV con comillas, conciliación exacta del extracto bancario, consola testeable, Kermit | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/io/Exercises.md) | 3 |
 | 6 | `collections` | Solo lectura frente a mutable, listas, sets, mapas (`getOrPut`), `TreeMap` de cierres, libro de órdenes con `TreeMap` + `ArrayDeque`, `PriorityQueue`, arrays | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/collections/Exercises.md) | 5 |
-| 7 | `functional` | Tipos función, closures, composición, lambdas con receptor, `reified`, `Result`, scope functions, `fun interface`, pipelines sobre ticks (`groupBy`, `groupingBy`, `partition`, vela con `fold`), secuencias perezosas | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/functional/Exercises.md) | 6 |
-| 8 | `json` | kotlinx-serialization sobre el feed `ticks.json`: `@SerialName`, `explicitNulls`, `ignoreUnknownKeys`, defaults, `MarketEvent` sellado, serializadores para `BigDecimal`/`LocalDate`, árbol `JsonElement` | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/json/Exercises.md) | 4 |
-| 9 | `datetime` | `java.time` con el calendario del Mercado: parseo estricto `MM/dd/uuuu`, día de mercado en Nueva York, sesión y horario de verano, feriados, `Clock` inyectado, ventana de 7 días, cierre de mes | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/datetime/Exercises.md) | 5 |
+| 7 | `functional` | Tipos función, closures, composición, lambdas con receptor, `reified`, `Result`, scope functions, `fun interface`, pipelines sobre ticks (`groupBy`, `groupingBy`, `partition`, vela con `fold`), secuencias perezosas | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/functional/Exercises.md) | 6 |
+| 8 | `json` | kotlinx-serialization sobre el feed `ticks.json`: `@SerialName`, `explicitNulls`, `ignoreUnknownKeys`, defaults, `MarketEvent` sellado, serializadores para `BigDecimal`/`LocalDate`, árbol `JsonElement` | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/json/Exercises.md) | 4 |
+| 9 | `datetime` | `java.time` con el calendario del Mercado: parseo estricto `MM/dd/uuuu`, día de mercado en Nueva York, sesión y horario de verano, feriados, `Clock` inyectado, ventana de 7 días, cierre de mes | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/datetime/Exercises.md) | 5 |
 | 10 | `jdbc.sqlite` | Ledger del Banco con JDBC común (asientos de doble partida, transferencia en una transacción, `CHECK` que revierte) + dialecto SQLite (sin servidor) | [25, compartidos](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jdbc/Exercises.md) | — |
 | 11 | `jdbc.postgres` | Mismo ledger en PostgreSQL (`READ COMMITTED`, actualización perdida) + `RETURNING`, `= ANY(array)`, `jsonb` | ↑ | — |
 | 12 | `jdbc.mysql` | Mismo ledger en MySQL (`REPEATABLE READ`) + `ON DUPLICATE KEY`, `LAST_INSERT_ID()`, foreign keys a nivel de tabla | ↑ | — |
@@ -161,7 +161,7 @@ los tres motores comparten un solo `jdbc/Exercises.md`, con cada ejercicio etiqu
 
 ## Ejercicios
 
-**391 ejercicios** en 12 archivos `Exercises.md`, sin soluciones: `basics`, `control`, `strings`, `oop`, `io` y `collections` ya tienen 40 más su
+**442 ejercicios** en 12 archivos `Exercises.md`, sin soluciones: `basics`, `control`, `strings`, `oop`, `io`, `collections`, `functional`, `json` y `datetime` ya tienen 40 más su
 ⚡ (fase B2); las demás, de 23 a 25 mientras llegan a la escala nueva.
 
 **Semáforo:**
