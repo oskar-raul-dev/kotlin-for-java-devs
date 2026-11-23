@@ -545,6 +545,7 @@ errores como valores, y saber cuándo usar cada uno.
 > **B0′, tanda 3 (hecho):** `OrderException`, `OrderService` y el cliente de inventario pasaron a `BankException`
 > sellada, `TransferService` y `FxRateClient`; la validación de `Applicant` pasó a `TransferRequest`. Guía:
 > [`10-exceptions.md`](lessons/01-language/10-exceptions.md).
+> **B2, tanda 4 (hecho):** 40 ejercicios (12 🟢, 14 🟡, 10 🟠, 4 🔴), 6 🎤 y el ⚡ como 41.
 
 | Java | Kotlin | Nota |
 |---|---|---|
@@ -1331,6 +1332,7 @@ dialecto y probar todo con una sola batería de contrato.
 > el ⚡. Guía: [`01-jdbc.md`](lessons/04-data/01-jdbc.md). Versiones: sqlite-jdbc 3.54.1.0,
 > PostgreSQL JDBC 42.7.14, mysql-connector-j 26.10.0; PostgreSQL 17.2 y MySQL 8.4.3 en Docker
 > ([`Versions.md`](Versions.md)).
+> **B2, tanda 4 (hecho):** 40 ejercicios (12 🟢, 14 🟡, 10 🟠, 4 🔴), 6 🎤 y el ⚡ como 41.
 
 | Java 21 | Kotlin | Nota |
 |---|---|---|
@@ -1372,6 +1374,7 @@ contexto de persistencia y medir el N+1.
 > **B0′, tanda 5 (hecho):** `Customer`, `PurchaseOrder` y `OrderLine` pasaron a `Account` con `@Version` y
 > `JournalEntry` con `Posting` (cascade, `orphanRemoval`), con el N+1 al recorrer las líneas de los asientos. Guía: [`02-jpa.md`](lessons/04-data/02-jpa.md).
 > Versiones: Hibernate ORM 7.4.15 (JPA 3.2), H2 2.5.252 ([`Versions.md`](Versions.md)).
+> **B2, tanda 4 (hecho):** 40 ejercicios (12 🟢, 14 🟡, 10 🟠, 4 🔴), 6 🎤 y el ⚡ como 41.
 
 | Java 21 | Kotlin | Nota |
 |---|---|---|
@@ -3282,7 +3285,7 @@ los enlaces relativos y anclas resuelven. Comprobado con scripts, no a ojo.
 | `functional` | Mercado | existe | Librería de operadores de `Sequence` | 40 + ⚡ |
 | `json` | Mercado | existe | Serializador para un formato binario | 40 + ⚡ |
 | `datetime` | Ambos | existe | Velas por sesión | 40 + ⚡ |
-| `exceptions` | Banco | existe | `TransferService` completo | 24 |
+| `exceptions` | Banco | existe | `TransferService` completo | 40 + ⚡ |
 | `generics` | Mercado | nueva | Colecciones persistentes covariantes | B2+ |
 | `inline` | Banco | nueva | Utilidades sin asignaciones | B2+ |
 | `interop` | Banco | nueva | Módulo mixto Java + Kotlin | B2+ |
@@ -3318,8 +3321,8 @@ los enlaces relativos y anclas resuelven. Comprobado con scripts, no a ojo.
 
 | Lección | Caso | Estado | ⚡ | Ejercicios |
 |---|---|---|---|---|
-| `jdbc` | Banco | existe | Ledger concurrente en tres motores | 25 |
-| `jpa` | Banco | existe | Ledger en JPA con concurrencia | 24 |
+| `jdbc` | Banco | existe | Ledger concurrente en tres motores | 40 + ⚡ |
+| `jpa` | Banco | existe | Ledger en JPA con concurrencia | 40 + ⚡ |
 | `exposed` | Banco | nueva | El ledger en Exposed | B2+ |
 | `jooq` | Ambos | nueva | Analítica del Mercado en SQL | B2+ |
 | `r2dbc` | Banco | nueva | La misma app en cinco accesos | B2+ |

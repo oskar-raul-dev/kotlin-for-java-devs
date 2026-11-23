@@ -125,8 +125,8 @@ actualización perdida de `01 · jdbc`. Lo que sigue (reintentar o avisar al usu
 
 ## Estado
 
-- **Hecho:** código en el caso Banco (B0′ tanda 5) y 11 pruebas; 24 ejercicios; 0 resueltos en `practice/`.
-- **Falta:** B2 (⚡ ledger en JPA con reintento ante `OptimisticLockException`).
+- **Hecho:** código en el caso Banco (B0′ tanda 5) y 11 pruebas; 40 ejercicios más el ⚡ (6 🎤; B2, tanda 4); 0 resueltos en `practice/`.
+- **Falta:** nada de B2.
 
 [kotlin-jpa]: https://kotlinlang.org/docs/kotlin-jpa-plugin.html
 [hibernate-guide]: https://docs.hibernate.org/orm/7.4/userguide/html_single/

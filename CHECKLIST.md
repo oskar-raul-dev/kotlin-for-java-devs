@@ -54,7 +54,7 @@ que se termina algo. El orden de lo que falta está en [Fase B](#fase-b); las de
 
 ## Fase B
 
-👉 **En curso: B2** (tandas 1 a 3 de 4 hechas; sigue la 4: `exceptions`, `jdbc`, `jpa`). B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`). El orden va primero por lo pedido explícitamente (corrutinas, reactivo,
+👉 **Siguiente: B3.** B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`); B2, también (tag `phase-b2`). El orden va primero por lo pedido explícitamente (corrutinas, reactivo,
 legacy, web y móvil) y deja lo transversal al final; las decisiones, en [`docs/Decisions.md`](docs/Decisions.md); el contenido de cada lección, en
 [`docs/Temario.md`](docs/Temario.md) (su trazabilidad dice caso, ⚡ y ejercicios de cada una).
 
@@ -64,8 +64,8 @@ legacy, web y móvil) y deja lo transversal al final; las decisiones, en [`docs/
 | B0′ · Casos Banco y Mercado | Código, datos (`datagen`), enunciados y ruta 🎯 en los casos | — | B0 (tandas 1 y 2) | — | ✅ |
 | B0″ · Guías de estudio | 12 guías con teoría, mapa del código y fuentes verificadas | — | — | — | ✅ |
 | B1 · Tutoriales | 5 tutoriales numerados, 72 ejercicios, 136 comprobaciones | — | — | — | ✅ |
-| **B2 · Ejercicios a la escala nueva** | Las 12 lecciones con código: de 25 a 40 ejercicios, 🎤 marcados y su ⚡ ([detalle](#b2-en-detalle)) | 12 (rehacer ejercicios) | B0, B0′ | Ninguna | 🟡 👉 |
-| B3 · Corrutinas y reactivo | `02-coroutines` y `03-reactive`, con su build (y en el `includeBuild` del composite) | 14 | B0 | kotlinx-coroutines (y `-test`), Turbine, atomicfu, Reactor, RxJava 3, `kotlinx-coroutines-reactor`/`-rx3` | ⬜️ |
+| B2 · Ejercicios a la escala nueva | Las 12 lecciones con código: de 25 a 40 ejercicios, 🎤 marcados y su ⚡ ([detalle](#b2-en-detalle)) | 12 (rehacer ejercicios) | B0, B0′ | Ninguna | ✅ |
+| **B3 · Corrutinas y reactivo** | `02-coroutines` y `03-reactive`, con su build (y en el `includeBuild` del composite) | 14 | B0 | kotlinx-coroutines (y `-test`), Turbine, atomicfu, Reactor, RxJava 3, `kotlinx-coroutines-reactor`/`-rx3` | ⬜️ 👉 |
 | B4 · `01-language` nuevas | `generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2` | 6 | B0 | Ninguna (`interop` agrega Java al módulo; JSpecify) | ⬜️ |
 | B5 · Tracks legacy | `20` y `21` creados y corriendo en sus contenedores; contenido de `22` | 10 | A8 | Gradle de los tracks 14 (6.8.x) y 16 (7.6.x), JUnit 4 o 5 en 1.4, Spring Boot 2.7 | ⬜️ |
 | B6 · Backend web | `04 · r2dbc` (adelantado), `09-spring` (con WebFlux) y `10-ktor` | 8 | B3 | R2DBC, Spring Boot, SpringMockK, Ktor | ⬜️ |
@@ -124,9 +124,9 @@ en el enunciado y sin prueba provista; 🎤 como etiqueta (unos 6 por lección);
 | `01-language` · `functional` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Librería de operadores de `Sequence` | ✅ |
 | `01-language` · `json` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Serializador para un formato binario | ✅ |
 | `01-language` · `datetime` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Velas por sesión | ✅ |
-| `01-language` · `exceptions` | 24 | 25–40 | ⬜️ | ⬜️ `TransferService` completo | ⬜️ |
-| `04-data` · `jdbc` | 25 | 25–40 | ⬜️ | ⬜️ Ledger concurrente en tres motores | ⬜️ |
-| `04-data` · `jpa` | 24 | 25–40 | ⬜️ | ⬜️ Ledger en JPA con concurrencia | ⬜️ |
+| `01-language` · `exceptions` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ `TransferService` completo | ✅ |
+| `04-data` · `jdbc` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Ledger concurrente en tres motores | ✅ |
+| `04-data` · `jpa` | 40 + ⚡ | 25–40 | ✅ 6 | ✅ Ledger en JPA con concurrencia | ✅ |
 
 ## Secciones
 
@@ -180,7 +180,7 @@ ejercicios a la escala nueva (B2). La columna **Fase** dice en qué fase nace o 
 | 7 | `functional` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
 | 8 | `json` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
 | 9 | `datetime` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
-| 14 | `exceptions` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| 14 | `exceptions` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
 | — | `generics` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B4 | `PENDIENTE` |
 | — | `inline` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B4 | `PENDIENTE` |
 | — | `interop` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B4 | `PENDIENTE` |
@@ -216,8 +216,8 @@ ejercicios a la escala nueva (B2). La columna **Fase** dice en qué fase nace o 
 
 | # | Lección | Código | Pruebas | Ejercicios | ⚡ | Guía | Fase | Estado |
 |---|---|---|---|---|---|---|---|---|
-| 10–12 | `jdbc` (SQLite, PostgreSQL, MySQL) | ✅ | ✅ | 🟡 25 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
-| 13 | `jpa` | ✅ | ✅ | 🟡 24 | ⬜️ | ✅ | B2 | `EN CREACIÓN` |
+| 10–12 | `jdbc` (SQLite, PostgreSQL, MySQL) | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
+| 13 | `jpa` | ✅ | ✅ | ✅ 40 | ✅ enunciado | ✅ | B2 | `LISTO` |
 | — | `exposed` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
 | — | `jooq` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B8 | `PENDIENTE` |
 | — | `r2dbc` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B6 | `PENDIENTE` |
@@ -610,3 +610,13 @@ y el ⚡ de `09 · webflux` achicado (la API completa y la prueba de carga pasan
   `value class` en JSON, `data object` sellado, JSON Lines, claves estructuradas, sobre genérico, polimorfismo abierto,
   diff y JSONPath (`json`); qué tipo de fecha guardar, `kotlin.time.Duration`, fin de mes anclado, corte con `Clock`,
   convenciones de días, feriados por reglas, fecha valor entre plazas y reloj monotónico (`datetime`).
+- **2026-11-22** · **B2, tanda 4 (`exceptions`, `jdbc`, `jpa`) — B2 cerrado:** 40 ejercicios más su ⚡ en cada una,
+  con 6 🎤. Nuevos: `TODO()` es un `Error`, `require` frente a `check`, idempotencia, `Result` encadenado,
+  excepciones al inicializar un `object`, backoff con *jitter*, saga con compensación, excepciones por capa y plazos
+  cooperativos (`exceptions`); `PreparedStatement`, `SUM` de nada, la afinidad de SQLite, saldo acumulado con
+  funciones de ventana, `EXPLAIN`, huecos de `AUTO_INCREMENT`, streaming por driver, bloqueos ordenados y
+  consultivos, conciliación en SQL y un contrato propio (`jdbc`); `@Version`, UPDATE masivo y contexto, la
+  nulabilidad que Kotlin no protege, `LazyInitializationException`, entity graphs, `Tuple`, paginación por clave,
+  `OPTIMISTIC_FORCE_INCREMENT`, `@SoftDelete`, filtros, outbox y H2 frente a PostgreSQL (`jpa`). En `jpa`, el 08 pasa
+  de autores y libros a titulares y cuentas. Las 12 lecciones: 40 ejercicios + ⚡ (12 🟢, 14 🟡, 10 🟠 y 4 🔴 en
+  todas salvo `control`, con 9 🟠 y 5 🔴), 6 🎤 cada una; la ruta 🎯 no cambió. README: 492 ejercicios. Tag `phase-b2`.

@@ -131,10 +131,9 @@ docker compose -f docker/postgres/compose.yaml up -d --wait   # y/o docker/mysql
 
 ## Estado
 
-- **Hecho:** código en el caso Banco (B0′ tanda 5) y 39 pruebas (13 × 3 motores); 25 ejercicios compartidos por los
-  tres motores, etiquetados `[todos]`/`[SQLite]`/`[PG]`/`[MySQL]`; 0 resueltos en `practice/`.
-- **Falta:** B2 (⚡ ledger concurrente con
-  `FOR UPDATE`).
+- **Hecho:** código en el caso Banco (B0′ tanda 5) y 39 pruebas (13 × 3 motores); 40 ejercicios más el ⚡, compartidos por los
+  tres motores y etiquetados `[todos]`/`[SQLite]`/`[PG]`/`[MySQL]` (6 🎤; B2, tanda 4); 0 resueltos en `practice/`.
+- **Falta:** nada de B2.
 
 [jdbc-transactions]: https://docs.oracle.com/javase/tutorial/jdbc/basics/transactions.html
 [java-sql]: https://docs.oracle.com/en/java/javase/21/docs/api/java.sql/java/sql/package-summary.html

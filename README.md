@@ -9,7 +9,8 @@ ejercicios graduados **sin soluciones**. Los ejemplos y los ejercicios siguen do
 
 > **Estado:** fase A cerrada (monorepo, Kotlin 2.4.21, track 1.9 con su contenedor) y fase B en curso: los 5
 > tutoriales están listos, todo el código y los ejercicios ya usan los casos Banco y Mercado, y el temario nuevo
-> está completo y revisado (B0 cerrado). Hay 14 lecciones con código en `01-language` y `04-data`, verificadas en
+> está completo y revisado (B0 cerrado). Las 12 lecciones con ejercicios ya tienen 40 cada una más su ⚡ (B2
+> cerrado). Hay 14 lecciones con código en `01-language` y `04-data`, verificadas en
 > Kotlin 2.4.21, cada una con su guía en [`docs/lessons/`](docs/lessons/README.md). El avance está en
 > [`CHECKLIST.md`](CHECKLIST.md) (con el orden de lo que falta) y las decisiones en
 > [`docs/Decisions.md`](docs/Decisions.md).
@@ -147,11 +148,11 @@ no van en un archivo: las pruebas las piden al vuelo con `orderStream(seed, coun
 | 7 | `functional` | Tipos función, closures, composición, lambdas con receptor, `reified`, `Result`, scope functions, `fun interface`, pipelines sobre ticks (`groupBy`, `groupingBy`, `partition`, vela con `fold`), secuencias perezosas | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/functional/Exercises.md) | 6 |
 | 8 | `json` | kotlinx-serialization sobre el feed `ticks.json`: `@SerialName`, `explicitNulls`, `ignoreUnknownKeys`, defaults, `MarketEvent` sellado, serializadores para `BigDecimal`/`LocalDate`, árbol `JsonElement` | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/json/Exercises.md) | 4 |
 | 9 | `datetime` | `java.time` con el calendario del Mercado: parseo estricto `MM/dd/uuuu`, día de mercado en Nueva York, sesión y horario de verano, feriados, `Clock` inyectado, ventana de 7 días, cierre de mes | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/datetime/Exercises.md) | 5 |
-| 10 | `jdbc.sqlite` | Ledger del Banco con JDBC común (asientos de doble partida, transferencia en una transacción, `CHECK` que revierte) + dialecto SQLite (sin servidor) | [25, compartidos](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jdbc/Exercises.md) | — |
+| 10 | `jdbc.sqlite` | Ledger del Banco con JDBC común (asientos de doble partida, transferencia en una transacción, `CHECK` que revierte) + dialecto SQLite (sin servidor) | [40 + ⚡, compartidos](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jdbc/Exercises.md) | — |
 | 11 | `jdbc.postgres` | Mismo ledger en PostgreSQL (`READ COMMITTED`, actualización perdida) + `RETURNING`, `= ANY(array)`, `jsonb` | ↑ | — |
 | 12 | `jdbc.mysql` | Mismo ledger en MySQL (`REPEATABLE READ`) + `ON DUPLICATE KEY`, `LAST_INSERT_ID()`, foreign keys a nivel de tabla | ↑ | — |
-| 13 | `jpa` | Hibernate 7 sin Spring sobre el ledger: entidades en Kotlin, cascade, `orphanRemoval`, N+1 y `join fetch`, dirty checking, `LazyInitializationException`, `@Version`, UPDATE masivo | [24](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jpa/Exercises.md) | — |
-| 14 | `exceptions` | Sin checked exceptions, `try`/`throw` como expresiones, `require`/`check`/`error`, sin multi-catch (`when` en el catch), `BankException` sellada con `cause` y su traducción a HTTP, `TransferService`, `Result`/`runCatching` (y su trampa con `CancellationException`), validación que acumula errores, `use` y suppressed, `@Throws` para Java | [24](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/exceptions/Exercises.md) | 4 |
+| 13 | `jpa` | Hibernate 7 sin Spring sobre el ledger: entidades en Kotlin, cascade, `orphanRemoval`, N+1 y `join fetch`, dirty checking, `LazyInitializationException`, `@Version`, UPDATE masivo | [40 + ⚡](04-data/src/main/kotlin/dev/raul/oskar/learning/kotlin/jpa/Exercises.md) | — |
+| 14 | `exceptions` | Sin checked exceptions, `try`/`throw` como expresiones, `require`/`check`/`error`, sin multi-catch (`when` en el catch), `BankException` sellada con `cause` y su traducción a HTTP, `TransferService`, `Result`/`runCatching` (y su trampa con `CancellationException`), validación que acumula errores, `use` y suppressed, `@Throws` para Java | [40 + ⚡](01-language/src/main/kotlin/dev/raul/oskar/learning/kotlin/exceptions/Exercises.md) | 4 |
 
 `jdbc/` (sin subpaquete) tiene lo compartido: el ledger del Banco (`LedgerRepository`), la interfaz `Dialect`, las extensiones
 `mapRows` e `inTransaction`, y el recorrido `runDemo`. Las tres bases pasan **la misma batería de pruebas**
@@ -161,8 +162,7 @@ los tres motores comparten un solo `jdbc/Exercises.md`, con cada ejercicio etiqu
 
 ## Ejercicios
 
-**442 ejercicios** en 12 archivos `Exercises.md`, sin soluciones: `basics`, `control`, `strings`, `oop`, `io`, `collections`, `functional`, `json` y `datetime` ya tienen 40 más su
-⚡ (fase B2); las demás, de 23 a 25 mientras llegan a la escala nueva.
+**492 ejercicios** en 12 archivos `Exercises.md`, 40 por lección más su ⚡ (fase B2), sin soluciones.
 
 **Semáforo:**
 
@@ -174,11 +174,11 @@ los tres motores comparten un solo `jdbc/Exercises.md`, con cada ejercicio etiqu
 | 🔴 | Muy difícil | Mini-proyecto o experimento con medición. Una sesión o más |
 | 🎯 | Prioritario | Ruta recomendada (ver [Ruta prioritaria](#ruta-prioritaria)). El resto queda para después |
 
-Los tiempos son una estimación, no una medición. En la fase B llegan las marcas de `java-champion-review`:
+Los tiempos son una estimación, no una medición. En la fase B llegaron las marcas de `java-champion-review`:
 ⚡ **Saiyajin** (miniproyecto que cierra la lección, con un criterio verificable), 🐉 **jefe final** (cruza
 secciones), 🎤 pregunta típica de entrevista y etiquetas de versión (`[2.0]`, `[exp N]`, `[dep N]`, `[rm N]`), con 25
-a 40 ejercicios por lección. Las lecciones que ya pasaron por B2 las tienen; los ejercicios agregados en B2 siguen la
-numeración de los que había y van dentro de su nivel, y el ⚡ es el último número.
+a 40 ejercicios por lección (el 🐉 llega en B10). Las 12 lecciones con código las tienen desde B2: los ejercicios
+agregados siguen la numeración de los que había y van dentro de su nivel, y el ⚡ es el último número (el 41).
 
 **Convención para resolverlos:**
 

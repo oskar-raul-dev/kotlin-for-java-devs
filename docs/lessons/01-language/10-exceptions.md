@@ -125,9 +125,8 @@ atrapar la checked que el método lanza (`loadConfigForJava`).
 
 ## Estado
 
-- **Hecho:** código en el caso Banco (B0′ tanda 3) y 16 pruebas; 24 ejercicios (4 🎯); 0 resueltos en `practice/`.
-- **Falta:** B2 (⚡ `TransferService` completo: idempotencia de verdad, tabla de
-  solicitud → resultado → HTTP).
+- **Hecho:** código en el caso Banco (B0′ tanda 3) y 16 pruebas; 40 ejercicios más el ⚡ (4 🎯, 6 🎤; B2, tanda 4); 0 resueltos en `practice/`.
+- **Falta:** nada de B2.
 
 [exceptions]: https://kotlinlang.org/docs/exceptions.html
 [require]: https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/require.html
