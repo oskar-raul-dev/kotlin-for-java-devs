@@ -24,7 +24,7 @@ que se termina algo. El orden de lo que falta está en [Fase B](#fase-b); las de
 | `README.md` (índice general) | ✅ | `LISTO` | Documentos, requisitos, IDE y terminal, índice de secciones, tracks legacy, convenciones (A9) |
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
 | `docs/Decisions.md` | ✅ | `LISTO` | Las decisiones del curso con su fecha; reemplaza al plan de migración, cerrado y borrado el 2026-11-22 (tag `migration-closed`) |
-| `docs/lessons/` (guías de estudio) | ✅ | `LISTO` | Índice, reglas, plantilla y 18 guías de estudio (teoría, mapa del código y fuentes verificadas), en `docs/lessons/<sección>/NN-<lección>.md` (B0″); `scripts/check-guide-links.sh` |
+| `docs/lessons/` (guías de estudio) | ✅ | `LISTO` | Índice, reglas, plantilla y 22 guías de estudio (teoría, mapa del código y fuentes verificadas), en `docs/lessons/<sección>/NN-<lección>.md` (B0″); `scripts/check-guide-links.sh` |
 | `docs/Temario.md` | ✅ | `LISTO` | Las 88 entradas, los dos 🐉 y la trazabilidad (tandas 0 a 10), revisado con el usuario (B0 cerrado). El anterior, en `docs/archive/Temario-v1.md` |
 | `docs/archive/Temario-Plan.md` y `docs/archive/prompts/temario-tanda.md` | ✅ | `LISTO` | Archivados al cerrar B0. Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
@@ -55,7 +55,7 @@ que se termina algo. El orden de lo que falta está en [Fase B](#fase-b); las de
 
 ## Fase B
 
-👉 **En curso: B3** ([detalle](#b3-en-detalle)), tandas 1 y 2 de 4 hechas. B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`); B2, también (tag `phase-b2`). El orden va primero por lo pedido explícitamente (corrutinas, reactivo,
+👉 **En curso: B3** ([detalle](#b3-en-detalle)), tandas 1 a 3 de 4 hechas (`02-coroutines` completa). B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`); B2, también (tag `phase-b2`). El orden va primero por lo pedido explícitamente (corrutinas, reactivo,
 legacy, web y móvil) y deja lo transversal al final; las decisiones, en [`docs/Decisions.md`](docs/Decisions.md); el contenido de cada lección, en
 [`docs/Temario.md`](docs/Temario.md) (su trazabilidad dice caso, ⚡ y ejercicios de cada una).
 
@@ -118,7 +118,7 @@ sección; `dispatchers` simula el repositorio JDBC en vez de usar el de `04-data
 |---|---|---|---|---|
 | 1 | Build de `02-coroutines`, `fundamentals`, `cancellation`, `dispatchers` | 37 | 120 + 3 ⚡ | ✅ |
 | 2 | `channels`, `flow`, `hotflows` | 33 | 120 + 3 ⚡ | ✅ |
-| 3 | `sync`, `internals`, `testing`, `loom` | — | — | ⬜️ |
+| 3 | `sync`, `internals`, `testing`, `loom` | 39 | 160 + 4 ⚡ | ✅ |
 | 4 | Build de `03-reactive`, `reactor`, `rxjava`, `bridges`, `backpressure` | — | — | ⬜️ |
 
 ### B2 en detalle
@@ -150,7 +150,7 @@ en el enunciado y sin prueba provista; 🎤 como etiqueta (unos 6 por lección);
 |---|---|---|---|---|---|---|---|
 | [`tutorials`](#tutorials) | ✅ | ➖ | ➖ | ➖ | ✅ 72 | ✅ 5 de 5 | `LISTO` |
 | [`01-language`](#01-language) | ✅ | ✅ Gradle (2.4.21) | 🟡 | 🟡 | 🟡 | ➖ | `EN CREACIÓN` |
-| [`02-coroutines`](#02-coroutines) | ✅ | ✅ Gradle (2.4.21) | 🟡 6 de 10 | 🟡 70 | 🟡 246 | ➖ | `EN CREACIÓN` |
+| [`02-coroutines`](#02-coroutines) | ✅ | ✅ Gradle (2.4.21) | ✅ 10 de 10 | ✅ 109 | ✅ 410 | ➖ | `LISTO` |
 | [`03-reactive`](#03-reactive) | ✅ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
 | [`04-data`](#04-data) | ✅ | ✅ Gradle (2.4.21) | 🟡 | 🟡 | 🟡 | ➖ | `EN CREACIÓN` |
 | [`05-testing`](#05-testing) | ✅ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
@@ -214,10 +214,10 @@ ejercicios a la escala nueva (B2). La columna **Fase** dice en qué fase nace o 
 | 18 | `channels` | ✅ | ✅ 12 | ✅ 40 | ✅ enunciado | ✅ | B3 | `LISTO` |
 | 19 | `flow` | ✅ | ✅ 12 | ✅ 40 | ✅ enunciado | ✅ | B3 | `LISTO` |
 | 20 | `hotflows` | ✅ | ✅ 9 | ✅ 40 | ✅ enunciado | ✅ | B3 | `LISTO` |
-| — | `sync` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
-| — | `internals` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
-| — | `testing` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
-| — | `loom` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
+| 21 | `sync` | ✅ | ✅ 12 | ✅ 40 | ✅ enunciado | ✅ | B3 | `LISTO` |
+| 22 | `internals` | ✅ | ✅ 10 | ✅ 40 | ✅ enunciado | ✅ | B3 | `LISTO` |
+| 23 | `testing` | ✅ | ✅ 12 | ✅ 40 | ✅ enunciado | ✅ | B3 | `LISTO` |
+| 24 | `loom` | ✅ | ✅ 5 | ✅ 40 | ✅ enunciado | ✅ | B3 | `LISTO` |
 
 ### 03-reactive
 
@@ -659,3 +659,15 @@ y el ⚡ de `09 · webflux` achicado (la API completa y la prueba de carga pasan
   piden `FlowPreview`; `callbackFlow` y `channelFlow`, nada; `tryEmit` sin buffer y con un suscriptor devuelve `false`.
   Corregido antes de commitear: `alerts` tenía su estado fuera del `flow { }` (dos colecciones lo compartían). README:
   738 ejercicios y 227 pruebas. Tag `b3-batch2`.
+- **2026-11-22** · **B3, tanda 3 (`sync`, `internals`, `testing`, `loom`) — `02-coroutines` completa:** cuatro
+  lecciones con código, 39 pruebas, 40 ejercicios más el ⚡ y 6 🎤 cada una, y su guía; el build suma el plugin de
+  atomicfu 0.33.0. Medido: `suspend` dentro de `synchronized` no compila ("The 'delay' suspension point is inside a
+  critical section"); los atómicos de la stdlib exigen opt-in como **error** en 2.4.21 y en la JVM son las clases de
+  `java.util.concurrent.atomic` con extensiones (`incrementAndFetch`); `resume` dos veces lanza "Already resumed"; una
+  lambda `suspend` guarda sus locales vivas como campos (`I$0`) junto a `label`; en kotlinx-coroutines-test también
+  `advanceUntilIdle`, `setMain`, `resetMain` y `UnconfinedTestDispatcher` piden opt-in; el pinning de `synchronized` en
+  el JDK 21 (64 tareas de 50 ms: ~435 ms contra ~55 ms con `ReentrantLock` en 8 núcleos). Dos hallazgos que cambiaron
+  la lección: el confinamiento con `limitedParallelism(1)` no protege a través de un punto de suspensión (la primera
+  versión de `ConfinedBank` dejaba saldos negativos), y Turbine **sí** ve los valores intermedios de un `StateFlow`
+  asignados desde la prueba (recolecta sin confinar); la trampa del temario se corrigió. README: 902 ejercicios y 266
+  pruebas. Tag `b3-batch3`.

@@ -24,7 +24,7 @@ services.gradle.org; lo marcado con ⚠️ está por verificar al desarrollar.
 | Sección | Librerías |
 |---|---|
 | `01-language` | kotlinx-serialization-json 1.13.0, Kermit 2.2.0 |
-| `02-coroutines` | kotlinx-coroutines-core 1.11.0; en pruebas, kotlinx-coroutines-test 1.11.0 y Turbine 1.2.1; atomicfu 0.33.0 (llega con `sync`, tanda 3) |
+| `02-coroutines` | kotlinx-coroutines-core 1.11.0; en pruebas, kotlinx-coroutines-test 1.11.0 y Turbine 1.2.1; atomicfu 0.33.0 (plugin de Gradle `org.jetbrains.kotlinx.atomicfu`, para `sync`) |
 | `03-reactive` (B3, tanda 4) | El BOM de Reactor 2026.0.0 (reactor-core y reactor-test 3.9.0), reactor-kotlin-extensions 1.3.3, kotlinx-coroutines-reactor y -rx3 1.11.0, RxJava 3.1.12, RxKotlin 3.0.1 |
 | `04-data` | sqlite-jdbc 3.54.1.0, PostgreSQL JDBC 42.7.14, mysql-connector-j 26.10.0, Hibernate ORM 7.4.15.Final, H2 2.5.252, slf4j-simple 2.0.20 |
 

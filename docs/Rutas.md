@@ -36,14 +36,14 @@ Las lecciones de un paso se hacen en el orden en que aparecen. En `jdbc`, los ej
 |---|---|---|---|
 | [1 · Corta](#1--corta-crash) | Quien necesita leer y escribir Kotlin ya | `tutorials`, `01-language` | ✅ completa |
 | [2 · Lenguaje completo](#2--lenguaje-completo) | La base de todas las demás | `tutorials`, `01-language` | 🟡 10 de 16 lecciones |
-| [3 · Backend sin Spring Boot](#3--backend-sin-spring-boot-ktor) | Servicios con Ktor y librerías sueltas | `01`, `02`, `04`, `05`, `10`, `07`, `08` | 🟡 lenguaje, JDBC y 4 de 5 de corrutinas |
-| [4 · Spring reactivo](#4--spring-reactivo) | WebFlux con corrutinas y R2DBC | `01`, `02`, `03`, `04`, `05`, `09`, `13` | 🟡 lenguaje, JDBC y 5 de 6 de corrutinas |
+| [3 · Backend sin Spring Boot](#3--backend-sin-spring-boot-ktor) | Servicios con Ktor y librerías sueltas | `01`, `02`, `04`, `05`, `10`, `07`, `08` | 🟡 lenguaje, JDBC y corrutinas |
+| [4 · Spring reactivo](#4--spring-reactivo) | WebFlux con corrutinas y R2DBC | `01`, `02`, `03`, `04`, `05`, `09`, `13` | 🟡 lenguaje, JDBC y corrutinas |
 | [5 · Spring MVC clásico](#5--spring-mvc-clásico) | Spring Boot bloqueante con JPA | `01`, `04`, `05`, `09`, `13` | 🟡 lenguaje, JDBC y JPA |
-| [6 · Móvil](#6--móvil-android-y-multiplataforma) | Android y Kotlin Multiplatform | `01`, `02`, `04`, `05`, `11`, `12` | 🟡 lenguaje y 5 de 6 de corrutinas |
-| [7 · Concurrencia a fondo](#7--concurrencia-a-fondo) | Corrutinas, `Flow`, reactivo y el JMM | `01`, `02`, `03`, `06` | 🟡 lenguaje y 6 de 10 de corrutinas |
+| [6 · Móvil](#6--móvil-android-y-multiplataforma) | Android y Kotlin Multiplatform | `01`, `02`, `04`, `05`, `11`, `12` | 🟡 lenguaje y corrutinas |
+| [7 · Concurrencia a fondo](#7--concurrencia-a-fondo) | Corrutinas, `Flow`, reactivo y el JMM | `01`, `02`, `03`, `06` | 🟡 lenguaje y corrutinas |
 | [8 · Mantener código legacy](#8--mantener-código-legacy) | Proyectos en Kotlin 1.4 a 1.9 o con Java mezclado | `01`, `06`, `20`–`22` | 🟡 lenguaje y track 19 (humo) |
-| [9 · Entrevista](#9--entrevista) | Preparar una entrevista de Kotlin | `01`, `02`, `04`, `07`, `25` | 🟡 los 🎤 de 18 lecciones |
-| [10 · Completa](#10--completa-full) | Todo el curso | Todas | 🟡 B3 en curso (tanda 2 de 4) |
+| [9 · Entrevista](#9--entrevista) | Preparar una entrevista de Kotlin | `01`, `02`, `04`, `07`, `25` | 🟡 los 🎤 de 22 lecciones |
+| [10 · Completa](#10--completa-full) | Todo el curso | Todas | 🟡 B3 en curso (tanda 3 de 4) |
 
 Las rutas 3 a 6 comparten el [bloque común](#bloque-común-de-lenguaje); la 2 lo contiene entero.
 
@@ -94,7 +94,7 @@ Un servicio HTTP con Ktor, corrutinas y acceso a datos con librerías de Kotlin,
 | Paso | Qué | Medida |
 |---|---|---|
 | 1 | [Bloque común](#bloque-común-de-lenguaje), más `json` y `datetime` | Núcleo |
-| 2 | `02 · fundamentals`, `cancellation`, `dispatchers`, `flow`; `testing` **(B3)** | Núcleo |
+| 2 | `02 · fundamentals`, `cancellation`, `dispatchers`, `flow`, `testing` | Núcleo |
 | 3 | `04 · jdbc` | Núcleo + ⚡ (el ledger concurrente) |
 | 4 | `04 · exposed` y `jooq` **(B8)** | Núcleo + ⚡ de una de las dos |
 | 5 | `05 · kotest`, `mockk`, `testcontainers` **(B8)** | Núcleo |
@@ -112,7 +112,7 @@ Spring Boot con WebFlux, corrutinas en los controladores, `Flow` de punta a punt
 | Paso | Qué | Medida |
 |---|---|---|
 | 1 | [Bloque común](#bloque-común-de-lenguaje), más `json` | Núcleo |
-| 2 | `02 · fundamentals`, `cancellation`, `dispatchers`, `flow`, `hotflows`; `testing` **(B3)** | Núcleo |
+| 2 | `02 · fundamentals`, `cancellation`, `dispatchers`, `flow`, `hotflows`, `testing` | Núcleo |
 | 3 | `03 · reactor`, `bridges`, `backpressure` **(B3)** | Núcleo |
 | 4 | `04 · jdbc` (para entender lo que R2DBC cambia) | 🟢 y 🎤 |
 | 5 | `04 · r2dbc` **(B6)** | Núcleo + ⚡ |
@@ -147,7 +147,7 @@ Android con Compose y una capa compartida con Kotlin Multiplatform.
 | Paso | Qué | Medida |
 |---|---|---|
 | 1 | [Bloque común](#bloque-común-de-lenguaje), más `json`, `datetime`, `delegation` y `dsl` **(B4)** | Núcleo |
-| 2 | `02 · fundamentals`, `cancellation`, `dispatchers`, `flow`, `hotflows`; `testing` **(B3)** | Núcleo |
+| 2 | `02 · fundamentals`, `cancellation`, `dispatchers`, `flow`, `hotflows`, `testing` | Núcleo |
 | 3 | `04 · sqldelight` **(B8)** | Núcleo |
 | 4 | `05 · kotest` y `mockk` **(B8)** | 🟢 y 🎤 |
 | 5 | `11 · kmp`, `shared`, `composemp` **(B7)** | Núcleo + ⚡ |
@@ -163,7 +163,7 @@ Para quien escribe código concurrente: corrutinas por dentro, reactivo, el mode
 | Paso | Qué | Medida |
 |---|---|---|
 | 1 | [Ruta 2](#2--lenguaje-completo) hasta `inline` | Núcleo |
-| 2 | Las 10 lecciones de `02-coroutines`, en orden: `fundamentals`, `cancellation`, `dispatchers`, `channels`, `flow`, `hotflows`; el resto **(B3)** | Todo |
+| 2 | Las 10 lecciones de `02-coroutines`, en orden | Todo |
 | 3 | Las 4 lecciones de `03-reactive` **(B3)** | Núcleo + ⚡ |
 | 4 | `06 · bytecode` (la máquina de estados decompilada) **(B8)** | Núcleo |
 | 5 | `04 · jdbc`, ejercicios de concurrencia (16, 17, 18, 37 y el ⚡) | Esos |
@@ -192,9 +192,9 @@ Las preguntas típicas, los algoritmos de pizarra y la revisión de PRs.
 | Paso | Qué | Medida |
 |---|---|---|
 | 1 | [Ruta 1](#1--corta-crash) | 🎯 |
-| 2 | Los 🎤 de las 18 lecciones con código (cada `Exercises.md` los lista al inicio) | 🎤 (108) |
+| 2 | Los 🎤 de las 22 lecciones con código (cada `Exercises.md` los lista al inicio) | 🎤 (132) |
 | 3 | `control`: los algoritmos de pizarra (búsqueda binaria, ventana deslizante, Kadane, comprar y vender) | 🟡 y 🟠 |
-| 4 | `02 · fundamentals`, `cancellation`; `sync` **(B3)** | 🎤 |
+| 4 | `02 · fundamentals`, `cancellation`, `sync` | 🎤 |
 | 5 | `07 · idioms` y `gof` **(B9)** | 🎤 |
 | 6 | `25 · livecoding` y `prreview` **(B9)** | Todo |
 
@@ -208,7 +208,7 @@ Todo el curso, en un orden que respeta las dependencias entre secciones (no el n
 |---|---|---|
 | 1 | `tutorials` y las 16 lecciones de `01-language` (la [ruta 2](#2--lenguaje-completo)) | Todo |
 | 2 | `05-testing` **(B8)**: conviene temprano, para escribir mejores pruebas en lo que sigue | Todo |
-| 3 | `02-coroutines` (6 de 10 lecciones) y `03-reactive` **(B3)** | Todo |
+| 3 | `02-coroutines`; `03-reactive` **(B3)** | Todo |
 | 4 | `04-data`: `jdbc`, `jpa`, `exposed`, `jooq`, `r2dbc`, `sqldelight` | Todo |
 | 5 | `06-compiler` **(B8)** y `07-design` **(B9)** | Todo |
 | 6 | `08-build` **(B9)** | Todo |

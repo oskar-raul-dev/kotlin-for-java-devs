@@ -1040,13 +1040,13 @@ alertas no se repiten para quien llega tarde, y la fuente se detiene exactamente
 
 **Objetivo:** proteger estado compartido entre corrutinas sin bloquear hilos, y saber cuándo un lock sobra porque se
 puede confinar el estado.
-**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Banco · **Estado:** nueva
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Banco · **Estado:** existe (B3, tanda 3)
 
 | Java 21 | Kotlin (kotlinx-coroutines 1.11.0 ⚠️) | Nota |
 |---|---|---|
 | `synchronized`, `ReentrantLock` | `mutex.withLock { }` | Suspende en vez de bloquear; **no** es reentrante |
 | `java.util.concurrent.Semaphore` | `semaphore.withPermit { }` | Limita cuántas corrutinas entran a la vez |
-| `AtomicLong`, `AtomicReference` | Los mismos de `java.util.concurrent.atomic`; atomicfu ⚠️; `kotlin.concurrent.atomics` `[exp 2.4]` | atomicfu y la stdlib importan en multiplataforma |
+| `AtomicLong`, `AtomicReference` | Los mismos de `java.util.concurrent.atomic`; atomicfu 0.33.0; `kotlin.concurrent.atomics` `[exp 2.4]` | atomicfu y la stdlib importan en multiplataforma; el opt-in de la stdlib es error, no warning (medido) |
 | `volatile` | `@Volatile` | Visibilidad, no atomicidad; mismo modelo de memoria (JMM) |
 | `ConcurrentHashMap` | El mismo | `getOrPut` no pisa un valor existente pero puede calcularlo de más; `computeIfAbsent` lo calcula una vez |
 | Un hilo dueño del estado | Confinamiento: un actor (`channels`) o `limitedParallelism(1)` | Muchas veces más simple que un lock |
@@ -1077,7 +1077,7 @@ y una variante con el mismo estado confinado a un actor que da el mismo resultad
 
 **Objetivo:** entender qué genera el compilador para una función `suspend`, adaptar APIs de callbacks a `suspend` y
 saber qué cuesta cada punto de suspensión.
-**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** nueva
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** existe (B3, tanda 3)
 
 | Java 21 | Kotlin | Nota |
 |---|---|---|
@@ -1113,7 +1113,7 @@ suspensión más uno.
 
 **Objetivo:** probar código con corrutinas, tiempos y flujos de forma determinista y en milisegundos, sin `sleep` ni
 pruebas que fallan de vez en cuando.
-**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** existe (B3, tanda 3)
 
 | Java 21 | Kotlin (kotlinx-coroutines-test 1.11.0 ⚠️, Turbine ⚠️) | Nota |
 |---|---|---|
@@ -1130,7 +1130,8 @@ pruebas que fallan de vez en cuando.
   `UnconfinedTestDispatcher` corre de inmediato: cambiar uno por otro cambia el orden.
 - Una corrutina lanzada en un scope propio que nunca termina cuelga o hace fallar la prueba; para eso está
   `backgroundScope`.
-- Un `StateFlow` es *conflated*: Turbine puede no ver los valores intermedios si se emiten sin suspender.
+- Un `StateFlow` es *conflated*: un colector que no recibe turno (por ejemplo, sobre `StandardTestDispatcher`) pierde
+  los valores intermedios. Turbine recolecta sin confinar y **sí** los ve cuando la prueba los asigna (medido en B3).
 - `runBlocking` en una prueba usa tiempo real.
 
 **Caso:** las velas de un minuto del feed del Mercado y el tiempo límite de una transferencia del Banco, probados en
@@ -1147,7 +1148,7 @@ seguidas, y pruebas con Turbine del orden de las velas y las alertas.
 
 **Objetivo:** comparar corrutinas e hilos virtuales de Java 21 (qué resuelve cada uno, qué cuesta y cuándo conviene
 mezclarlos) con mediciones propias y no con opiniones.
-**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** nueva
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** existe (B3, tanda 3)
 
 | Java 21 | Kotlin (kotlinx-coroutines 1.11.0 ⚠️) | Nota |
 |---|---|---|
@@ -3305,10 +3306,10 @@ los enlaces relativos y anclas resuelven. Comprobado con scripts, no a ojo.
 | `channels` | Mercado | existe | Motor de emparejamiento como actor | 40 + ⚡ |
 | `flow` | Mercado | existe | Operadores propios con backpressure | 40 + ⚡ |
 | `hotflows` | Ambos | existe | Tablero de precios en vivo | 40 + ⚡ |
-| `sync` | Banco | nueva | Transferencias concurrentes sin perder saldo | B2+ |
-| `internals` | Mercado | nueva | Scheduler de corrutinas propio sobre `createCoroutine` | B2+ |
-| `testing` | Ambos | nueva | Una sesión de mercado en un segundo | B2+ |
-| `loom` | Mercado | nueva | Servidor de difusión con tres modelos | B2+ |
+| `sync` | Banco | existe | Transferencias concurrentes sin perder saldo | 40 + ⚡ |
+| `internals` | Mercado | existe | Scheduler de corrutinas propio sobre `createCoroutine` | 40 + ⚡ |
+| `testing` | Ambos | existe | Una sesión de mercado en un segundo | 40 + ⚡ |
+| `loom` | Mercado | existe | Servidor de difusión con tres modelos | 40 + ⚡ |
 
 **`03-reactive`**
 

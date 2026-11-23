@@ -69,6 +69,10 @@ que se lee para aprender.
 | 04 | [`channels`](02-coroutines/04-channels.md) — `Channel`, `select`, productores | Mercado | 12 | 40 + ⚡ |
 | 05 | [`flow`](02-coroutines/05-flow.md) — Operadores, `flowOn`, buffer, conflate | Mercado | 12 | 40 + ⚡ |
 | 06 | [`hotflows`](02-coroutines/06-hotflows.md) — `StateFlow`, `SharedFlow` | Ambos | 9 | 40 + ⚡ |
+| 07 | [`sync`](02-coroutines/07-sync.md) — `Mutex`, `Semaphore`, atomicfu, `@Volatile` y el JMM | Banco | 12 | 40 + ⚡ |
+| 08 | [`internals`](02-coroutines/08-internals.md) — CPS, máquina de estados decompilada, `Continuation` a mano | Mercado | 10 | 40 + ⚡ |
+| 09 | [`testing`](02-coroutines/09-testing.md) — `runTest`, tiempo virtual, Turbine | Ambos | 12 | 40 + ⚡ |
+| 10 | [`loom`](02-coroutines/10-loom.md) — Corrutinas frente a hilos virtuales | Mercado | 5 | 40 + ⚡ |
 
 `cases` no es una lección y no tiene guía: son las copias mínimas de los casos que usa la sección (`Money`, tickers,
 clientes `suspend` del Banco, el feed sintético con semilla); se presentan en las guías de `fundamentals` y `channels`.

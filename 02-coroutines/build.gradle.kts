@@ -1,9 +1,11 @@
 // 02-coroutines: corrutinas, Flow y concurrencia (fundamentals … loom). Proyecto autocontenido (sin parent común);
 // se construye solo (./gradlew -p 02-coroutines test) o desde el agregador de la raíz.
-// Versiones fijadas a propósito: Kotlin 2.4.21, kotlinx-coroutines 1.11.0, Turbine 1.2.1, JDK 21.
+// Versiones fijadas a propósito: Kotlin 2.4.21, kotlinx-coroutines 1.11.0, Turbine 1.2.1, atomicfu 0.33.0, JDK 21.
 // Se repiten en cada sección (sin parent común): mantenerlas en sincronía con docs/Versions.md.
 plugins {
     kotlin("jvm") version "2.4.21"
+    // atomicfu (lección sync): el plugin reescribe atomic(…) a campos atómicos de la JVM al compilar
+    id("org.jetbrains.kotlinx.atomicfu") version "0.33.0"
     application
 }
 
