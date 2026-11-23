@@ -26,6 +26,7 @@ its plan was deleted (tag `migration-closed`). Phase B (new content) continues; 
 | `docs/Versions.md` | Every pinned version (base, per section, legacy tracks, container images) and how to bump them |
 | `docs/LegacyKotlin.md` | What changed from Kotlin 1.0 to 2.x, the three legacy tracks, how to run them |
 | `docs/Casos.md` | The two case studies (Bank: ledger/transfers/reconciliation; Market: ticks/candles/order book/P&L) and which lesson uses which |
+| `docs/Rutas.md` | Study paths by goal (short = the 🎯 route, language, backend without Spring, Spring reactive, Spring MVC, mobile, concurrency, legacy, interview, full): lessons, order and how much of each |
 | `docs/Temario.md` | Per-lesson syllabus (Java → Kotlin mapping, traps); rewritten in phase B0 |
 | `docs/archive/` | Closed material: syllabus v1, the B0 batch plan `Temario-Plan.md` (lesson template, measured version tags from `scripts/version-probes.sh`) and its prompt |
 | `docs/lessons/` | One guide per lesson with code (`<section>/NN-<subpackage>.md`): reading order, file → symbols → test map, how to run, status. Index and rules in `docs/lessons/README.md`, template in `_template.md` |
@@ -38,6 +39,7 @@ its plan was deleted (tag `migration-closed`). Phase B (new content) continues; 
 - Version change → every section's `build.gradle.kts` (no shared parent), `docs/Versions.md`, README "Versiones",
   and this file.
 - New section with a build → root `settings.gradle.kts` `includeBuild` list (unless it is a legacy track or Android).
+- A lesson that starts to exist, or a phase that closes → its **(Bn)** marks and the "Hoy" column in `docs/Rutas.md`.
 - New lesson → new guide in `docs/lessons/<section>/` and its row in `docs/lessons/README.md`; a file added, renamed
   or removed in a lesson, or a cited symbol or test that changes → that lesson's guide (cite symbols, never line
   numbers). A guide is a study guide: theory (deeper where the model differs from Java), code map, and checked

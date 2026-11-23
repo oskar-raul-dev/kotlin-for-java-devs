@@ -28,6 +28,7 @@ El avance y el orden de lo que falta están en [`CHECKLIST.md`](../CHECKLIST.md#
 | 18 | Fuentes de las guías solo en inglés o español (o con subtítulos fiables en inglés); inglés primero, español marcado *(es)* | ✅ 22 nov 2026 |
 | 19 | Puertos de las bases en el rango 20000 (PostgreSQL 25432, MySQL 23306, Valkey 26379) para no chocar con otros proyectos locales | ✅ 22 nov 2026 |
 | 20 | El plan de migración (`Plan-Migracion-Monorepo.md`) se cierra y se borra: las decisiones viven aquí, el orden de la fase B en `CHECKLIST.md` y el contenido de cada lección en `docs/Temario.md`. El plan completo queda en el tag `migration-closed^` | ✅ 22 nov 2026 |
+| 21 | **Rutas de estudio** en `docs/Rutas.md`: la corta (la ruta 🎯 del curso desde su primera versión, en el README), lenguaje completo, backend sin Spring Boot (Ktor), Spring reactivo, Spring MVC, móvil, concurrencia, legacy, entrevista y completa; las lecciones que faltan se marcan con su fase | ✅ 22 nov 2026 |
 
 El punto 7 importa: si mover y actualizar van juntos, cuando algo falle no se sabe si fue el movimiento o la
 versión. Además, la lista de lo que se rompe al pasar de 1.9.22 a 2.x sirve de contenido para el track de 1.9.

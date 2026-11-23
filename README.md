@@ -30,6 +30,7 @@ ejercicios graduados **sin soluciones**. Los ejemplos y los ejercicios siguen do
 | [`docs/Versions.md`](docs/Versions.md) | Todas las versiones fijadas (base, secciones, tracks, imágenes) y cómo actualizarlas |
 | [`docs/LegacyKotlin.md`](docs/LegacyKotlin.md) | Qué trajo cada versión de 1.0 a 2.x, los tres tracks legacy y cómo correrlos |
 | [`docs/Casos.md`](docs/Casos.md) | Los dos casos de estudio, Banco y Mercado: entidades, datos y qué lección usa cada uno |
+| [`docs/Rutas.md`](docs/Rutas.md) | Rutas de estudio según el objetivo: corta (los 🎯), lenguaje, backend sin Spring, Spring reactivo, Spring MVC, móvil, concurrencia, legacy, entrevista y completa |
 | [`docs/Temario.md`](docs/Temario.md) | Temario por lección: mapeo Java → Kotlin, trampas, versión, caso y ⚡ (completo y revisado; el anterior, en [`docs/archive/`](docs/archive/Temario-v1.md)) |
 | [`docs/lessons/`](docs/lessons/README.md) | Guías de lección: por dónde leer cada lección con código, qué archivo muestra qué y qué prueba lo demuestra |
 | [`docs/archive/`](docs/archive/) | Lo cerrado: el temario v1, el plan de tandas de B0 (con la plantilla de lección y las versiones medidas) y su prompt |
@@ -228,7 +229,8 @@ class Ex02SafeIntTest {
 43 ejercicios 🎯, ordenados para seguir los casos de punta a punta ([`docs/Casos.md`](docs/Casos.md)): los bloques 1
 a 4 con el feed del Mercado (`ticks.json`: leerlo, limpiar nulos y fechas, agrupar por ticker y día, ventanas y
 estadística) y el bloque 5 con una transferencia del Banco (el manejo de errores que se revisa en un PR). Si el tiempo
-no alcanza, haz primero los marcados con **★**: son 15 y cubren el recorrido completo.
+no alcanza, haz primero los marcados con **★**: son 15 y cubren el recorrido completo. Es la ruta 1 de
+[`docs/Rutas.md`](docs/Rutas.md), donde están también las rutas por objetivo (backend, Spring, móvil…) y la completa.
 
 **Bloque 1: leer los datos**
 

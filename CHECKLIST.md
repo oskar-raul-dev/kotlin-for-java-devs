@@ -30,6 +30,7 @@ que se termina algo. El orden de lo que falta está en [Fase B](#fase-b); las de
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
 | `docs/LegacyKotlin.md` | ✅ | `LISTO` | Versiones 1.0 → 2.x, los tres tracks, cómo correrlos y trampas |
 | `docs/Casos.md` | ✅ | `LISTO` | Diseño de los casos Banco y Mercado y su puente; se revisa al implementar |
+| `docs/Rutas.md` | ✅ | `LISTO` | 10 rutas de estudio por objetivo; se actualiza al nacer cada lección (sus marcas **(Bn)**) |
 | `docs/JavaToKotlin.md`, `docs/EffectiveKotlin.md` | ⬜️ | `PENDIENTE` | Fase B |
 | `CLAUDE.md` | ✅ | `LISTO` | Reescrito en A9: documentos y reglas de sincronía, versiones, arquitectura, niveles, leyenda, git |
 | Compose de PostgreSQL 17.2 y MySQL 8.4.3 | ✅ | `LISTO` | `docker/postgres`, `docker/mysql` |
@@ -620,3 +621,7 @@ y el ⚡ de `09 · webflux` achicado (la API completa y la prueba de carga pasan
   `OPTIMISTIC_FORCE_INCREMENT`, `@SoftDelete`, filtros, outbox y H2 frente a PostgreSQL (`jpa`). En `jpa`, el 08 pasa
   de autores y libros a titulares y cuentas. Las 12 lecciones: 40 ejercicios + ⚡ (12 🟢, 14 🟡, 10 🟠 y 4 🔴 en
   todas salvo `control`, con 9 🟠 y 5 🔴), 6 🎤 cada una; la ruta 🎯 no cambió. README: 492 ejercicios. Tag `phase-b2`.
+- **2026-11-22** · **Rutas de estudio:** `docs/Rutas.md` con 10 rutas (corta, lenguaje completo, backend sin Spring
+  Boot, Spring reactivo, Spring MVC, móvil, concurrencia, legacy, entrevista y completa), cada una con sus lecciones en
+  orden, cuánto hacer de cada una (🎯, núcleo, ⚡ o todo) y las que faltan marcadas con su fase. La corta es la ruta 🎯
+  del README, la misma desde la versión inicial del curso (43 ejercicios, 15 ★), ahora sobre los casos.
