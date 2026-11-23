@@ -78,7 +78,7 @@ cd 22-legacy-kotlin19 && ./gradlew test                         # track legacy K
 - `--args` pasa argumentos al `main(args)`.
 - `--console=plain` quita la barra de progreso de Gradle, que se mezcla con lo que se escribe en la consola.
 
-Estado actual: **194 pruebas** en la base (107 en `01-language`, 37 en `02-coroutines` y 50 en `04-data`), todas en verde, más **4 de humo**
+Estado actual: **227 pruebas** en la base (107 en `01-language`, 70 en `02-coroutines` y 50 en `04-data`), todas en verde, más **4 de humo**
 en `22-legacy-kotlin19`. Las 26 de PostgreSQL y MySQL salen `SKIPPED` si sus contenedores no están arriba.
 
 ## Índice de secciones
@@ -92,7 +92,7 @@ El número del directorio es el orden de estudio. El nivel indica qué tan compl
 |---|---|---|---|---|---|
 | [`tutorials/`](tutorials/) | Guías de la terminal | 2.4 | 0 | `01-install`, `02-cli`, `03-repl`, `04-decompile`, `05-debug` | ✅ 5 tutoriales, 72 ejercicios |
 | [`01-language/`](01-language/) | El lenguaje y su stdlib desde Java | 2.4 | 1 | `basics`, `control`, `strings`, `oop`, `io`, `collections`, `functional`, `json`, `datetime`, `exceptions` · luego `generics`, `inline`, `interop`, `delegation`, `dsl`, `kotlin2` | 🟡 10 lecciones |
-| [`02-coroutines/`](02-coroutines/) | Corrutinas, `Flow` y concurrencia | 2.4 | 1 | `fundamentals`, `cancellation`, `dispatchers` · luego `channels`, `flow`, `hotflows`, `sync`, `internals`, `testing`, `loom` | 🟡 3 lecciones (B3) |
+| [`02-coroutines/`](02-coroutines/) | Corrutinas, `Flow` y concurrencia | 2.4 | 1 | `fundamentals`, `cancellation`, `dispatchers`, `channels`, `flow`, `hotflows` · luego `sync`, `internals`, `testing`, `loom` | 🟡 6 lecciones (B3) |
 | [`03-reactive/`](03-reactive/) | Reactor, RxJava y puentes con corrutinas | 2.4 | 2 | `reactor`, `rxjava`, `bridges`, `backpressure` | Fase B3 |
 | [`04-data/`](04-data/) | Bases de datos relacionales | 2.4 | 2 | `jdbc` (SQLite, PostgreSQL, MySQL), `jpa` · luego `exposed`, `jooq`, `r2dbc`, `sqldelight` | 🟡 4 lecciones |
 | [`05-testing/`](05-testing/) | Pruebas | 2.4 | 2 | `kotest`, `mockk`, `assertions`, `testcontainers` | Fase B8 |
@@ -162,6 +162,9 @@ no van en un archivo: las pruebas las piden al vuelo con `orderStream(seed, coun
 | 15 | `fundamentals` | Funciones `suspend` (que no cambian de hilo), `launch`/`async`/`runBlocking`, `coroutineScope` y structured concurrency, jerarquía de `Job`, fan-out de cotizaciones del Mercado y saldo + tasa del Banco en paralelo, la fuga de `GlobalScope`, tiempo virtual con `runTest` | [40 + ⚡](02-coroutines/src/main/kotlin/dev/raul/oskar/learning/kotlin/fundamentals/Exercises.md) | — |
 | 16 | `cancellation` | Cancelación cooperativa (`ensureActive`), la trampa de atrapar `CancellationException`, `withTimeout`/`withTimeoutOrNull` y su error de dominio, compensación de una transferencia con `NonCancellable`, `supervisorScope`, `CoroutineExceptionHandler` en la raíz, `launch(SupervisorJob())` (deprecado en 1.11.0) | [40 + ⚡](02-coroutines/src/main/kotlin/dev/raul/oskar/learning/kotlin/cancellation/Exercises.md) | — |
 | 17 | `dispatchers` | `Default`/`IO` (y que comparten hilos), JDBC simulado con `withContext`, `limitedParallelism` del tamaño del pool, hilos virtuales como dispatcher, `ThreadLocal` y `asContextElement`, `Unconfined`, confinamiento con `limitedParallelism(1)`, dispatcher inyectado | [40 + ⚡](02-coroutines/src/main/kotlin/dev/raul/oskar/learning/kotlin/dispatchers/Exercises.md) | — |
+| 18 | `channels` | `Channel` como `BlockingQueue` que suspende, capacidades (*rendezvous*, buffer, `UNLIMITED`), `close` y `for`, `produce`, *fan-out*/*fan-in*, `select` con tiempo límite, el libro de órdenes del Mercado como actor (precio-tiempo, ejecuciones parciales, sin locks) | [40 + ⚡](02-coroutines/src/main/kotlin/dev/raul/oskar/learning/kotlin/channels/Exercises.md) | — |
+| 19 | `flow` | `Flow` frío, backpressure por suspensión, operadores propios con estado (limpieza del feed, velas, alertas), `flowOn` y la invariante de contexto, `catch` aguas arriba, `callbackFlow`, `buffer`/`conflate` con un consumidor lento, Turbine | [40 + ⚡](02-coroutines/src/main/kotlin/dev/raul/oskar/learning/kotlin/flow/Exercises.md) | — |
+| 20 | `hotflows` | `StateFlow` (valor actual, `equals`, conflación, `update`) y `SharedFlow` (replay, eventos perdidos, buffer y descarte), tablero de precios y alertas, saldos en vivo del Banco, `stateIn` con `WhileSubscribed(5000)` | [40 + ⚡](02-coroutines/src/main/kotlin/dev/raul/oskar/learning/kotlin/hotflows/Exercises.md) | — |
 
 `jdbc/` (sin subpaquete) tiene lo compartido: el ledger del Banco (`LedgerRepository`), la interfaz `Dialect`, las extensiones
 `mapRows` e `inTransaction`, y el recorrido `runDemo`. Las tres bases pasan **la misma batería de pruebas**
@@ -171,7 +174,7 @@ los tres motores comparten un solo `jdbc/Exercises.md`, con cada ejercicio etiqu
 
 ## Ejercicios
 
-**615 ejercicios** en 15 archivos `Exercises.md`, 40 por lección más su ⚡ (fases B2 y B3), sin soluciones.
+**738 ejercicios** en 18 archivos `Exercises.md`, 40 por lección más su ⚡ (fases B2 y B3), sin soluciones.
 
 **Semáforo:**
 
@@ -386,7 +389,7 @@ kotlin-for-java-devs/
 │       ├── main/resources/META-INF/persistence.xml   # unidad JPA "learning" (H2 por defecto)
 │       ├── main/resources/simplelogger.properties    # slf4j-simple solo en WARN
 │       └── test/kotlin/…/jdbc/, jpa/
-├── 02-coroutines/              # fundamentals, cancellation, dispatchers (B3); cases/ con las copias mínimas de los casos
+├── 02-coroutines/              # fundamentals … hotflows (B3); cases/ con las copias mínimas de los casos y el feed con semilla
 │   ├── settings.gradle.kts, build.gradle.kts   # Kotlin jvm, kotlinx-coroutines (core y test), Turbine
 │   └── src/main/kotlin/…/<lección>/, src/test/kotlin/…/<lección>/
 ├── 22-legacy-kotlin19/         # Kotlin 1.9.22: wrapper propio (Gradle 9.2.1), .sdkmanrc, prueba de humo, docs/k2-notes.md

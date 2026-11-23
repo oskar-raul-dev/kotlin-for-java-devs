@@ -24,7 +24,7 @@ que se termina algo. El orden de lo que falta está en [Fase B](#fase-b); las de
 | `README.md` (índice general) | ✅ | `LISTO` | Documentos, requisitos, IDE y terminal, índice de secciones, tracks legacy, convenciones (A9) |
 | `CHECKLIST.md` | ✅ | `LISTO` | Este archivo |
 | `docs/Decisions.md` | ✅ | `LISTO` | Las decisiones del curso con su fecha; reemplaza al plan de migración, cerrado y borrado el 2026-11-22 (tag `migration-closed`) |
-| `docs/lessons/` (guías de estudio) | ✅ | `LISTO` | Índice, reglas, plantilla y 15 guías de estudio (teoría, mapa del código y fuentes verificadas), en `docs/lessons/<sección>/NN-<lección>.md` (B0″); `scripts/check-guide-links.sh` |
+| `docs/lessons/` (guías de estudio) | ✅ | `LISTO` | Índice, reglas, plantilla y 18 guías de estudio (teoría, mapa del código y fuentes verificadas), en `docs/lessons/<sección>/NN-<lección>.md` (B0″); `scripts/check-guide-links.sh` |
 | `docs/Temario.md` | ✅ | `LISTO` | Las 88 entradas, los dos 🐉 y la trazabilidad (tandas 0 a 10), revisado con el usuario (B0 cerrado). El anterior, en `docs/archive/Temario-v1.md` |
 | `docs/archive/Temario-Plan.md` y `docs/archive/prompts/temario-tanda.md` | ✅ | `LISTO` | Archivados al cerrar B0. Plan de B0 (plantilla, 11 tandas, versiones medidas) y prompt maestro por tanda |
 | `docs/Versions.md` | ✅ | `LISTO` | Versiones de la base, por sección y de los tracks; cómo actualizar |
@@ -55,7 +55,7 @@ que se termina algo. El orden de lo que falta está en [Fase B](#fase-b); las de
 
 ## Fase B
 
-👉 **En curso: B3** ([detalle](#b3-en-detalle)), tanda 1 de 4 hecha. B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`); B2, también (tag `phase-b2`). El orden va primero por lo pedido explícitamente (corrutinas, reactivo,
+👉 **En curso: B3** ([detalle](#b3-en-detalle)), tandas 1 y 2 de 4 hechas. B0, B0′, B0″ y B1 están cerrados (tag `phase-b0`); B2, también (tag `phase-b2`). El orden va primero por lo pedido explícitamente (corrutinas, reactivo,
 legacy, web y móvil) y deja lo transversal al final; las decisiones, en [`docs/Decisions.md`](docs/Decisions.md); el contenido de cada lección, en
 [`docs/Temario.md`](docs/Temario.md) (su trazabilidad dice caso, ⚡ y ejercicios de cada una).
 
@@ -117,7 +117,7 @@ sección; `dispatchers` simula el repositorio JDBC en vez de usar el de `04-data
 | Tanda | Lecciones | Pruebas | Ejercicios | Estado |
 |---|---|---|---|---|
 | 1 | Build de `02-coroutines`, `fundamentals`, `cancellation`, `dispatchers` | 37 | 120 + 3 ⚡ | ✅ |
-| 2 | `channels`, `flow`, `hotflows` | — | — | ⬜️ |
+| 2 | `channels`, `flow`, `hotflows` | 33 | 120 + 3 ⚡ | ✅ |
 | 3 | `sync`, `internals`, `testing`, `loom` | — | — | ⬜️ |
 | 4 | Build de `03-reactive`, `reactor`, `rxjava`, `bridges`, `backpressure` | — | — | ⬜️ |
 
@@ -150,7 +150,7 @@ en el enunciado y sin prueba provista; 🎤 como etiqueta (unos 6 por lección);
 |---|---|---|---|---|---|---|---|
 | [`tutorials`](#tutorials) | ✅ | ➖ | ➖ | ➖ | ✅ 72 | ✅ 5 de 5 | `LISTO` |
 | [`01-language`](#01-language) | ✅ | ✅ Gradle (2.4.21) | 🟡 | 🟡 | 🟡 | ➖ | `EN CREACIÓN` |
-| [`02-coroutines`](#02-coroutines) | ✅ | ✅ Gradle (2.4.21) | 🟡 3 de 10 | 🟡 37 | 🟡 123 | ➖ | `EN CREACIÓN` |
+| [`02-coroutines`](#02-coroutines) | ✅ | ✅ Gradle (2.4.21) | 🟡 6 de 10 | 🟡 70 | 🟡 246 | ➖ | `EN CREACIÓN` |
 | [`03-reactive`](#03-reactive) | ✅ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
 | [`04-data`](#04-data) | ✅ | ✅ Gradle (2.4.21) | 🟡 | 🟡 | 🟡 | ➖ | `EN CREACIÓN` |
 | [`05-testing`](#05-testing) | ✅ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ➖ | `PENDIENTE` |
@@ -211,9 +211,9 @@ ejercicios a la escala nueva (B2). La columna **Fase** dice en qué fase nace o 
 | 15 | `fundamentals` | ✅ | ✅ 11 | ✅ 40 | ✅ enunciado | ✅ | B3 | `LISTO` |
 | 16 | `cancellation` | ✅ | ✅ 16 | ✅ 40 | ✅ enunciado | ✅ | B3 | `LISTO` |
 | 17 | `dispatchers` | ✅ | ✅ 10 | ✅ 40 | ✅ enunciado | ✅ | B3 | `LISTO` |
-| — | `channels` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
-| — | `flow` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
-| — | `hotflows` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
+| 18 | `channels` | ✅ | ✅ 12 | ✅ 40 | ✅ enunciado | ✅ | B3 | `LISTO` |
+| 19 | `flow` | ✅ | ✅ 12 | ✅ 40 | ✅ enunciado | ✅ | B3 | `LISTO` |
+| 20 | `hotflows` | ✅ | ✅ 9 | ✅ 40 | ✅ enunciado | ✅ | B3 | `LISTO` |
 | — | `sync` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
 | — | `internals` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
 | — | `testing` | ⬜️ | ⬜️ | ⬜️ | ⬜️ | ⬜️ | B3 | `PENDIENTE` |
@@ -650,3 +650,12 @@ y el ⚡ de `09 · webflux` achicado (la API completa y la prueba de carga pasan
   kotlinx-coroutines-test, `currentTime`, `runCurrent` y `advanceTimeBy` piden `ExperimentalCoroutinesApi`; las
   pruebas de Gradle corren con `-ea`, que activa el modo debug (` @coroutine#N` en el nombre del hilo). README: 615
   ejercicios y 194 pruebas. Tag `b3-batch1`.
+- **2026-11-22** · **B3, tanda 2 (`channels`, `flow`, `hotflows`):** tres lecciones con código, 33 pruebas (Turbine en
+  `flow` y `hotflows`), 40 ejercicios más el ⚡ y 6 🎤 cada una, y su guía. `cases/Feed.kt` agrega el feed sintético con
+  semilla (`tickFeed`, caminata de ±0.5 % sobre los precios de referencia) y sus defectos (`withFlaws`: duplicados y
+  ticks fuera de orden por ticker). El libro de órdenes de `channels` es un actor escrito a mano (`actor { }` sigue
+  `@ObsoleteCoroutinesApi`). Medido en 1.11.0: `Channel.BUFFERED` = 64; `produce`, `onTimeout`, `flatMapMerge`,
+  `flatMapConcat`, `flatMapLatest` y `chunked` piden `ExperimentalCoroutinesApi`; `debounce`, `sample` y `timeout`
+  piden `FlowPreview`; `callbackFlow` y `channelFlow`, nada; `tryEmit` sin buffer y con un suscriptor devuelve `false`.
+  Corregido antes de commitear: `alerts` tenía su estado fuera del `flow { }` (dos colecciones lo compartían). README:
+  738 ejercicios y 227 pruebas. Tag `b3-batch2`.

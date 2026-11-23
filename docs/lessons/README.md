@@ -66,9 +66,12 @@ que se lee para aprender.
 | 01 | [`fundamentals`](02-coroutines/01-fundamentals.md) — `suspend`, structured concurrency, `Job` | Ambos | 11 | 40 + ⚡ |
 | 02 | [`cancellation`](02-coroutines/02-cancellation.md) — Cooperativa, `withTimeout`, excepciones, `SupervisorJob` | Ambos | 16 | 40 + ⚡ |
 | 03 | [`dispatchers`](02-coroutines/03-dispatchers.md) — `withContext`, `limitedParallelism`, bloquear hilos | Ambos | 10 | 40 + ⚡ |
+| 04 | [`channels`](02-coroutines/04-channels.md) — `Channel`, `select`, productores | Mercado | 12 | 40 + ⚡ |
+| 05 | [`flow`](02-coroutines/05-flow.md) — Operadores, `flowOn`, buffer, conflate | Mercado | 12 | 40 + ⚡ |
+| 06 | [`hotflows`](02-coroutines/06-hotflows.md) — `StateFlow`, `SharedFlow` | Ambos | 9 | 40 + ⚡ |
 
 `cases` no es una lección y no tiene guía: son las copias mínimas de los casos que usa la sección (`Money`, tickers,
-clientes `suspend` del Banco); se presentan en la guía de `fundamentals`.
+clientes `suspend` del Banco, el feed sintético con semilla); se presentan en las guías de `fundamentals` y `channels`.
 
 ### `04-data`
 

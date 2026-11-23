@@ -938,7 +938,7 @@ variante guardada junto a la prueba (con calentamiento).
 
 **Objetivo:** comunicar corrutinas con canales (el `BlockingQueue` que suspende en vez de bloquear), esperar varias
 fuentes a la vez con `select` y escribir un actor de un solo escritor.
-**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** nueva
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** existe (B3, tanda 2)
 
 | Java 21 | Kotlin (kotlinx-coroutines 1.11.0 ⚠️) | Nota |
 |---|---|---|
@@ -973,7 +973,7 @@ y la cantidad total se conserva.
 
 **Objetivo:** procesar flujos de datos asíncronos con `Flow` (frío, con backpressure por suspensión), cambiar de
 contexto bien y elegir entre `buffer`, `conflate` y los operadores de tiempo.
-**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** nueva
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Mercado · **Estado:** existe (B3, tanda 2)
 
 | Java 21 | Kotlin (kotlinx-coroutines 1.11.0 ⚠️) | Nota |
 |---|---|---|
@@ -983,7 +983,7 @@ contexto bien y elegir entre `buffer`, `conflate` y los operadores de tiempo.
 | Callbacks de un cliente | `callbackFlow { trySend(…); awaitClose { } }` | Compila sin opt-in |
 | Cola entre productor y consumidor | `buffer(64)`, `conflate()` | `conflate` se queda solo con el último valor |
 | `debounce`, `sample` de Reactor | `debounce(…)`, `sample(…)` | Piden `@FlowPreview` (medido) |
-| `flatMap` de Reactor, `buffer(n)` | `flatMapMerge`, `flatMapLatest`, `chunked(n)` | Piden `@ExperimentalCoroutinesApi` (medido) |
+| `flatMap` de Reactor, `buffer(n)` | `flatMapMerge`, `flatMapLatest`, `chunked(n)` | Piden `@ExperimentalCoroutinesApi` (medido), igual que `flatMapConcat`; `timeout` pide `@FlowPreview` |
 
 **Trampas:**
 - `withContext` dentro de `flow { }` rompe la preservación del contexto: lanza `IllegalStateException` ("Flow
@@ -1008,7 +1008,7 @@ comparación con `sample` de la librería donde hacen lo mismo.
 
 **Objetivo:** publicar estado y eventos a varios suscriptores con flujos calientes, convertir uno frío en caliente sin
 fugas y saber qué recibe un suscriptor que llega tarde.
-**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** nueva
+**Sección:** `02-coroutines` · **Build:** nivel 1 · **Caso:** Ambos · **Estado:** existe (B3, tanda 2)
 
 | Java 21 | Kotlin (kotlinx-coroutines 1.11.0 ⚠️) | Nota |
 |---|---|---|
@@ -3302,9 +3302,9 @@ los enlaces relativos y anclas resuelven. Comprobado con scripts, no a ojo.
 | `fundamentals` | Ambos | existe | Fan-out de cotizaciones | 40 + ⚡ |
 | `cancellation` | Ambos | existe | Transferencia con tiempo límite y compensación | 40 + ⚡ |
 | `dispatchers` | Ambos | existe | Dimensionar dispatchers | 40 + ⚡ |
-| `channels` | Mercado | nueva | Motor de emparejamiento como actor | B2+ |
-| `flow` | Mercado | nueva | Operadores propios con backpressure | B2+ |
-| `hotflows` | Ambos | nueva | Tablero de precios en vivo | B2+ |
+| `channels` | Mercado | existe | Motor de emparejamiento como actor | 40 + ⚡ |
+| `flow` | Mercado | existe | Operadores propios con backpressure | 40 + ⚡ |
+| `hotflows` | Ambos | existe | Tablero de precios en vivo | 40 + ⚡ |
 | `sync` | Banco | nueva | Transferencias concurrentes sin perder saldo | B2+ |
 | `internals` | Mercado | nueva | Scheduler de corrutinas propio sobre `createCoroutine` | B2+ |
 | `testing` | Ambos | nueva | Una sesión de mercado en un segundo | B2+ |

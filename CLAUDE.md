@@ -120,12 +120,12 @@ all tests with both databases up** (no SKIPPED).
   (`11`, `12`) · 5 build tooling (`08`) · 6 legacy in a container (`20`–`22`).
 - Lessons: `01-language` has `basics`, `control`, `strings`, `oop`, `collections`, `functional`, `exceptions`, `io`,
   `datetime`, `json` (plus `datagen`, the data generator, which is not a lesson); `02-coroutines` has `fundamentals`,
-  `cancellation`, `dispatchers` (phase B3 continues); `04-data` has `jdbc.*` and `jpa`. Each lesson has a `Main.kt` (demo only), logic in separate
+  `cancellation`, `dispatchers`, `channels`, `flow`, `hotflows` (phase B3 continues); `04-data` has `jdbc.*` and `jpa`. Each lesson has a `Main.kt` (demo only), logic in separate
   `.kt` files so it is testable, an `Exercises.md`, and a mirrored `src/test/.../<lesson>/<Lesson>Test.kt` using
   `kotlin.test` on JUnit 5.
 - Sections never depend on each other (decision 22): `02-coroutines` has its own `cases/` package with minimal copies
   of the cases (`Money`, the five tickers with reference prices and latencies, `suspend` Bank clients) and generates
-  its data in code; `dispatchers` simulates the JDBC repository with `Thread.sleep`. Tests use `runTest` (virtual
+  its data in code (`cases/Feed.kt`: `tickFeed(seed)` random walk, `withFlaws` for duplicates and late ticks); `dispatchers` simulates the JDBC repository with `Thread.sleep`. Tests use `runTest` (virtual
   time) except where real threads are the point (`DispatchersTest` uses `runBlocking`).
 - `basics/Money.kt` is the one `Money` type of `01-language` (data class, scale validated in `init` and normalized by
   `Money.of`/`ofCents`, `HALF_EVEN`); `oop`, `exceptions` and `json` import it instead of redefining it.
